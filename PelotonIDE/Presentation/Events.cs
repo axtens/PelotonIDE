@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -151,18 +152,22 @@ namespace PelotonIDE.Presentation
 
         private void RichEditBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            var Black = new SolidColorBrush(Colors.Black);
+            var LightGrey = new SolidColorBrush(Colors.LightGray);
+
             Debug.WriteLine($"{e.Key}");
             if (e.Key == VirtualKey.CapitalLock)
             {
-                CAPS.Text = Console.CapsLock ? "CAPS" : "caps";
+                CAPS.Text = "CAPS";
+                CAPS.Foreground = Console.CapsLock ? Black : (Brush)LightGrey;
             }
             if (e.Key == VirtualKey.NumberKeyLock)
             {
-                NUM.Text = Console.NumberLock ? "NUM" : "num";
+                NUM.Text = "NUM";
+                NUM.Foreground = Console.NumberLock ? Black : (Brush)LightGrey;
             }
             if (e.Key == VirtualKey.Scroll)
             {
-                SCRL.Text = Console.NumberLock ? "SCRL" : "scrl";
             }
             if (e.Key == VirtualKey.Insert)
             {

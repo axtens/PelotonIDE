@@ -26,7 +26,7 @@
         <SolidColorBrush Color="DarkSlateGray" x:Key="TopNavigationViewItemBackgroundSelectedPointerOver"/>
         <SolidColorBrush Color="DarkGray" x:Key="TopNavigationViewItemBackgroundPressed"/>
         <SolidColorBrush Color="DarkSlateGray" x:Key="TopNavigationViewItemBackgroundSelectedPressed"/>
-        
+
     </Page.Resources>
     <RelativePanel x:Name="relativePanel" Margin="0,0,0,0" HorizontalAlignment="Stretch">
         <RelativePanel.Resources>
@@ -117,11 +117,11 @@
 
 
             <MenuBarItem Title="Search" BorderBrush="LightGray"  BorderThickness="1" x:Name="mnuSearch" />
-            
+
             <MenuBarItem Title="Format" BorderBrush="LightGray"  BorderThickness="1" x:Name="mnuFormat" />
-            
+
             <MenuBarItem Title="View" BorderBrush="LightGray"  BorderThickness="1" x:Name="mnuView" />
-            
+
             <MenuBarItem Title="Interpreter" BorderBrush="LightGray"  BorderThickness="1" x:Name="mnuRun" >
                 <MenuFlyoutSubItem x:Name="mnuRunningMode" Text="Running Mode" >
                     <MenuFlyoutItem Text="Quiet"               x:Name="mnuQuiet"         Click="InterpretBar_RunningMode_Click">
@@ -146,7 +146,7 @@
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
             </MenuBarItem>
-            
+
             <MenuBarItem Title="Source" BorderBrush="LightGray"  BorderThickness="1" x:Name="mnuSource">
                 <MenuFlyoutItem Name="mnuVariableLength" Click="VariableLength_Click" Text="Variable Length">
                     <MenuFlyoutItem.Icon>
@@ -171,7 +171,7 @@
                     </MenuFlyoutItem>
                 </MenuFlyoutSubItem>
             </MenuBarItem>
-            
+
             <MenuBarItem Title="Settings" BorderBrush="LightGray"  BorderThickness="1" x:Name="mnuSettings" >
                 <MenuFlyoutItem x:Name="mnuIDEConfiguration" Text="Editor Configuration" Click="mnuIDEConfiguration_Click" />
             </MenuBarItem>
@@ -277,7 +277,7 @@
                 <local:CustomTabItem x:Name="tab1" Content="Tab 1" Tag="Tab1" IsNewFile="True" Height="30" />
             </NavigationView.MenuItems>
         </NavigationView>
-        
+
         <Canvas x:Name="outputPanel" RelativePanel.Above="statusBar" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" 
                 Height="200" Background="LightGray" HorizontalAlignment="Stretch" MinHeight="100" MaxHeight="500" SizeChanged="OutputPanel_SizeChanged" >
             <Thumb x:Name="outputThumb"  Height="5" DragDelta="Thumb_DragDelta" DragCompleted="OutputThumb_DragCompleted"
@@ -344,7 +344,7 @@
                                           VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                 <RichTextBlock x:Name="errorText" IsTextSelectionEnabled="True">
                                     <Paragraph>
-                                        
+
                                     </Paragraph>
                                 </RichTextBlock>
                             </ScrollViewer>
@@ -353,22 +353,52 @@
                 </TabView.TabItems>
             </TabView>
         </Canvas>
-        <StackPanel x:Name="statusBar" RelativePanel.AlignBottomWithPanel="True" Orientation="Horizontal" Height="35">
+        <StackPanel x:Name="statusBar" RelativePanel.AlignBottomWithPanel="True" Orientation="Horizontal" Height="35" >
             <!--<TextBlock Text="0 words" Margin="0,0,20,0" Name="wordCount"/>-->
-            <TextBox IsReadOnly="True" Name="languageName" Height="30" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="ideStatus" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="tabCommandLine" Height="30" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="cursorPosition" Height="30" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="misc" Height="30"  Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="CAPS" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="INS"  Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="NUM"  Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="SCRL" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="DATE" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="TIME" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="kana" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="kanji" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
-            <TextBox IsReadOnly="True" Name="junja" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></TextBox>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <ContentControl DoubleTapped="ContentControl_DoubleTapped">
+                    <TextBlock Name="languageName" Height="30" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="5" />
+                </ContentControl>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="ideStatus" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="tabCommandLine" Height="30" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left"  Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="cursorPosition" Height="30" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="misc" Height="30"  Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="CAPS" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="CAPS" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="INS"  Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="NUM"  Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="NUM" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="SCRL" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="DATE" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="TIME" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="kana" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="kanji" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock Name="junja" Height="30" Width="100" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" />
+            </Border>
         </StackPanel>
 
     </RelativePanel>

@@ -74,7 +74,10 @@ namespace PelotonIDE.Presentation
             //};
             //t.Elapsed += TimerTick;
             //t.Start();
-            
+
+            CAPS.Foreground = Console.CapsLock ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.LightGray);
+            NUM.Foreground = Console.NumberLock ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.LightGray);
+
 
             // GetGlobals();
             CustomRichEditBox customREBox = new()
@@ -204,9 +207,7 @@ namespace PelotonIDE.Presentation
 
             GlobalInterpreterParameters = await MainPage.GetGlobalInterpreterParameters();
             PerTabInterpreterParameters = await MainPage.GetPerTabInterpreterParameters();
-            CAPS.Text = Console.CapsLock ? "CAPS" : "caps";
-            NUM.Text = Console.NumberLock ? "NUM" : "num";
-
+            
             var FactorySettings = await GetFactorySettings();
 
             outputPanelShowing = GetFactorySettingsWithLocalSettingsOverrideOrDefault<bool>("OutputPanelShowing", true, FactorySettings, localSettings);
@@ -867,6 +868,11 @@ namespace PelotonIDE.Presentation
             
             //cd.
 
+
+        }
+
+        private void ContentControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
 
         }
     }
