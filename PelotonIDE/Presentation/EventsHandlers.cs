@@ -307,7 +307,7 @@ namespace PelotonIDE.Presentation
             {
                 CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
                 CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-                var t1 = tab1;
+                // var t1 = tab1;
                 if (currentRichEditBox.isDirty) {
                     if (!await AreYouSureToClose()) return;
                 }

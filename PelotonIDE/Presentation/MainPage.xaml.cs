@@ -50,7 +50,7 @@ namespace PelotonIDE.Presentation
 
         long LastSelectedVariableLength = 0;
         long LastSelectedSpaced = 0;
-
+        long LastSelectedQuietude = 2;
 
         OutputPanelPosition outputPanelPosition = OutputPanelPosition.Bottom;
         string pelotonEXE = string.Empty;
@@ -74,9 +74,6 @@ namespace PelotonIDE.Presentation
             //};
             //t.Elapsed += TimerTick;
             //t.Start();
-
-            CAPS.Foreground = Console.CapsLock ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.LightGray);
-            NUM.Foreground = Console.NumberLock ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.LightGray);
 
 
             // GetGlobals();
@@ -205,6 +202,9 @@ namespace PelotonIDE.Presentation
         {
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
+            CAPS.Foreground = Console.CapsLock ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.LightGray);
+            NUM.Foreground = Console.NumberLock ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.LightGray);
+
             GlobalInterpreterParameters = await MainPage.GetGlobalInterpreterParameters();
             PerTabInterpreterParameters = await MainPage.GetPerTabInterpreterParameters();
             
@@ -225,8 +225,15 @@ namespace PelotonIDE.Presentation
             LastSelectedInterpreterLanguageName = GetFactorySettingsWithLocalSettingsOverrideOrDefault<string>("LastSelectedInterpreterLanguageName", "English", FactorySettings, localSettings);
             LastSelectedInterpreterLanguageID = GetFactorySettingsWithLocalSettingsOverrideOrDefault<long>("LastSelectedInterpreterLanguageID", 0, FactorySettings, localSettings);
 
+            PerTabInterpreterParameters["Language"]["Defined"] = true;
+            PerTabInterpreterParameters["Language"]["Value"] = LastSelectedInterpreterLanguageID;
+
             LastSelectedVariableLength = GetFactorySettingsWithLocalSettingsOverrideOrDefault<long>("LastSelectedVariableLength", 0, FactorySettings, localSettings);
             LastSelectedSpaced = GetFactorySettingsWithLocalSettingsOverrideOrDefault<long>("LastSelectedSpaced", 0, FactorySettings, localSettings);
+
+            LastSelectedQuietude = GetFactorySettingsWithLocalSettingsOverrideOrDefault<long>("Quietude",2, FactorySettings, localSettings);
+            GlobalInterpreterParameters["Quietude"]["Defined"] = true;
+            GlobalInterpreterParameters["Quietude"]["Value"] = LastSelectedQuietude;
 
             if (tab1.TabSettingsDict == null)
                 tab1.TabSettingsDict = Clone(PerTabInterpreterParameters);
@@ -475,6 +482,7 @@ namespace PelotonIDE.Presentation
             localSettings.Values["LastSelectedVariableLength"] = LastSelectedVariableLength;
             localSettings.Values["LastSelectedSpaced"] = LastSelectedSpaced;
             localSettings.Values["PelotonEXE"] = pelotonEXE;
+            localSettings.Values["Quietude"] = LastSelectedQuietude;
         }
 
         #region Event Handlers

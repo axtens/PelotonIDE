@@ -4,5 +4,6 @@
   "PelotonEXE": "c:\\bin\\stud\\stud.exe",
   "OutputPanelHeight": 200.0,
   "OutputPanelShowing": true,
-  "OutputPanelPosition": "Bottom"
+  "OutputPanelPosition": "Bottom",
+  "Quietude": 2
 }

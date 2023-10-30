@@ -57,14 +57,17 @@ namespace PelotonIDE.Presentation
             {
                 case "mnuQuiet":
                     me.Icon = tickIcon;
+                    LastSelectedQuietude = 0;
                     GlobalInterpreterParameters["Quietude"]["Value"] = 0;
                     break;
                 case "mnuVerbose":
                     me.Icon = tickIcon;
+                    LastSelectedQuietude = 1;
                     GlobalInterpreterParameters["Quietude"]["Value"] = 1;
                     break;
                 case "mnuVerbosePauseOnExit":
                     me.Icon = tickIcon;
+                    LastSelectedQuietude = 2;
                     GlobalInterpreterParameters["Quietude"]["Value"] = 2;
                     break;
             }
@@ -302,8 +305,8 @@ namespace PelotonIDE.Presentation
             InterfaceLanguageName = langName;
             InterfaceLanguageID = long.Parse(selectedLanguage["GLOBAL"]["ID"]);
             languageName.Text = selectedLanguage["GLOBAL"]["101"];
-            PerTabInterpreterParameters["Language"]["Defined"] = true;
-            PerTabInterpreterParameters["Language"]["Value"] = InterfaceLanguageID;
+            // PerTabInterpreterParameters["Language"]["Defined"] = true;
+            // PerTabInterpreterParameters["Language"]["Value"] = InterfaceLanguageID;
         }
 
         private void SetMenuText(Dictionary<string, string> selectedLanguage)
@@ -526,11 +529,16 @@ namespace PelotonIDE.Presentation
 
             var id = LanguageSettings[lang]["GLOBAL"]["ID"];
 
-            navigationViewItem.TabSettingsDict["Language"]["Defined"] = true;
-            navigationViewItem.TabSettingsDict["Language"]["Value"] = long.Parse(id);
+            var currentTabSettings = navigationViewItem.TabSettingsDict;
+            currentTabSettings["Language"]["Defined"] = true;
+            currentTabSettings["Language"]["Value"] = long.Parse(id);
 
             LastSelectedInterpreterLanguageName = lang;
             LastSelectedInterpreterLanguageID = long.Parse(id);
+
+            PerTabInterpreterParameters["Language"]["Defined"] = true;
+            PerTabInterpreterParameters["Language"]["Value"] = long.Parse(id);
+
 
             UpdateLanguageName(navigationViewItem.TabSettingsDict);
             //languageName.Text = LanguageSettings[InterfaceLanguageName]["GLOBAL"][$"{101+int.Parse(id)}"]; // FIXME? the international language setting actually, not lang
