@@ -40,11 +40,11 @@ namespace PelotonIDE.Presentation
         long LastSelectedInterpreterLanguageID;
 
         bool LastSelectedVariableLength;
-        //bool LastSelectedSpaced;
+        string LastSelectedEngine = "Interpreter.New";
         long LastSelectedQuietude = 2;
 
         OutputPanelPosition outputPanelPosition = OutputPanelPosition.Bottom;
-        string? pelotonEXE = string.Empty;
+        //string? pelotonEXE = string.Empty;
         //string pelotonARG = string.Empty;
 
         InterpreterParametersStructure? GlobalInterpreterParameters = new();
@@ -278,7 +278,7 @@ namespace PelotonIDE.Presentation
             localSettings.Values["LastSelectedInterpreterLanguageID"] = LastSelectedInterpreterLanguageID;
             localSettings.Values["LastSelectedVariableLength"] = LastSelectedVariableLength;
             // localSettings.Values["LastSelectedSpaced"] = LastSelectedSpaced;
-            localSettings.Values["PelotonEXE"] = pelotonEXE;
+            localSettings.Values["PelotonEXE"] = LastSelectedEngine;
             localSettings.Values["Quietude"] = LastSelectedQuietude;
         }
 
@@ -565,6 +565,7 @@ namespace PelotonIDE.Presentation
 
             // override with matching tab settings
             // generate arguments string
+            string? pelotonEXE = FactorySettings[LastSelectedEngine].ToString();
             (string stdOut, string stdErr) = RunPeloton(pelotonEXE!, pelotonARG, selectedText);
 
             var stamp = ">\r\n"; // System.DateTime.Now.ToString("O") + "\r\n";

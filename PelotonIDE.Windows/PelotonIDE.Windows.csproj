@@ -71,10 +71,9 @@
 	  <SourceGeneratorInput Remove="PelotonIDE.Windows_TemporaryKey.pfx" />
 	</ItemGroup>
 
-
 	<ItemGroup>
 	  <Reference Include="EncodingChecker">
-	    <HintPath>..\..\..\Present\Ptarmigan\EncodingChecker\bin\Debug\net7.0\EncodingChecker.dll</HintPath>
+	    <HintPath>..\..\EncodingChecker\bin\Debug\net7.0\EncodingChecker.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 </Project>

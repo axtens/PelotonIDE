@@ -61,9 +61,12 @@ namespace PelotonIDE.Presentation
             if (InterfaceLanguageName != null)
                 HandleLanguageChange(InterfaceLanguageName);
 
-            pelotonEXE = GetFactorySettingsWithLocalSettingsOverrideOrDefault("PelotonEXE", "Interpreter.Old", FactorySettings, localSettings) ?? "Interpreter.Old";
-            pelotonEXE = pelotonEXE == "Interpreter.Old" ? FactorySettings["Interpreter.Old"].ToString() : FactorySettings["Interpreter.New"].ToString();
-            if (pelotonEXE.Length == 0) pelotonEXE = FactorySettings["Interpreter.Old"].ToString();
+            LastSelectedEngine = GetFactorySettingsWithLocalSettingsOverrideOrDefault("PelotonEXE", "Interpreter.New", FactorySettings, localSettings) ?? "Interpreter.New";
+            UpdateEngineSelectionFromFactorySettings(LastSelectedEngine);
+
+            //pelotonEXE = GetFactorySettingsWithLocalSettingsOverrideOrDefault("PelotonEXE", "Interpreter.Old", FactorySettings, localSettings) ?? "Interpreter.Old";
+            //pelotonEXE = pelotonEXE == "Interpreter.Old" ? FactorySettings["Interpreter.Old"].ToString() : FactorySettings["Interpreter.New"].ToString();
+            //if (pelotonEXE.Length == 0) pelotonEXE = FactorySettings["Interpreter.Old"].ToString();
 
             LastSelectedInterpreterLanguageName = GetFactorySettingsWithLocalSettingsOverrideOrDefault<string>("LastSelectedInterpreterLanguageName", "English", FactorySettings, localSettings);
             LastSelectedInterpreterLanguageID = GetFactorySettingsWithLocalSettingsOverrideOrDefault<long>("LastSelectedInterpreterLanguageID", 0, FactorySettings, localSettings);
@@ -90,7 +93,6 @@ namespace PelotonIDE.Presentation
 
             InterfaceLanguageSelectionBuilder(mnuSelectLanguage, "mnuSelectLanguage", Internationalization_Click);
             InterpreterLanguageSelectionBuilder(mnuRun, "mnuLanguage", MnuLanguage_Click);
-            UpdateEngineSelectionFromFactorySettings();
 
             UpdateMenuRunningMode(GlobalInterpreterParameters["Quietude"]);
             UpdateVariableLengthMode(tab1.TabSettingsDict["VariableLength"]);
@@ -100,9 +102,9 @@ namespace PelotonIDE.Presentation
 
         }
 
-        private void UpdateEngineSelectionFromFactorySettings()
+        private void UpdateEngineSelectionFromFactorySettings(string lastSelected)
         {
-            if (FactorySettings["PelotonEXE"].ToString() == "Interpreter.Old")
+            if (lastSelected == "Interpreter.Old")
             {
                 ControlHighligter(mnuNewEngine, false);
                 ControlHighligter(mnuOldEngine, true);
@@ -680,14 +682,16 @@ namespace PelotonIDE.Presentation
         {
             ControlHighligter(mnuNewEngine, true);
             ControlHighligter(mnuOldEngine, false);
-            pelotonEXE = FactorySettings["Interpreter.New"].ToString();
+            //pelotonEXE = FactorySettings["Interpreter.New"].ToString();
+            LastSelectedEngine = "Interpreter.New";
         }
 
         private void ChooseOldEngine_Click(object sender, RoutedEventArgs e)
         {
             ControlHighligter(mnuNewEngine, false);
             ControlHighligter(mnuOldEngine, true);
-            pelotonEXE = FactorySettings["Interpreter.Old"].ToString();
+            //pelotonEXE = FactorySettings["Interpreter.Old"].ToString();
+            LastSelectedEngine = "Interpreter.Old";
         }
 
     }
