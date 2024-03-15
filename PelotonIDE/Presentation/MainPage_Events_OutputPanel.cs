@@ -27,12 +27,14 @@ namespace PelotonIDE.Presentation
                     outputThumb.Height = 5;
                     break;
                 case OutputPanelPosition.Right:
+                    outputPanel.ClearValue(HeightProperty);
                     outputPanelTabView.Width = outputPanel.ActualWidth;
                     outputPanelTabView.Height = outputPanel.ActualHeight;
                     outputThumb.Width = 5;
                     outputThumb.Height = outputPanel.ActualHeight;
                     break;
                 case OutputPanelPosition.Left:
+                    outputPanel.ClearValue(HeightProperty);
                     outputPanelTabView.Width = outputPanel.ActualWidth;
                     outputPanelTabView.Height = outputPanel.ActualHeight;
                     outputThumb.Width = 5;
