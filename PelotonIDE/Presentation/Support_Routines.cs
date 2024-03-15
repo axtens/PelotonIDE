@@ -108,10 +108,10 @@ namespace PelotonIDE.Presentation
             {
                 case OutputPanelPosition.Left:
                     //outputPanelPosition = OutputPanelPosition.Left;
-
+                    Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", OutputPanelPosition.Left.ToString());
                     RelativePanel.SetAlignLeftWithPanel(outputPanel, true);
                     RelativePanel.SetAlignRightWithPanel(outputPanel, false);
-                    RelativePanel.SetBelow(outputPanel, mnuNew);
+                    RelativePanel.SetBelow(outputPanel, butNew);
                     outputPanel.Width = 200;
                     outputPanel.MinWidth = 175;
                     outputPanel.MaxWidth = 700;
@@ -138,7 +138,7 @@ namespace PelotonIDE.Presentation
                     break;
                 case OutputPanelPosition.Bottom:
                     //outputPanelPosition = OutputPanelPosition.Bottom;
-
+                    Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", OutputPanelPosition.Bottom.ToString());
                     RelativePanel.SetAlignLeftWithPanel(tabControl, true);
                     RelativePanel.SetAlignRightWithPanel(tabControl, true);
                     RelativePanel.SetRightOf(tabControl, null);
@@ -149,6 +149,7 @@ namespace PelotonIDE.Presentation
                     RelativePanel.SetBelow(outputPanel, null);
                     outputPanel.Height = 200;
                     outputPanel.MaxHeight = 500;
+                    outputPanel.MinHeight = 100;
                     outputPanel.ClearValue(WidthProperty);
                     outputPanel.ClearValue(MaxWidthProperty);
 
@@ -167,10 +168,10 @@ namespace PelotonIDE.Presentation
                     break;
                 case OutputPanelPosition.Right:
                     //outputPanelPosition = OutputPanelPosition.Right;
-
+                    Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", OutputPanelPosition.Right.ToString());
                     RelativePanel.SetAlignLeftWithPanel(outputPanel, false);
                     RelativePanel.SetAlignRightWithPanel(outputPanel, true);
-                    RelativePanel.SetBelow(outputPanel, mnuNew);
+                    RelativePanel.SetBelow(outputPanel, butNew);
                     outputPanel.Width = 200;
                     outputPanel.MinWidth = 175;
                     outputPanel.MaxWidth = 700;

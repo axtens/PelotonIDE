@@ -321,7 +321,7 @@
                 <local:CustomTabItem x:Name="tab1" Content="Document 1" Tag="Tab1" IsNewFile="True" Height="30" KeyDown="CustomTabItem_KeyDown" RightTapped="CustomTabItem_RightTapped"/>
             </NavigationView.MenuItems>
         </NavigationView>
-        <Border x:Name="outputPanel" RelativePanel.Above="statusBar" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Height="200" Background="LightGray" MinHeight="100" MaxHeight="500" Margin="5, 0, 5, 0" SizeChanged="OutputPanel_SizeChanged">
+        <Border x:Name="outputPanel" RelativePanel.Above="statusBar" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Background="LightGray" Margin="5, 0, 5, 0" SizeChanged="OutputPanel_SizeChanged">
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Thumb x:Name="outputThumb" Height="5" DragDelta="Thumb_DragDelta" DragCompleted="OutputThumb_DragCompleted" Canvas.Top="-5" PointerEntered="OutputThumb_PointerEntered" PointerExited="OutputThumb_PointerExited"/>
                 <TabView x:Name="outputPanelTabView" IsAddTabButtonVisible="False" TabWidthMode="SizeToContent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="200">
