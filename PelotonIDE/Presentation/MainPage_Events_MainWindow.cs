@@ -102,7 +102,6 @@ namespace PelotonIDE.Presentation
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
-
            
             LanguageSettings ??= await GetLanguageConfiguration();
             RenderingConstants ??= new Dictionary<string, Dictionary<string, object>>()

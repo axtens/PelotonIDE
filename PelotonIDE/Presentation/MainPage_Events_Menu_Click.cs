@@ -165,11 +165,65 @@ namespace PelotonIDE.Presentation
             UpdateStatusBar(navigationViewItem.TabSettingsDict);
             UpdateOutputTabs();
 
-            UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
-            UpdateCommandLineInStatusBar();
-            AssertSelectedOutputTab();
+            //UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
+            //UpdateCommandLineInStatusBar();
+            //AssertSelectedOutputTab();
  
             TabControlCounter += 1;
+        }
+
+        private void UpdateOutputTabs()
+        {
+            // FIXME            Telemetry.SetEnabled(true);
+            if (!AnInFocusTabExists()) return;
+
+            DeselectAndDisableAllOutputPanelTabs();
+            EnableAllOutputPanelTabsMatchingRendering();
+
+            string? rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
+
+            if (rendering != null && rendering.Split(",", StringSplitOptions.RemoveEmptyEntries).Any())
+            {
+                var selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
+                (from TabViewItem tvi in outputPanelTabView.TabItems where long.Parse((string)tvi.Tag) == selectedRenderer select tvi).ForEach(tvi =>
+                {
+                    tvi.IsSelected = true;
+                    Telemetry.Transmit(tvi.Name, tvi.Tag, "frontmost");
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, selectedRenderer);
+                });
+            }
+        }
+
+        private void UpdateStatusBar(Dictionary<string, Dictionary<string, object>> tabSettingsDict)
+        {
+            // FIXME
+            languageName.Text = GetLanguageNameOfCurrentTab(tabSettingsDict);
+            tabCommandLine.Text = BuildTabCommandLine();
+
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+
+            bool isVariableLength = Type_3_GetInFocusTab<bool>("mainOps.VariableLength");
+            fixedVariableStatus.Text = (isVariableLength ? "#" : "@") + LanguageSettings[interfaceLanguageName]["GLOBAL"][isVariableLength ? "variableLength" : "fixedLength"];
+
+            string[] quietudes = ["mnuQuiet", "mnuVerbose", "mnuVerbosePauseOnExit"];
+            long quietude = Type_3_GetInFocusTab<long>("pOps.Quietude");
+            quietudeStatus.Text = LanguageSettings[interfaceLanguageName]["frmMain"][quietudes.ElementAt((int)quietude)];
+
+            string[] timeouts = ["mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite"];
+            long timeout = Type_3_GetInFocusTab<long>("ideOps.Timeout");
+            timeoutStatus.Text = $"{LanguageSettings[interfaceLanguageName]["frmMain"]["mnuTimeout"]}: {LanguageSettings[interfaceLanguageName]["frmMain"][timeouts.ElementAt((int)timeout)]}";
+
+            long interp = AnInFocusTabExists() ? Type_3_GetInFocusTab<long>("ideOps.Engine") : Type_1_GetVirtualRegistry<long>("ideOps.Engine");
+            switch (interp)
+            {
+                case 2:
+                    interpreter.Text = "P2";
+                    break;
+
+                case 3:
+                    interpreter.Text = "P3";
+                    break;
+            }
         }
 
         private void Cut()

@@ -416,6 +416,7 @@ namespace PelotonIDE.Presentation
                 MarkupToInFocusSettingString(matches, @"\irendering", "outputOps.ActiveRenderers");
                 MarkupToInFocusSettingLong(matches, @"\iselected", "outputOps.TappedRenderer");
                 MarkupToInFocusSettingLong(matches, @"\iinterpreter", "ideOps.Engine");
+                MarkupToInFocusSettingBoolean(matches, @"\ipadded", "mainOps.Padded");
 
             }
             else
@@ -464,6 +465,19 @@ namespace PelotonIDE.Presentation
                 {
                     string arg = marked[1].Replace("}", "");
                     Type_3_UpdateInFocusTabSettings<long>(setting, true, long.Parse(arg));
+                }
+            }
+        }
+        private void MarkupToInFocusSettingBoolean(MatchCollection matches, string markup, string setting)
+        {
+            IEnumerable<Match> markups = from match in matches where match.Value.Contains(markup) select match;
+            if (markups.Any())
+            {
+                string[] marked = markups.First().Value.Split(' ');
+                if (marked.Any())
+                {
+                    string arg = marked[1].Replace("}", "");
+                    Type_3_UpdateInFocusTabSettings<bool>(setting, true, long.Parse(arg) == 1);
                 }
             }
         }
@@ -912,22 +926,6 @@ namespace PelotonIDE.Presentation
                 Type_3_UpdateInFocusTabSettings<long>("ideOps.Engine", true, (long)me.Tag);
             }
             UpdateInterpreterInStatusBar();
-        }
-
-        private void TabView_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            Telemetry.SetEnabled(false);
-            TabViewItem me = (TabViewItem)sender;
-
-            Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected, me.Foreground, me.Background);
-        }
-
-        private void TabView_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            Telemetry.SetEnabled(false);
-            TabViewItem me = (TabViewItem)sender;
-
-            Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected, me.Foreground, me.Background);
         }
 
         private void TabViewItem_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)

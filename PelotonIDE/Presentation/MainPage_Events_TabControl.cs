@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Input;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 using Newtonsoft.Json;
 
@@ -31,14 +32,17 @@ namespace PelotonIDE.Presentation
                         {
                             languageName.Text = currentLanguageName;
                         }
-                        UpdateCommandLineInStatusBar();
-                        UpdateStatusBarFromInFocusTab();
-                        UpdateInterpreterInStatusBar();
+                        UpdateStatusBar(navigationViewItem.TabSettingsDict);
+
+                        //UpdateCommandLineInStatusBar();
+                        //UpdateStatusBarFromInFocusTab();
+                        //UpdateInterpreterInStatusBar();
                         //UpdateTopMostRendererInCurrentTab();
                     }
                 }
             }
-            AssertSelectedOutputTab();
+            //AssertSelectedOutputTab();
+            UpdateOutputTabs();
         }
         private void TabControl_KeyDown(object sender, KeyRoutedEventArgs e)
         {

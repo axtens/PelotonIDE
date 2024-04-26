@@ -40,23 +40,10 @@ namespace PelotonIDE.Presentation
             FontFamily = new FontFamily("Lucida Sans Unicode,Tahoma");
             PointerReleased += CustomRichEditBox_PointerReleased;
             SelectionChanged += CustomRichEditBox_SelectionChanged;
-            //SelectionChanging += CustomRichEditBox_SelectionChanging;
-            //PreviousSelection = "0,0,";
-            //KeyDown += CustomRichEditBox_KeyDown;
-            //KeyUp += CustomRichEditBox_KeyUp;
-            //PreviewKeyDown += CustomRichEditBox_PreviewKeyDown;
-            // https://stackoverflow.com/ai/search/16916
-            //Background = new SolidColorBrush(Color.FromArgb(255,0xF9,0xF8, 0xbd)); // "#F9F8BD"
-            //PointerEntered += (sender, e) => e.Handled = true;
-            //Style = (Style)Application.Current.Resources["CustomRichEditBoxStyle"];
         }
 
         private void CustomRichEditBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            //Color blueback = Color.FromArgb(0x00,0x55,0x76,0xa2);
-            //Color whitefront = Color.FromArgb(0x00, 0xff, 0xff, 0xff);
-            //Color normal = Color.FromArgb(0x00, 0xf9, 0xf8, 0xbd);
-
             Telemetry.SetEnabled(false);
             CustomRichEditBox me = ((CustomRichEditBox)sender);
             ITextSelection selection = me.Document.Selection;
@@ -69,21 +56,7 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit("start=", start, "end=", end);
             if (start != end)
             {
-                //if (me.PreviousSelection != "0,0," )
-                //{
-                //    var parts = me.PreviousSelection.Split([',']);
-                //    selection.StartPosition = int.Parse(parts[0]);
-                //    selection.EndPosition = int.Parse(parts[1]);
-                //    var argb = parts[2].Split(['-']).Select(e => byte.Parse(e)).ToArray();
-                //    selection.CharacterFormat.BackgroundColor = Color.FromArgb(argb[0], argb[1], argb[2], argb[3]);
-                //    me.PreviousSelection = "0,0,";
-                //}
-                //Telemetry.Transmit("me.Tag=", me.PreviousSelection);
-                //var bc = selection.CharacterFormat.BackgroundColor;
-                //me.PreviousSelection = $"{start},{end},{bc.A}-{bc.R}-{bc.G}-{bc.B}";
-                //bc = blueback;
-                
-                // selection.CharacterFormat.BackgroundColor = highlight; // FIXME. Keep the last selection and reset it when here again. 
+
             }
         }
 

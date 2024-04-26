@@ -419,25 +419,7 @@
                                     </RichEditBox>
                                 </ScrollViewer>
                             </Border>
-                            <!--<TabViewItem.Resources>
-                                <ResourceDictionary>
-                                    <ResourceDictionary.ThemeDictionaries>
-                                        <ResourceDictionary x:Key="Light">
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Black"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForeground" Color="White" />
 
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPressed" Color="PaleGreen"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPressed" Color="White" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPointerOver" Color="DarkGreen" />
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPointerOver" Color="Black" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundDisabled" Color="LightGray"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundDisabled" Color="Black" />
-                                        </ResourceDictionary>
-                                    </ResourceDictionary.ThemeDictionaries>
-                                </ResourceDictionary>
-                            </TabViewItem.Resources>-->
                         </TabViewItem>
                         <TabViewItem x:Name="tabError" Tag="0" Header="Error" IsClosable="False" RightTapped="TabViewItem_Error_RightTapped" Tapped="TabViewItem_Tapped"  BorderBrush="Black" BorderThickness="1">
                             <FlyoutBase.AttachedFlyout>
@@ -461,25 +443,7 @@
                                     </RichEditBox>
                                 </ScrollViewer>
                             </Border>
-                            <!--<TabViewItem.Resources>
-                                <ResourceDictionary>
-                                    <ResourceDictionary.ThemeDictionaries>
-                                        <ResourceDictionary x:Key="Light">
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Black"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForeground" Color="White" />
 
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPressed" Color="PaleGreen"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPressed" Color="White" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPointerOver" Color="DarkGreen" />
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPointerOver" Color="Black" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundDisabled" Color="LightGray"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundDisabled" Color="Black" />
-                                        </ResourceDictionary>
-                                    </ResourceDictionary.ThemeDictionaries>
-                                </ResourceDictionary>
-                            </TabViewItem.Resources>-->
                         </TabViewItem>
                         <TabViewItem x:Name="tabRTF" Tag="31" Header="RTF" IsClosable="False" RightTapped="TabViewItem_RTF_RightTapped" Tapped="TabViewItem_Tapped"  BorderBrush="Black" BorderThickness="1">
                             <FlyoutBase.AttachedFlyout>
@@ -503,25 +467,7 @@
                                     </RichEditBox>
                                 </ScrollViewer>
                             </Border>
-                            <!--<TabViewItem.Resources>
-                                <ResourceDictionary>
-                                    <ResourceDictionary.ThemeDictionaries>
-                                        <ResourceDictionary x:Key="Light">
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Black"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForeground" Color="White" />
 
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPressed" Color="PaleGreen"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPressed" Color="White" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPointerOver" Color="DarkGreen" />
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPointerOver" Color="Black" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundDisabled" Color="LightGray"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundDisabled" Color="Black" />
-                                        </ResourceDictionary>
-                                    </ResourceDictionary.ThemeDictionaries>
-                                </ResourceDictionary>
-                            </TabViewItem.Resources>-->
                         </TabViewItem>
                         <TabViewItem x:Name="tabHtml" Tag="21" Header="HTML" IsClosable="False" RightTapped="TabViewItem_Html_RightTapped" Tapped="TabViewItem_Tapped" BorderBrush="Black" BorderThickness="1" >
                             <FlyoutBase.AttachedFlyout>
@@ -536,25 +482,7 @@
                                     <WebView2 x:Name="HtmlText" FlowDirection="LeftToRight" />
                                 </ScrollViewer>
                             </Border>
-                            <!--<TabViewItem.Resources>
-                                <ResourceDictionary>
-                                    <ResourceDictionary.ThemeDictionaries>
-                                        <ResourceDictionary x:Key="Light">
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Black"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForeground" Color="White" />
 
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPressed" Color="PaleGreen"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPressed" Color="White" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPointerOver" Color="DarkGreen" />
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPointerOver" Color="Black" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundDisabled" Color="LightGray"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundDisabled" Color="Black" />
-                                        </ResourceDictionary>
-                                    </ResourceDictionary.ThemeDictionaries>
-                                </ResourceDictionary>
-                            </TabViewItem.Resources>-->
                         </TabViewItem>
                         <TabViewItem x:Name="tabLogo" Tag="42" IsClosable="False" RightTapped="TabViewItem_Logo_RightTapped" Tapped="TabViewItem_Tapped" BorderBrush="Black" BorderThickness="1" >
                             <FlyoutBase.AttachedFlyout>
@@ -569,25 +497,7 @@
                                     <WebView2 x:Name="LogoText" FlowDirection="LeftToRight" />
                                 </ScrollViewer>
                             </Border>
-                            <!--<TabViewItem.Resources>
-                                <ResourceDictionary>
-                                    <ResourceDictionary.ThemeDictionaries>
-                                        <ResourceDictionary x:Key="Light">
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackground" Color="Black"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForeground" Color="White" />
 
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPressed" Color="PaleGreen"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPressed" Color="White" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundPointerOver" Color="DarkGreen" />
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundPointerOver" Color="Black" />
-
-                                            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundDisabled" Color="LightGray"/>
-                                            <SolidColorBrush x:Key="TabViewItemHeaderForegroundDisabled" Color="Black" />
-                                        </ResourceDictionary>
-                                    </ResourceDictionary.ThemeDictionaries>
-                                </ResourceDictionary>
-                            </TabViewItem.Resources>-->
                         </TabViewItem>
                     </TabView.TabItems>
                 </TabView>
