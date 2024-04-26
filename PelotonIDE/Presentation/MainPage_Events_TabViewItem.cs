@@ -226,7 +226,7 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(false);
             TabViewItem me = (TabViewItem)sender;
 
-            Type_3_UpdateInFocusTabSettings<long>("SelectedRenderer", true, long.Parse((string)me.Tag));
+            Type_3_UpdateInFocusTabSettings<long>("outputOps.SelectedRenderer", true, long.Parse((string)me.Tag));
             // remove all "selected" attributes from all tabs
             //UpdateOutputTabsFromRenderers();
             //AssertSelectedOutputTab();

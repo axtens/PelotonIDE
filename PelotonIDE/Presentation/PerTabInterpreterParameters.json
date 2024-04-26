@@ -161,7 +161,7 @@
     "Value": "",
     "Internal": false
   },
-  "Quietude": {
+  "pOps.Quietude": {
     "Defined": true,
     "Key": "Q",
     "Value": 2,
@@ -197,7 +197,7 @@
     "Value": "",
     "Internal": false
   },
-  "VariableLength": {
+  "mainOps.VariableLength": {
     "Defined": false,
     "Key": "#",
     "Value": false,
@@ -227,25 +227,25 @@
     "Value": "",
     "Internal": false
   },
-  "Timeout": {
+  "ideOps.Timeout": {
     "Defined": true,
     "Key": "~",
     "Value": 0,
     "Internal": true
   },
-  "Rendering": {
+  "outputOps.Renderers": {
     "Defined": true,
     "Key": "r",
     "Value": "0,3",
     "Internal": true
   },
-  "SelectedRenderer": {
+  "outputOps.SelectedRenderer": {
     "Defined": true,
     "Key": "s",
     "Value": 3,
     "Internal": true
   },
-  "Engine": {
+  "ideOps.Engine": {
     "Defined": true,
     "Key": "e",
     "Value": 3,

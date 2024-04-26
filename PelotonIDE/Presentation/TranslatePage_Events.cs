@@ -41,7 +41,7 @@ namespace PelotonIDE.Presentation
                         { "TargetVariableLength", chkVarLengthTo.IsChecked ?? false},
                         { "TargetPadOutCode", chkSpaceOut.IsChecked ?? false},
                         { "TargetText" ,  txt},
-                        { "Quietude",   Quietude}
+                        { "pOps.Quietude",   Quietude}
                     }
                 });
             }

@@ -27,8 +27,8 @@ namespace PelotonIDE.Presentation
             string? inFocusTabLanguageName = GetLanguageNameFromID((long)navigationViewItem.TabSettingsDict["Language"]["Value"]);
 
 
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
-            Dictionary<string, string> globals = LanguageSettings[Type_1_GetVirtualRegistry<string>("InterfaceLanguageName")]["GLOBAL"];
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+            Dictionary<string, string> globals = LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")]["GLOBAL"];
             int count = LanguageSettings.Keys.Count;
             for (int i = 0; i < count; i++)
             {
@@ -129,14 +129,14 @@ namespace PelotonIDE.Presentation
 
             MenuFlyout mf = new();
 
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
             if (!AnInFocusTabExists()) return;
 
-            bool inFocusTabVariableLength = Type_3_GetInFocusTab<bool>("VariableLength");
+            bool inFocusTabVariableLength = Type_3_GetInFocusTab<bool>("mainOps.VariableLength");
             Telemetry.Transmit("inFocusTabTimeout=", inFocusTabVariableLength);
 
-            Dictionary<string, string> globals = LanguageSettings[Type_1_GetVirtualRegistry<string>("InterfaceLanguageName")]["GLOBAL"];
+            Dictionary<string, string> globals = LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")]["GLOBAL"];
 
             foreach (string key in new string[] { "variableLength", "fixedLength" })
             {
@@ -177,7 +177,7 @@ namespace PelotonIDE.Presentation
 
             bool isVariableLength = me.Name == "variableLength";
             if (AnInFocusTabExists())
-                Type_3_UpdateInFocusTabSettings<bool>("VariableLength", isVariableLength, isVariableLength);
+                Type_3_UpdateInFocusTabSettings<bool>("mainOps.VariableLength", isVariableLength, isVariableLength);
 
             fixedVariableStatus.Text = (isVariableLength ? "#" : "@") + (string)globals[isVariableLength ? "variableLength" : "fixedLength"];
             UpdateCommandLineInStatusBar();
@@ -193,11 +193,11 @@ namespace PelotonIDE.Presentation
 
             MenuFlyout mf = new();
 
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
             if (!AnInFocusTabExists()) return;
 
-            long inFocusTabQuietude = Type_3_GetInFocusTab<long>("Quietude");
+            long inFocusTabQuietude = Type_3_GetInFocusTab<long>("pOps.Quietude");
             Telemetry.Transmit("inFocusTabTimeout=", inFocusTabQuietude);
 
             Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
@@ -245,7 +245,7 @@ namespace PelotonIDE.Presentation
             int quietude = quietudes.IndexOf(me.Name);
 
             if (AnInFocusTabExists())
-                Type_3_UpdateInFocusTabSettings<long>("Quietude", true, quietude);
+                Type_3_UpdateInFocusTabSettings<long>("pOps.Quietude", true, quietude);
 
             quietudeStatus.Text = (string)globals[quietudes.ElementAt(quietude)];
             UpdateCommandLineInStatusBar();
@@ -262,11 +262,11 @@ namespace PelotonIDE.Presentation
 
             MenuFlyout mf = new();
 
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
             if (!AnInFocusTabExists()) return;
 
-            long inFocusTabTimeout = Type_3_GetInFocusTab<long>("Timeout");
+            long inFocusTabTimeout = Type_3_GetInFocusTab<long>("ideOps.Timeout");
             Telemetry.Transmit("inFocusTabTimeout=", inFocusTabTimeout);
 
             Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
@@ -315,7 +315,7 @@ namespace PelotonIDE.Presentation
             var timeout = timeouts.IndexOf(me.Name);
 
             if (AnInFocusTabExists())
-                Type_3_UpdateInFocusTabSettings<long>("Timeout", true, timeout);
+                Type_3_UpdateInFocusTabSettings<long>("ideOps.Timeout", true, timeout);
 
             timeoutStatus.Text = $"{globals["mnuTimeout"]}: {(string)globals[timeouts.ElementAt(timeout)]}";
             UpdateCommandLineInStatusBar();

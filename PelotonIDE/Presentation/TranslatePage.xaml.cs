@@ -67,9 +67,9 @@ namespace PelotonIDE.Presentation
                 Langs = (LanguageConfigurationStructure)parameters.KVPs["Languages"];
                 //string? tabLanguageName = parameters.KVPs["TabLanguageName"].ToString();
                 int tabLanguageId = (int)(long)parameters.KVPs["TabLanguageID"];
-                string? interfaceLanguageName = parameters.KVPs["InterfaceLanguageName"].ToString();
-                Quietude = (long)parameters.KVPs["Quietude"];
-                //int interfaceLanguageID = (int)(long)parameters.KVPs["InterfaceLanguageID"];
+                string? interfaceLanguageName = parameters.KVPs["ideOps.InterfaceLanguageName"].ToString();
+                Quietude = (long)parameters.KVPs["pOps.Quietude"];
+                //int interfaceLanguageID = (int)(long)parameters.KVPs["ideOps.InterfaceLanguageID"];
                 SourcePath = parameters.KVPs["SourcePath"].ToString();
                 SourceSpec = parameters.KVPs["SourceSpec"].ToString();
 

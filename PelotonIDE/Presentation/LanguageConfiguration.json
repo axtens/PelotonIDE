@@ -12863,7 +12863,7 @@
             "mnuCleanOutput": "Clean output",
             "mnuPipeOutout": "Pipe output and wait",
             "mnuLearningMode": "Learning mode",
-            "mnuTimeout": "Timeout",
+            "mnuTimeout": "ideOps.Timeout",
             "mnu20Seconds": "20 seconds",
             "mnu100Seconds": "100 seconds",
             "mnu200Seconds": "200 seconds",
@@ -13546,7 +13546,7 @@
             "tabHtml": "HTML",
             "tabLogo": "Logo",
             "tabRTF": "RTF",
-            "txtRendering": "Rendering"
+            "txtRendering": "outputOps.Renderers"
         },
         "GLOBAL": {
             "101": "English",
@@ -41371,7 +41371,7 @@
             "tabHtml": "HTML",
             "tabLogo": "Logo",
             "tabRTF": "ukiran",
-            "txtRendering": "Rendering"
+            "txtRendering": "outputOps.Renderers"
         },
         "GLOBAL": {
             "101": "Bahasa Inggeris - English",
@@ -61796,7 +61796,7 @@
             "tabHtml": "HTML",
             "tabLogo": "Logo",
             "tabRTF": "RTF",
-            "txtRendering": "Rendering"
+            "txtRendering": "outputOps.Renderers"
         },
         "GLOBAL": {
             "101": "Anglais - English",

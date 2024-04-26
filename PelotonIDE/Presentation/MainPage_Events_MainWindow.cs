@@ -43,9 +43,9 @@ namespace PelotonIDE.Presentation
             switch (parameters.Source)
             {
                 case "IDEConfig":
-                    //string? engine = LocalSettings.Values["Engine"].ToString();
-                    Type_1_UpdateVirtualRegistry("Engine.3", parameters.KVPs["Interpreter"].ToString());
-                    Type_1_UpdateVirtualRegistry("Scripts", parameters.KVPs["Scripts"].ToString());
+                    //string? engine = LocalSettings.Values["ideOps.Engine"].ToString();
+                    Type_1_UpdateVirtualRegistry("ideOps.Engine.3", parameters.KVPs["Interpreter"].ToString());
+                    Type_1_UpdateVirtualRegistry("ideOps.ScriptsFolder", parameters.KVPs["ideOps.ScriptsFolder"].ToString());
                     break;
                 case "TranslatePage":
                     CustomRichEditBox richEditBox = new()
@@ -57,9 +57,9 @@ namespace PelotonIDE.Presentation
                     richEditBox.AcceptsReturn = true;
                     richEditBox.Document.SetText(TextSetOptions.UnicodeBidi, parameters.KVPs["TargetText"].ToString());
 
-                    string? langname = LocalSettings.Values["InterfaceLanguageName"].ToString();
-                    long quietude = (long)parameters.KVPs["Quietude"];
-                    //Type_2_UpdatePerTabSettings("Quietude", true, virtRegQuietude);
+                    string? langname = LocalSettings.Values["ideOps.InterfaceLanguageName"].ToString();
+                    long quietude = (long)parameters.KVPs["pOps.Quietude"];
+                    //Type_2_UpdatePerTabSettings("pOps.Quietude", true, virtRegQuietude);
 
                     CustomTabItem navigationViewItem = new()
                     {
@@ -83,7 +83,7 @@ namespace PelotonIDE.Presentation
                     Type_3_UpdateInFocusTabSettings("Language", true, (long)parameters.KVPs["TargetLanguageID"]);
                     if (parameters.KVPs.TryGetValue("TargetVariableLength", out object? value))
                     {
-                        Type_3_UpdateInFocusTabSettings("VariableLength", (bool)value, (bool)value);
+                        Type_3_UpdateInFocusTabSettings("mainOps.VariableLength", (bool)value, (bool)value);
                     }
 
                     richEditBox.Focus(FocusState.Keyboard);
@@ -107,7 +107,7 @@ namespace PelotonIDE.Presentation
             LanguageSettings ??= await GetLanguageConfiguration();
             RenderingConstants ??= new Dictionary<string, Dictionary<string, object>>()
                     {
-                        { "Rendering", new Dictionary<string, object>()
+                        { "outputOps.Renderers", new Dictionary<string, object>()
                         {
                             { "Output", 3L },
                             { "Error", 0L },
@@ -126,36 +126,36 @@ namespace PelotonIDE.Presentation
             FactorySettings ??= await GetFactorySettings();
 
             // #MainPage-LoadingVirtReg
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("Rendering", FactorySettings, "0,3");
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("SelectedRenderer", FactorySettings,-1);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("outputOps.Renderers", FactorySettings, "0,3");
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("outputOps.SelectedRenderer", FactorySettings,-1);
 
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("Transput", FactorySettings, 3);
 
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("Timeout", FactorySettings, 1);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("ideOps.Timeout", FactorySettings, 1);
             UpdateTimeoutInMenu();
             UpdateRenderingInMenu();
 
             UpdateTransputInMenu();
 
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("OutputPanelSettings", FactorySettings, "True|Bottom|200|400");
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.OutputPanelSettings", FactorySettings, "True|Bottom|200|400");
 
-            var position = FromBarredString_String(Type_1_GetVirtualRegistry<string>("OutputPanelSettings"), 1);
-            Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", position);
+            var position = FromBarredString_String(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 1);
+            Type_1_UpdateVirtualRegistry<string>("ideOps.OutputPanelPosition", position);
 
-            Type_1_UpdateVirtualRegistry<bool>("OutputPanelShowing", FromBarredString_Boolean(Type_1_GetVirtualRegistry<string>("OutputPanelSettings"), 0));
-            Type_1_UpdateVirtualRegistry<double>("OutputPanelHeight", (double)FromBarredString_Double(Type_1_GetVirtualRegistry<string>("OutputPanelSettings"), 2));
-            Type_1_UpdateVirtualRegistry<double>("OutputPanelWidth", (double)FromBarredString_Double(Type_1_GetVirtualRegistry<string>("OutputPanelSettings"), 3));
+            Type_1_UpdateVirtualRegistry<bool>("ideOps.OutputPanelShowing", FromBarredString_Boolean(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 0));
+            Type_1_UpdateVirtualRegistry<double>("ideOps.OutputPanelHeight", (double)FromBarredString_Double(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 2));
+            Type_1_UpdateVirtualRegistry<double>("ideOps.OutputPanelWidth", (double)FromBarredString_Double(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 3));
             
             HandleOutputPanelChange(position);
 
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("InterfaceLanguageName", FactorySettings, "English");
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("InterfaceLanguageID", FactorySettings, 0);
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("InterpreterLanguageName", FactorySettings, "English");
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("InterpreterLanguageID", FactorySettings, 0);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.InterfaceLanguageName", FactorySettings, "English");
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("ideOps.InterfaceLanguageID", FactorySettings, 0);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("mainOps.InterpreterLanguageName", FactorySettings, "English");
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("mainOps.InterpreterLanguageID", FactorySettings, 0);
 
-            if (Type_1_GetVirtualRegistry<string>("InterfaceLanguageName") != null)
+            if (Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") != null)
             {
-                HandleInterfaceLanguageChange(Type_1_GetVirtualRegistry<string>("InterfaceLanguageName"));
+                HandleInterfaceLanguageChange(Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName"));
             }
 
             // Engine selection:
@@ -171,29 +171,29 @@ namespace PelotonIDE.Presentation
             if (!AfterTranslation)
             {
 
-                IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<bool>("VariableLength", FactorySettings, false);
-                IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("Quietude", FactorySettings, 2);
+                IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<bool>("mainOps.VariableLength", FactorySettings, false);
+                IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("pOps.Quietude", FactorySettings, 2);
 
-                Type_2_UpdatePerTabSettings("Language", true, Type_1_GetVirtualRegistry<long>("InterpreterLanguageID"));
-                Type_2_UpdatePerTabSettings("VariableLength", Type_1_GetVirtualRegistry<bool>("VariableLength"), Type_1_GetVirtualRegistry<bool>("VariableLength"));
-                Type_2_UpdatePerTabSettings("Quietude", true, Type_1_GetVirtualRegistry<long>("Quietude"));
-                Type_2_UpdatePerTabSettings("Timeout", true, Type_1_GetVirtualRegistry<long>("Timeout"));
-                Type_2_UpdatePerTabSettings("Rendering", true, Type_1_GetVirtualRegistry<string>("Rendering"));
+                Type_2_UpdatePerTabSettings("Language", true, Type_1_GetVirtualRegistry<long>("mainOps.InterpreterLanguageID"));
+                Type_2_UpdatePerTabSettings("mainOps.VariableLength", Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"), Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"));
+                Type_2_UpdatePerTabSettings("pOps.Quietude", true, Type_1_GetVirtualRegistry<long>("pOps.Quietude"));
+                Type_2_UpdatePerTabSettings("ideOps.Timeout", true, Type_1_GetVirtualRegistry<long>("ideOps.Timeout"));
+                Type_2_UpdatePerTabSettings("outputOps.Renderers", true, Type_1_GetVirtualRegistry<string>("outputOps.Renderers"));
             }
 
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             navigationViewItem.TabSettingsDict ??= ClonePerTabSettings(PerTabInterpreterParameters);
 
-            UpdateTabDocumentNameIfOnlyOneAndFirst(tabControl, Type_1_GetVirtualRegistry<string>("InterfaceLanguageName"));
+            UpdateTabDocumentNameIfOnlyOneAndFirst(tabControl, Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName"));
 
             if (!AfterTranslation)
             {
                 // So what to we do 
-                //Type_3_UpdateInFocusTabSettings("Language", true, Type_1_GetVirtualRegistry<long>("InterpreterLanguageID"));
+                //Type_3_UpdateInFocusTabSettings("Language", true, Type_1_GetVirtualRegistry<long>("mainOps.InterpreterLanguageID"));
                 // Do we also set the VariableLength of the inFocusTab?
-                //bool VariableLength = GetFactorySettingsWithLocalSettingsOverrideOrDefault<bool>("VariableLength", FactorySettings, LocalSettings, false);
-                IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo("VariableLength", FactorySettings, false);
-                Type_3_UpdateInFocusTabSettings("VariableLength", Type_1_GetVirtualRegistry<bool>("VariableLength"), Type_1_GetVirtualRegistry<bool>("VariableLength"));
+                //bool VariableLength = GetFactorySettingsWithLocalSettingsOverrideOrDefault<bool>("mainOps.VariableLength", FactorySettings, LocalSettings, false);
+                IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo("mainOps.VariableLength", FactorySettings, false);
+                Type_3_UpdateInFocusTabSettings("mainOps.VariableLength", Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"), Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"));
                 UpdateStatusBarFromInFocusTab();
                 DeserializeTabsFromVirtualRegistry();
             }
@@ -203,11 +203,11 @@ namespace PelotonIDE.Presentation
 
             if (!AfterTranslation)
             {
-                UpdateMenuRunningModeInMenu(PerTabInterpreterParameters["Quietude"]);
+                UpdateMenuRunningModeInMenu(PerTabInterpreterParameters["pOps.Quietude"]);
             }
             AfterTranslation = false;
 
-            SetVariableLengthModeInMenu(mnuVariableLength, Type_1_GetVirtualRegistry<bool>("VariableLength"));
+            SetVariableLengthModeInMenu(mnuVariableLength, Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"));
 
             UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
 
@@ -247,54 +247,54 @@ namespace PelotonIDE.Presentation
 
             void SetEngine()
             {
-                if (LocalSettings.Values.TryGetValue("Engine", out object? value))
+                if (LocalSettings.Values.TryGetValue("ideOps.Engine", out object? value))
                 {
                     Engine = (long)value;
                 }
                 else
                 {
-                    Engine = (long)FactorySettings["Engine"];
+                    Engine = (long)FactorySettings["ideOps.Engine"];
                 }
-                Type_1_UpdateVirtualRegistry("Engine", Engine);
+                Type_1_UpdateVirtualRegistry("ideOps.Engine", Engine);
             }
             void SetScripts()
             {
-                if (LocalSettings.Values.TryGetValue("Scripts", out object? value))
+                if (LocalSettings.Values.TryGetValue("ideOps.ScriptsFolder", out object? value))
                 {
                     Scripts = value.ToString();
                 }
                 else
                 {
-                    Scripts = FactorySettings["Scripts"].ToString();
+                    Scripts = FactorySettings["ideOps.ScriptsFolder"].ToString();
                 }
                 Scripts ??= @"C:\peloton\code";
-                Type_1_UpdateVirtualRegistry("Scripts", Scripts);
+                Type_1_UpdateVirtualRegistry("ideOps.ScriptsFolder", Scripts);
             }
             void SetInterpreterOld()
             {
-                if (LocalSettings.Values.TryGetValue("Engine.2", out object? value))
+                if (LocalSettings.Values.TryGetValue("ideOps.Engine.2", out object? value))
                 {
                     InterpreterP2 = value.ToString();
                 }
                 else
                 {
-                    InterpreterP2 = FactorySettings["Engine.2"].ToString();
+                    InterpreterP2 = FactorySettings["ideOps.Engine.2"].ToString();
                 }
                 InterpreterP2 ??= @"c:\protium\bin\pdb.exe";
-                Type_1_UpdateVirtualRegistry("Engine.2", InterpreterP2);
+                Type_1_UpdateVirtualRegistry("ideOps.Engine.2", InterpreterP2);
             }
             void SetInterpreterNew()
             {
-                if (LocalSettings.Values.TryGetValue("Engine.3", out object? value))
+                if (LocalSettings.Values.TryGetValue("ideOps.Engine.3", out object? value))
                 {
                     InterpreterP3 = value.ToString();
                 }
                 else
                 {
-                    InterpreterP3 = FactorySettings["Engine.3"].ToString();
+                    InterpreterP3 = FactorySettings["ideOps.Engine.3"].ToString();
                 }
                 InterpreterP3 ??= @"c:\peloton\bin\p3.exe";
-                Type_1_UpdateVirtualRegistry("Engine.3", InterpreterP3);
+                Type_1_UpdateVirtualRegistry("ideOps.Engine.3", InterpreterP3);
             }
         }
 
@@ -320,7 +320,7 @@ namespace PelotonIDE.Presentation
 
         private void UpdateRenderingInMenu()
         {
-            List<string> renderers = Type_1_GetVirtualRegistry<string>("Rendering").Split(',').Select(x => x.Trim()).ToList();
+            List<string> renderers = Type_1_GetVirtualRegistry<string>("outputOps.Renderers").Split(',').Select(x => x.Trim()).ToList();
 
             mnuRendering.Items.ForEach(item =>
             {
@@ -368,33 +368,33 @@ namespace PelotonIDE.Presentation
 
         private void UpdateStatusBarFromVirtualRegistry()
         {
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
-            bool isVariableLength = Type_1_GetVirtualRegistry<bool>("VariableLength");
+            bool isVariableLength = Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength");
             fixedVariableStatus.Text = (isVariableLength ? "#" : "@") + LanguageSettings[interfaceLanguageName]["GLOBAL"][isVariableLength ? "variableLength" : "fixedLength"];
 
             string[] quietudes = ["mnuQuiet", "mnuVerbose", "mnuVerbosePauseOnExit"];
-            long quietude = Type_1_GetVirtualRegistry<long>("Quietude");
+            long quietude = Type_1_GetVirtualRegistry<long>("pOps.Quietude");
             quietudeStatus.Text = LanguageSettings[interfaceLanguageName]["frmMain"][quietudes.ElementAt((int)quietude)];
 
             string[] timeouts = ["mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite"];
-            long timeout = Type_1_GetVirtualRegistry<long>("Timeout");
+            long timeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");
             timeoutStatus.Text = $"{LanguageSettings[interfaceLanguageName]["frmMain"]["mnuTimeout"]}: {LanguageSettings[interfaceLanguageName]["frmMain"][timeouts.ElementAt((int)timeout)]}";
         }
 
         private void UpdateStatusBarFromInFocusTab()
         {
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
-            bool isVariableLength = Type_3_GetInFocusTab<bool>("VariableLength");
+            bool isVariableLength = Type_3_GetInFocusTab<bool>("mainOps.VariableLength");
             fixedVariableStatus.Text = (isVariableLength ? "#" : "@") + LanguageSettings[interfaceLanguageName]["GLOBAL"][isVariableLength ? "variableLength" : "fixedLength"];
 
             string[] quietudes = ["mnuQuiet", "mnuVerbose", "mnuVerbosePauseOnExit"];
-            long quietude = Type_3_GetInFocusTab<long>("Quietude");
+            long quietude = Type_3_GetInFocusTab<long>("pOps.Quietude");
             quietudeStatus.Text = LanguageSettings[interfaceLanguageName]["frmMain"][quietudes.ElementAt((int)quietude)];
 
             string[] timeouts = ["mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite"];
-            long timeout = Type_3_GetInFocusTab<long>("Timeout");
+            long timeout = Type_3_GetInFocusTab<long>("ideOps.Timeout");
             timeoutStatus.Text = $"{LanguageSettings[interfaceLanguageName]["frmMain"]["mnuTimeout"]}: {LanguageSettings[interfaceLanguageName]["frmMain"][timeouts.ElementAt((int)timeout)]}";
         }
 
@@ -410,7 +410,7 @@ namespace PelotonIDE.Presentation
 
         private void UpdateEngineSelectionFromFactorySettingsInMenu()
         {
-            if (LocalSettings.Values["Engine"].ToString() == "Engine.2")
+            if (LocalSettings.Values["ideOps.Engine"].ToString() == "ideOps.Engine.2")
             {
                 MenuItemHighlightController(mnuNewEngine, false);
                 MenuItemHighlightController(mnuOldEngine, true);
@@ -460,12 +460,12 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(false);
             List<string> list =
             [
-                Type_1_GetVirtualRegistry<bool>("OutputPanelShowing") ? "True" : "False",
-                Type_1_GetVirtualRegistry<string>("OutputPanelPosition"),
-                Type_1_GetVirtualRegistry<double>("OutputPanelHeight").ToString(),
-                Type_1_GetVirtualRegistry<double>("OutputPanelWidth").ToString(),
+                Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing") ? "True" : "False",
+                Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition"),
+                Type_1_GetVirtualRegistry<double>("ideOps.OutputPanelHeight").ToString(),
+                Type_1_GetVirtualRegistry<double>("ideOps.OutputPanelWidth").ToString(),
             ];
-            Type_1_UpdateVirtualRegistry<string>("OutputPanelSettings", list.JoinBy("|"));
+            Type_1_UpdateVirtualRegistry<string>("ideOps.OutputPanelSettings", list.JoinBy("|"));
         }
     }
 }

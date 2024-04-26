@@ -38,13 +38,13 @@ namespace PelotonIDE.Presentation
                     { "TabLanguageID",tabLangId },
                     { "TabLanguageName", tabLangName.First() },
                     { "TabVariableLength", text.Contains("<# ") && text.Contains("</#>") },
-                    { "InterpreterLanguage",  Type_1_GetVirtualRegistry<long>("InterpreterLanguageID")},
-                    { "InterfaceLanguageID", Type_1_GetVirtualRegistry<long>("InterfaceLanguageID")},
-                    { "InterfaceLanguageName",Type_1_GetVirtualRegistry<string>("InterfaceLanguageName") },
+                    { "InterpreterLanguage",  Type_1_GetVirtualRegistry<long>("mainOps.InterpreterLanguageID")},
+                    { "ideOps.InterfaceLanguageID", Type_1_GetVirtualRegistry<long>("ideOps.InterfaceLanguageID")},
+                    { "ideOps.InterfaceLanguageName",Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") },
                     { "Languages", LanguageSettings! },
                     { "SourceSpec", navigationViewItem.SavedFilePath == null ? navigationViewItem.Content : navigationViewItem.SavedFilePath.Path},
                     { "SourcePath", $"{savedFilePath ?? mostRecentPickedFilePath ?? Scripts}" },
-                    { "Quietude", Type_3_GetInFocusTab<long>("Quietude") },
+                    { "pOps.Quietude", Type_3_GetInFocusTab<long>("pOps.Quietude") },
                     { "Plexes", Plexes! }
                 }
             });
@@ -53,10 +53,10 @@ namespace PelotonIDE.Presentation
 
         private void ToggleOutputButton_Click(object sender, RoutedEventArgs e)
         {
-            bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("OutputPanelShowing");
+            bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing");
             outputPanel.Visibility = outputPanelShowing ? Visibility.Collapsed : Visibility.Visible;
             outputPanelShowing = !outputPanelShowing;
-            Type_1_UpdateVirtualRegistry<bool>("OutputPanelShowing", outputPanelShowing);
+            Type_1_UpdateVirtualRegistry<bool>("ideOps.OutputPanelShowing", outputPanelShowing);
         }
 
         private void RunCodeButton_Click(object sender, RoutedEventArgs e)

@@ -29,7 +29,7 @@ namespace PelotonIDE.Presentation
 
             DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread();
 
-            if (Type_3_GetInFocusTab<long>("Quietude") == 0 && Type_3_GetInFocusTab<long>("Timeout") > 0)
+            if (Type_3_GetInFocusTab<long>("pOps.Quietude") == 0 && Type_3_GetInFocusTab<long>("ideOps.Timeout") > 0)
             {
                 // Yes, No, Cancel
 
@@ -37,7 +37,7 @@ namespace PelotonIDE.Presentation
                 //sure.ContinueWith(t => t);
                 //if (sure.Result == 2) return;
                 //if (sure.Result == 1)
-                //    Type_3_UpdateInFocusTabSettings<long>("Quietude", true, 1);
+                //    Type_3_UpdateInFocusTabSettings<long>("pOps.Quietude", true, 1);
                 // Task<ContentDialogResult> task = AreYouSureYouWantToRunALongTimeSilently();
                 // task.Wait();
                 if (!await AreYouSureYouWantToRunALongTimeSilently())
@@ -50,8 +50,8 @@ namespace PelotonIDE.Presentation
             // load tab settings
 
 
-            long quietude = Type_3_GetInFocusTab<long>("Quietude");
-            long interpreter = Type_3_GetInFocusTab<long>("Engine");
+            long quietude = Type_3_GetInFocusTab<long>("pOps.Quietude");
+            long interpreter = Type_3_GetInFocusTab<long>("ideOps.Engine");
 
             string engineArguments = BuildTabCommandLine();
 
@@ -76,9 +76,9 @@ namespace PelotonIDE.Presentation
 
             Telemetry.Transmit("stdOut=", stdOut, "stdErr=", stdErr);
 
-            IEnumerable<long> rendering = Type_3_GetInFocusTab<string>("Rendering").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(e => long.Parse(e)); // strip focuser
+            IEnumerable<long> rendering = Type_3_GetInFocusTab<string>("outputOps.Renderers").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(e => long.Parse(e)); // strip focuser
 
-            IEnumerable<string> list = (from item in RenderingConstants["Rendering"]
+            IEnumerable<string> list = (from item in RenderingConstants["outputOps.Renderers"]
                                         where rendering.Contains((long)item.Value)
                                         select item.Key);
 
@@ -290,7 +290,7 @@ namespace PelotonIDE.Presentation
         public (string StdOut, string StdErr) RunProtium(string args, string buff, long quietude)
         {
             Telemetry.SetEnabled(false);
-            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("Engine")}";
+            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
             string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
             string temp = System.IO.Path.GetTempFileName();
             File.WriteAllText(temp, buff, Encoding.Unicode);
@@ -320,7 +320,7 @@ namespace PelotonIDE.Presentation
         {
             Telemetry.SetEnabled(false);
 
-            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("Engine")}";
+            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
             string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
 
             Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff, "Quietude=", quietude);
@@ -368,7 +368,7 @@ namespace PelotonIDE.Presentation
 
             Telemetry.Transmit("temp=", temp);
 
-            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("Engine")}";
+            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
             string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
 
             Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff, "Quietude=", quietude);
@@ -436,7 +436,7 @@ namespace PelotonIDE.Presentation
 
         private int GetTimeoutInMilliseconds()
         {
-            long timeout = Type_1_GetVirtualRegistry<long>("Timeout");
+            long timeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");
             int timeoutInMilliseconds = -1;
             switch (timeout)
             {

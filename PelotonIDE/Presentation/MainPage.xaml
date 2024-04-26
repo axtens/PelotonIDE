@@ -175,7 +175,7 @@
             </MenuBarItem>
             <MenuBarItem Title="Search" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuSearch"/>
             <MenuBarItem Title="Format" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuFormat">
-                <MenuFlyoutSubItem x:Name="mnuFontSize" Text="FontSize">
+                <MenuFlyoutSubItem x:Name="mnuFontSize" Text="ideOps.FontSize">
                     <MenuFlyoutItem Text="12pt" x:Name="mnuPoint12" Click="FormatMenu_FontSize_Click" Tag="12"/>
                     <MenuFlyoutItem Text="14pt" x:Name="mnuPoint14" Click="FormatMenu_FontSize_Click" Tag="14"/>
                     <MenuFlyoutItem Text="16pt" x:Name="mnuPoint16" Click="FormatMenu_FontSize_Click" Tag="16"/>
@@ -205,7 +205,7 @@
                     <MenuFlyoutItem Text="Verbose" x:Name="mnuVerbose" Click="InterpretMenu_Quietude_Click" Tag="1"/>
                     <MenuFlyoutItem Text="Verbose, with pause" x:Name="mnuVerbosePauseOnExit" Click="InterpretMenu_Quietude_Click" Tag="2"/>
                 </MenuFlyoutSubItem>
-                <MenuFlyoutSubItem x:Name="mnuTimeout" Text="Timeout">
+                <MenuFlyoutSubItem x:Name="mnuTimeout" Text="ideOps.Timeout">
                     <MenuFlyoutItem x:Name="mnu20Seconds" Text="20 seconds" Click="InterpretMenu_Timeout_Click" Tag="20"/>
                     <MenuFlyoutItem x:Name="mnu100Seconds" Text="100 seconds" Click="InterpretMenu_Timeout_Click" Tag="100"/>
                     <MenuFlyoutItem x:Name="mnu200Seconds" Text="200 seconds" Click="InterpretMenu_Timeout_Click" Tag="200"/>
@@ -239,7 +239,7 @@
                         <MenuFlyoutItem x:Name="tptPlugin" Text="Plugin Transput" Click="InterpretMenu_Transput_Click" Tag="41"/>
                     </MenuFlyoutSubItem>
                 </MenuFlyoutSubItem>
-                <MenuFlyoutSubItem x:Name="mnuRendering" Text="Rendering">
+                <MenuFlyoutSubItem x:Name="mnuRendering" Text="outputOps.Renderers">
                     <MenuFlyoutItem x:Name="mnuOutput" Text="Output" Click="InterpretMenu_Rendering_Click" Tag="3"/>
                     <MenuFlyoutItem x:Name="mnuError" Text="Error" Click="InterpretMenu_Rendering_Click" Tag="0"/>
                     <MenuFlyoutItem x:Name="mnuHTML" Text="HTML" Click="InterpretMenu_Rendering_Click" Tag="21"/>
@@ -620,7 +620,7 @@
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_Rendering_RightTapped">
-                    <TextBlock Name="txtRendering" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="Rendering"/>
+                    <TextBlock Name="txtRendering" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="outputOps.Renderers"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">

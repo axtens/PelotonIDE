@@ -20,7 +20,7 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(true);
             Telemetry.Transmit("e.NewSize.Height=", e.NewSize.Height, "e.NewSize.Width=", e.NewSize.Width, "e.PreviousSize.Height=", e.PreviousSize.Height, "e.PreviousSize.Width=", e.PreviousSize.Width);
 
-            string pos = Type_1_GetVirtualRegistry<string>("OutputPanelPosition") ?? "Bottom";
+            string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";
             OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), pos);
             switch (outputPanelPosition)
             {
@@ -57,7 +57,7 @@ namespace PelotonIDE.Presentation
             Thumb me = (Thumb)sender;
 
 
-            OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("OutputPanelPosition"));
+            OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition"));
             double yadjust = outputPanel.Height - e.VerticalChange;
             double xRightAdjust = outputPanel.Width - e.HorizontalChange;
             double xLeftAdjust = outputPanel.Width + e.HorizontalChange;
@@ -100,15 +100,15 @@ namespace PelotonIDE.Presentation
 
             Telemetry.Transmit(me.Name, "e.HorizontalChange=", e.HorizontalChange, "e.VerticalChange=", e.VerticalChange, "outputPanel.Width=", outputPanel.Width, "outputPanel.Height=", outputPanel.Height);
 
-            OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("OutputPanelPosition"));
+            OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition"));
 
             if (outputPanelPosition == OutputPanelPosition.Bottom)
             {
-                Type_1_UpdateVirtualRegistry<double>("OutputPanelHeight", outputPanel.Height);
+                Type_1_UpdateVirtualRegistry<double>("ideOps.OutputPanelHeight", outputPanel.Height);
             }
             else
             {
-                Type_1_UpdateVirtualRegistry<double>("OutputPanelWidth", outputPanel.Width);
+                Type_1_UpdateVirtualRegistry<double>("ideOps.OutputPanelWidth", outputPanel.Width);
             }
 
             this.ProtectedCursor = InputCursor.CreateFromCoreCursor(new CoreCursor(CoreCursorType.Arrow, 0));
@@ -119,7 +119,7 @@ namespace PelotonIDE.Presentation
         {
             Telemetry.SetEnabled(false);
 
-            OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("OutputPanelPosition"));
+            OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition"));
 
             if (outputPanelPosition == OutputPanelPosition.Bottom)
             {

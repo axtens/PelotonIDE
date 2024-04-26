@@ -105,7 +105,7 @@ namespace PelotonIDE.Presentation
 
         private async void InterfaceLanguageSelectionBuilder(MenuFlyoutSubItem menuBarItem, RoutedEventHandler routedEventHandler)
         {
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
             if (interfaceLanguageName == null || !LanguageSettings.ContainsKey(interfaceLanguageName))
             {
                 return;
@@ -128,8 +128,8 @@ namespace PelotonIDE.Presentation
                     {
                         Text = globals[$"{100 + i + 1}"],
                         Name = names.First(),
-                        Foreground = names.First() == Type_1_GetVirtualRegistry<string>("InterfaceLanguageName") ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Black),
-                        Background = names.First() == Type_1_GetVirtualRegistry<string>("InterfaceLanguageName") ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White),
+                        Foreground = names.First() == Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Black),
+                        Background = names.First() == Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White),
                     };
                     menuFlyoutItem.Click += routedEventHandler; //  Internationalization_Click;
                     menuBarItem.Items.Add(menuFlyoutItem);
@@ -142,7 +142,7 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(false);
 
             LanguageSettings ??= await GetLanguageConfiguration();
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
             if (interfaceLanguageName == null || !LanguageSettings.ContainsKey(interfaceLanguageName))
             {
@@ -178,8 +178,8 @@ namespace PelotonIDE.Presentation
                     {
                         Text = globals[$"{100 + i + 1}"],
                         Name = names.First(),
-                        Foreground = names.First() == Type_1_GetVirtualRegistry<string>("InterpreterLanguageName") ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Black),
-                        Background = names.First() == Type_1_GetVirtualRegistry<string>("InterpreterLanguageName") ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White),
+                        Foreground = names.First() == Type_1_GetVirtualRegistry<string>("mainOps.InterpreterLanguageName") ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Black),
+                        Background = names.First() == Type_1_GetVirtualRegistry<string>("mainOps.InterpreterLanguageName") ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White),
                     };
                     menuFlyoutItem.Click += routedEventHandler;
                     sub.Items.Add(menuFlyoutItem);
@@ -227,7 +227,7 @@ namespace PelotonIDE.Presentation
             {
                 MenuItemHighlightController((MenuFlyoutItem)item!, false);
             }
-            long currTimeout = Type_1_GetVirtualRegistry<long>("Timeout");
+            long currTimeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");
 
             switch (currTimeout)
             {
@@ -293,12 +293,12 @@ namespace PelotonIDE.Presentation
             if (AnInFocusTabExists())
             {
                 langValue = Type_3_GetInFocusTab<long>("Language");
-                langName = LanguageSettings[Type_1_GetVirtualRegistry<string>("InterfaceLanguageName")]["GLOBAL"][$"{101 + langValue}"];
+                langName = LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")]["GLOBAL"][$"{101 + langValue}"];
             }
             else
             {
                 langValue = Type_2_GetPerTabSettings<long>("Language");
-                langName = LanguageSettings[Type_1_GetVirtualRegistry<string>("InterfaceLanguageName")]["GLOBAL"][$"{101 + langValue}"];
+                langName = LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")]["GLOBAL"][$"{101 + langValue}"];
             }
             Telemetry.Transmit("langValue=", langValue, "langName=", langName);
             return langName;
@@ -329,13 +329,13 @@ namespace PelotonIDE.Presentation
             Regex ques = new(Regex.Escape("?"));
             string info = @"{\info {\*\ilang ?} {\*\ilength ?} {\*\itimeout ?} {\*\iquietude ?} {\*\itransput ?} {\*\irendering ?} {\*\iinterpreter ?} {\*\iselected ?} }"; // {\*\ipadout ?}
             info = ques.Replace(info, $"{inFocusTab["Language"]["Value"]}", ONCE);
-            info = ques.Replace(info, (bool)inFocusTab["VariableLength"]["Value"] ? "1" : "0", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["Timeout"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["Quietude"]["Value"]}", ONCE);
+            info = ques.Replace(info, (bool)inFocusTab["mainOps.VariableLength"]["Value"] ? "1" : "0", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["ideOps.Timeout"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["pOps.Quietude"]["Value"]}", ONCE);
             info = ques.Replace(info, $"{(long)inFocusTab["Transput"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(string)inFocusTab["Rendering"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["Engine"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["SelectedRenderer"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(string)inFocusTab["outputOps.Renderers"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["ideOps.Engine"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["outputOps.SelectedRenderer"]["Value"]}", ONCE);
 
             Telemetry.Transmit("info=", info);
 
@@ -400,21 +400,21 @@ namespace PelotonIDE.Presentation
                         string flag = items[1].Replace("}", "");
                         if (flag == "0")
                         {
-                            Type_3_UpdateInFocusTabSettings("VariableLength", false, false);
+                            Type_3_UpdateInFocusTabSettings("mainOps.VariableLength", false, false);
                         }
                         else
                         {
-                            Type_3_UpdateInFocusTabSettings("VariableLength", true, true);
+                            Type_3_UpdateInFocusTabSettings("mainOps.VariableLength", true, true);
                         }
                     }
                 }
 
-                MarkupToInFocusSettingLong(matches, @"\itimeout", "Timeout");
-                MarkupToInFocusSettingLong(matches, @"\iquietude", "Quietude");
+                MarkupToInFocusSettingLong(matches, @"\itimeout", "ideOps.Timeout");
+                MarkupToInFocusSettingLong(matches, @"\iquietude", "pOps.Quietude");
                 MarkupToInFocusSettingLong(matches, @"\itransput", "Transput");
-                MarkupToInFocusSettingString(matches, @"\irendering", "Rendering");
-                MarkupToInFocusSettingLong(matches, @"\iselected", "SelectedRenderer");
-                MarkupToInFocusSettingLong(matches, @"\iinterpreter", "Engine");
+                MarkupToInFocusSettingString(matches, @"\irendering", "outputOps.Renderers");
+                MarkupToInFocusSettingLong(matches, @"\iselected", "outputOps.SelectedRenderer");
+                MarkupToInFocusSettingLong(matches, @"\iinterpreter", "ideOps.Engine");
 
             }
             else
@@ -627,7 +627,7 @@ namespace PelotonIDE.Presentation
 
             if (!AnInFocusTabExists()) return;
 
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
             Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
 
             MenuFlyout mf = new();
@@ -641,7 +641,7 @@ namespace PelotonIDE.Presentation
 
             //object prevContent = me.Content;
 
-            string? inFocusTabRenderers = Type_3_GetInFocusTab<string>("Rendering");
+            string? inFocusTabRenderers = Type_3_GetInFocusTab<string>("outputOps.Renderers");
 
             foreach (TabViewItem tvi in outputPanelTabView.TabItems)
             {
@@ -672,16 +672,16 @@ namespace PelotonIDE.Presentation
             DeselectAndDisableAllOutputPanelTabs();
             EnableAllOutputPanelTabsMatchingRendering();
 
-            string? rendering = Type_3_GetInFocusTab<string>("Rendering");
+            string? rendering = Type_3_GetInFocusTab<string>("outputOps.Renderers");
 
             if (rendering != null && rendering.Split(",", StringSplitOptions.RemoveEmptyEntries).Any())
             {
-                var selectedRenderer = Type_3_GetInFocusTab<long>("SelectedRenderer");
+                var selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.SelectedRenderer");
                 (from TabViewItem tvi in outputPanelTabView.TabItems where long.Parse((string)tvi.Tag) == selectedRenderer select tvi).ForEach(tvi =>
                 {
                     tvi.IsSelected = true;
                     Telemetry.Transmit(tvi.Name, tvi.Tag, "frontmost");
-                    Type_3_UpdateInFocusTabSettings<long>("SelectedRenderer", true, selectedRenderer);
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.SelectedRenderer", true, selectedRenderer);
                 });
             }
         }
@@ -694,11 +694,11 @@ namespace PelotonIDE.Presentation
             //string meName = me.Name.Replace("tab", "");
             string key = (string)me.Tag;
 
-            string render = ((long)RenderingConstants["Rendering"][key]).ToString();
+            string render = ((long)RenderingConstants["outputOps.Renderers"][key]).ToString();
 
             if (AnInFocusTabExists())
             {
-                List<string> keys = [.. Type_3_GetInFocusTab<string>("Rendering").Split(',', StringSplitOptions.RemoveEmptyEntries)];
+                List<string> keys = [.. Type_3_GetInFocusTab<string>("outputOps.Renderers").Split(',', StringSplitOptions.RemoveEmptyEntries)];
                 if (keys.Contains(render))
                 {
                     keys.Remove(render);
@@ -707,11 +707,11 @@ namespace PelotonIDE.Presentation
                 {
                     keys.Add(render);
                 }
-                Type_3_UpdateInFocusTabSettings<string>("Rendering", true, string.Join(",", keys));
+                Type_3_UpdateInFocusTabSettings<string>("outputOps.Renderers", true, string.Join(",", keys));
 
-                if (Type_3_GetInFocusTab<string>("Rendering").Trim().Length == 0)
+                if (Type_3_GetInFocusTab<string>("outputOps.Renderers").Trim().Length == 0)
                 {
-                    Type_3_UpdateInFocusTabSettings<long>("SelectedRenderer", true, -1);
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.SelectedRenderer", true, -1);
                 }
 
                 DeselectAndDisableAllOutputPanelTabs();
@@ -726,7 +726,7 @@ namespace PelotonIDE.Presentation
         {
             if (!AnInFocusTabExists()) return;
             if (InFocusTab().TabSettingsDict == null) return;
-            foreach (string key2 in Type_3_GetInFocusTab<string>("Rendering").Split(",", StringSplitOptions.RemoveEmptyEntries))
+            foreach (string key2 in Type_3_GetInFocusTab<string>("outputOps.Renderers").Split(",", StringSplitOptions.RemoveEmptyEntries))
             {
                 foreach (object? item in outputPanelTabView.TabItems)
                 {
@@ -796,7 +796,7 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(true);
             TabView me = (TabView)sender;
             Telemetry.Transmit(me.Name, "e.PreviousSize=", e.PreviousSize, "e.NewSize=", e.NewSize);
-            string pos = Type_1_GetVirtualRegistry<string>("OutputPanelPosition") ?? "Bottom";
+            string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";
             Type_1_UpdateVirtualRegistry<string>("OutputPanelTabView_Settings", string.Join("|", [pos, e.NewSize.Height, e.NewSize.Width]));
             //vHW.Text = $"OutputPanelTabView: {e.NewSize.Height}/{e.NewSize.Width}";
         }
@@ -808,7 +808,7 @@ namespace PelotonIDE.Presentation
 
             //pHW.Text = $"Page: {e.NewSize.Height}/{e.NewSize.Width}";
 
-            if (Type_1_GetVirtualRegistry<string>("OutputPanelPosition") == "Bottom")
+            if (Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") == "Bottom")
             {
                 if (!double.IsNaN(outputPanelTabView.Height))
                 {
@@ -856,7 +856,7 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(false);
             NavigationView me = (NavigationView)sender;
             Telemetry.Transmit(me.Name, "e.PreviousSize=", args.PreviousSize, "e.NewSize=", args.NewSize, "args.OriginalSource=", args.OriginalSource);
-            string pos = Type_1_GetVirtualRegistry<string>("OutputPanelPosition") ?? "Bottom";
+            string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";
             Type_1_UpdateVirtualRegistry<string>("TabControl_Settings", string.Join("|", [pos, args.NewSize.Height, args.NewSize.Width]));
             //tHW.Text = $"Editing: {args.NewSize.Height}/{args.NewSize.Width}";
 
@@ -875,9 +875,9 @@ namespace PelotonIDE.Presentation
 
             MenuFlyout mf = new();
 
-            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
 
-            long inFocusInterpreter = AnInFocusTabExists() ? Type_3_GetInFocusTab<long>("Engine") : Type_1_GetVirtualRegistry<long>("Engine");
+            long inFocusInterpreter = AnInFocusTabExists() ? Type_3_GetInFocusTab<long>("ideOps.Engine") : Type_1_GetVirtualRegistry<long>("ideOps.Engine");
 
             Telemetry.Transmit("inFocusInterpreter=", inFocusInterpreter);
 
@@ -908,7 +908,7 @@ namespace PelotonIDE.Presentation
 
             if (AnInFocusTabExists())
             {
-                Type_3_UpdateInFocusTabSettings<long>("Engine", true, (long)me.Tag);
+                Type_3_UpdateInFocusTabSettings<long>("ideOps.Engine", true, (long)me.Tag);
             }
             UpdateInterpreterInStatusBar();
         }
@@ -940,7 +940,7 @@ namespace PelotonIDE.Presentation
         {
             Telemetry.SetEnabled(true);
             TabViewItem me = (TabViewItem)sender;
-            long selectedRenderer = Type_3_GetInFocusTab<long>("SelectedRenderer");
+            long selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.SelectedRenderer");
             Telemetry.Transmit(selectedRenderer);
             //Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
             // AssertSelectedOutputTab();

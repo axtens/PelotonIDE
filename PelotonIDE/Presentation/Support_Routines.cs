@@ -106,9 +106,9 @@ namespace PelotonIDE.Presentation
             
             OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), changeTo);
 
-            double outputPanelHeight = Type_1_GetVirtualRegistry<double>("OutputPanelHeight");
-            double outputPanelWidth = Type_1_GetVirtualRegistry<double>("OutputPanelWidth");
-            bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("OutputPanelShowing");
+            double outputPanelHeight = Type_1_GetVirtualRegistry<double>("ideOps.OutputPanelHeight");
+            double outputPanelWidth = Type_1_GetVirtualRegistry<double>("ideOps.OutputPanelWidth");
+            bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing");
             
             string outputPanelTabViewSettings = Type_1_GetVirtualRegistry<string>("OutputPanelTabView_Settings");
             string tabControlSettings = Type_1_GetVirtualRegistry<string>("TabControl_Settings");
@@ -128,14 +128,14 @@ namespace PelotonIDE.Presentation
             {
                 case OutputPanelPosition.Left:
 
-                    Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", OutputPanelPosition.Left.ToString());
+                    Type_1_UpdateVirtualRegistry<string>("ideOps.OutputPanelPosition", OutputPanelPosition.Left.ToString());
                     RelativePanel.SetAlignLeftWithPanel(outputPanel, true);
                     RelativePanel.SetAlignRightWithPanel(outputPanel, false);
                     RelativePanel.SetBelow(outputPanel, butNew);
 
 
-                    outputPanel.Height = outputPanelHeight; // Type_1_GetVirtualRegistry<double?>("OutputPanelHeight") ?? 200.0;
-                    outputPanel.Width = outputPanelWidth; //  Type_1_GetVirtualRegistry<double?>("OutputPanelWidth") ?? 400.0;
+                    outputPanel.Height = outputPanelHeight; // Type_1_GetVirtualRegistry<double?>("ideOps.OutputPanelHeight") ?? 200.0;
+                    outputPanel.Width = outputPanelWidth; //  Type_1_GetVirtualRegistry<double?>("ideOps.OutputPanelWidth") ?? 400.0;
 
 
                     outputPanel.MinWidth = 175;
@@ -159,14 +159,14 @@ namespace PelotonIDE.Presentation
                     Canvas.SetLeft(outputThumb, outputPanel.Width - 1);
                     Canvas.SetTop(outputThumb, 0);
 
-                    Type_1_UpdateVirtualRegistry("OutputPanelWidth", outputPanel.Width);
+                    Type_1_UpdateVirtualRegistry("ideOps.OutputPanelWidth", outputPanel.Width);
 
                     outputDockingFlyout.Hide();
 
                     break;
                 case OutputPanelPosition.Bottom:
                     //outputPanelPosition = OutputPanelPosition.Bottom;
-                    Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", OutputPanelPosition.Bottom.ToString());
+                    Type_1_UpdateVirtualRegistry<string>("ideOps.OutputPanelPosition", OutputPanelPosition.Bottom.ToString());
                     RelativePanel.SetAlignLeftWithPanel(tabControl, true);
                     RelativePanel.SetAlignRightWithPanel(tabControl, true);
                     RelativePanel.SetRightOf(tabControl, null);
@@ -176,8 +176,8 @@ namespace PelotonIDE.Presentation
                     RelativePanel.SetAlignRightWithPanel(outputPanel, true);
                     RelativePanel.SetBelow(outputPanel, null);
 
-                    outputPanel.Height = outputPanelHeight; // Type_1_GetVirtualRegistry<double?>("OutputPanelHeight") ?? 200.0;
-                    outputPanel.Width = outputPanelWidth; // Type_1_GetVirtualRegistry<double?>("OutputPanelWidth") ?? 400.0;
+                    outputPanel.Height = outputPanelHeight; // Type_1_GetVirtualRegistry<double?>("ideOps.OutputPanelHeight") ?? 200.0;
+                    outputPanel.Width = outputPanelWidth; // Type_1_GetVirtualRegistry<double?>("ideOps.OutputPanelWidth") ?? 400.0;
 
                     outputPanel.MinHeight = 100;
                     outputPanel.ClearValue(WidthProperty);
@@ -194,18 +194,18 @@ namespace PelotonIDE.Presentation
                     Canvas.SetLeft(outputThumb, 0);
                     Canvas.SetTop(outputThumb, -4);
 
-                    Type_1_UpdateVirtualRegistry("OutputPanelHeight", outputPanel.Height);
+                    Type_1_UpdateVirtualRegistry("ideOps.OutputPanelHeight", outputPanel.Height);
 
                     outputDockingFlyout.Hide();
                     break;
                 case OutputPanelPosition.Right:
-                    Type_1_UpdateVirtualRegistry<string>("OutputPanelPosition", OutputPanelPosition.Right.ToString());
+                    Type_1_UpdateVirtualRegistry<string>("ideOps.OutputPanelPosition", OutputPanelPosition.Right.ToString());
                     RelativePanel.SetAlignLeftWithPanel(outputPanel, false);
                     RelativePanel.SetAlignRightWithPanel(outputPanel, true);
                     RelativePanel.SetBelow(outputPanel, butNew);
 
-                    outputPanel.Height = outputPanelHeight;// Type_1_GetVirtualRegistry<double?>("OutputPanelHeight") ?? 200.0;
-                    outputPanel.Width = outputPanelWidth; // Type_1_GetVirtualRegistry<double?>("OutputPanelWidth") ?? 400.0;
+                    outputPanel.Height = outputPanelHeight;// Type_1_GetVirtualRegistry<double?>("ideOps.OutputPanelHeight") ?? 200.0;
+                    outputPanel.Width = outputPanelWidth; // Type_1_GetVirtualRegistry<double?>("ideOps.OutputPanelWidth") ?? 400.0;
 
                     outputPanel.MinWidth = 175;
                     outputPanel.ClearValue(HeightProperty);
@@ -229,7 +229,7 @@ namespace PelotonIDE.Presentation
 
                     outputDockingFlyout.Hide();
 
-                    Type_1_UpdateVirtualRegistry("OutputPanelWidth", outputPanel.Width);
+                    Type_1_UpdateVirtualRegistry("ideOps.OutputPanelWidth", outputPanel.Width);
 
                     break;
             }
@@ -388,7 +388,7 @@ namespace PelotonIDE.Presentation
 
         private async Task<bool> ChangingSettingsAllowed(string prompt)
         {
-            string il = Type_1_GetVirtualRegistry<string>("InterfaceLanguageName");
+            string il = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
             Dictionary<string, string> global = LanguageSettings[il]["GLOBAL"];
 
             ContentDialog dialog = new()
@@ -482,8 +482,8 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(false);
 
             if (!AnInFocusTabExists()) return;
-            string? rendering = Type_3_GetInFocusTab<string>("Rendering");
-            long rend = Type_3_GetInFocusTab<long>("SelectedRenderer");
+            string? rendering = Type_3_GetInFocusTab<string>("outputOps.Renderers");
+            long rend = Type_3_GetInFocusTab<long>("outputOps.SelectedRenderer");
             if (rendering == null || rendering.Split(',',StringSplitOptions.RemoveEmptyEntries).Length == 0)
             {
                 return;
@@ -499,7 +499,7 @@ namespace PelotonIDE.Presentation
 
         private void UpdateInterpreterInStatusBar()
         {
-            long interp = AnInFocusTabExists() ? Type_3_GetInFocusTab<long>("Engine") : Type_1_GetVirtualRegistry<long>("Engine");
+            long interp = AnInFocusTabExists() ? Type_3_GetInFocusTab<long>("ideOps.Engine") : Type_1_GetVirtualRegistry<long>("ideOps.Engine");
             switch (interp)
             {
                 case 2:

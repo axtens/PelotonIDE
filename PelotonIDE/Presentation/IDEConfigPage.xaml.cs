@@ -41,7 +41,7 @@ namespace PelotonIDE.Presentation
             if (parameters.Source == "MainPage")
             {
                 interpreterTextBox.Text = parameters.KVPs["Interpreter"].ToString();
-                sourceTextBox.Text = parameters.KVPs["Scripts"].ToString();
+                sourceTextBox.Text = parameters.KVPs["ideOps.ScriptsFolder"].ToString();
                 LanguageConfigurationStructureSelection lcs = (LanguageConfigurationStructureSelection)parameters.KVPs["Language"];
                 cmdCancel.Content = lcs["frmMain"]["cmdCancel"];
                 cmdSaveMemory.Content = lcs["frmMain"]["cmdSaveMemory"];
@@ -94,7 +94,7 @@ namespace PelotonIDE.Presentation
                 KVPs = new()
                 {
                     { "Interpreter" , interpreterTextBox.Text },
-                    { "Scripts" ,  sourceTextBox.Text}
+                    { "ideOps.ScriptsFolder" ,  sourceTextBox.Text}
                 }
             };
             Frame.Navigate(typeof(MainPage), nd);
