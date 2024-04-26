@@ -13546,7 +13546,7 @@
             "tabHtml": "HTML",
             "tabLogo": "Logo",
             "tabRTF": "RTF",
-            "txtRendering": "outputOps.Renderers"
+            "txtRendering": "outputOps.ActiveRenderers"
         },
         "GLOBAL": {
             "101": "English",
@@ -41371,7 +41371,7 @@
             "tabHtml": "HTML",
             "tabLogo": "Logo",
             "tabRTF": "ukiran",
-            "txtRendering": "outputOps.Renderers"
+            "txtRendering": "outputOps.ActiveRenderers"
         },
         "GLOBAL": {
             "101": "Bahasa Inggeris - English",
@@ -61796,7 +61796,7 @@
             "tabHtml": "HTML",
             "tabLogo": "Logo",
             "tabRTF": "RTF",
-            "txtRendering": "outputOps.Renderers"
+            "txtRendering": "outputOps.ActiveRenderers"
         },
         "GLOBAL": {
             "101": "Anglais - English",

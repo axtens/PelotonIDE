@@ -185,7 +185,7 @@
     "Value": "",
     "Internal": false
   },
-  "Transput": {
+  "pOps.Transput": {
     "Defined": true,
     "Key": "T",
     "Value": 3,
@@ -233,15 +233,15 @@
     "Value": 0,
     "Internal": true
   },
-  "outputOps.Renderers": {
+  "outputOps.ActiveRenderers": {
     "Defined": true,
     "Key": "r",
     "Value": "0,3",
     "Internal": true
   },
-  "outputOps.SelectedRenderer": {
+  "outputOps.TappedRenderer": {
     "Defined": true,
-    "Key": "s",
+    "Key": "t",
     "Value": 3,
     "Internal": true
   },
@@ -249,6 +249,12 @@
     "Defined": true,
     "Key": "e",
     "Value": 3,
+    "Internal": true
+  },
+  "mainOps.Padded": {
+    "Defined": true,
+    "Key": "p",
+    "Value": false,
     "Internal": true
   }
 }

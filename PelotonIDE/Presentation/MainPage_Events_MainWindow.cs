@@ -67,7 +67,7 @@ namespace PelotonIDE.Presentation
                         //Content = "Tab " + (tabControl.MenuItems.Count + 1),
                         Tag = "Tab" + TabControlCounter, // (tabControl.MenuItems.Count + 1),
                         IsNewFile = true,
-                        TabSettingsDict = ClonePerTabSettings(PerTabInterpreterParameters),
+                        TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters),
                         Height = 30,
                     };
 
@@ -107,7 +107,7 @@ namespace PelotonIDE.Presentation
             LanguageSettings ??= await GetLanguageConfiguration();
             RenderingConstants ??= new Dictionary<string, Dictionary<string, object>>()
                     {
-                        { "outputOps.Renderers", new Dictionary<string, object>()
+                        { "outputOps.ActiveRenderers", new Dictionary<string, object>()
                         {
                             { "Output", 3L },
                             { "Error", 0L },
@@ -126,10 +126,11 @@ namespace PelotonIDE.Presentation
             FactorySettings ??= await GetFactorySettings();
 
             // #MainPage-LoadingVirtReg
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("outputOps.Renderers", FactorySettings, "0,3");
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("outputOps.SelectedRenderer", FactorySettings,-1);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("outputOps.AvailableRenderers", FactorySettings, "3,0,21,42,31");
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("outputOps.ActiveRenderers", FactorySettings, "3,0");
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("outputOps.TappedRenderer", FactorySettings,-1);
 
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("Transput", FactorySettings, 3);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("pOps.Transput", FactorySettings, 3);
 
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("ideOps.Timeout", FactorySettings, 1);
             UpdateTimeoutInMenu();
@@ -178,11 +179,11 @@ namespace PelotonIDE.Presentation
                 Type_2_UpdatePerTabSettings("mainOps.VariableLength", Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"), Type_1_GetVirtualRegistry<bool>("mainOps.VariableLength"));
                 Type_2_UpdatePerTabSettings("pOps.Quietude", true, Type_1_GetVirtualRegistry<long>("pOps.Quietude"));
                 Type_2_UpdatePerTabSettings("ideOps.Timeout", true, Type_1_GetVirtualRegistry<long>("ideOps.Timeout"));
-                Type_2_UpdatePerTabSettings("outputOps.Renderers", true, Type_1_GetVirtualRegistry<string>("outputOps.Renderers"));
+                Type_2_UpdatePerTabSettings("outputOps.ActiveRenderers", true, Type_1_GetVirtualRegistry<string>("outputOps.ActiveRenderers"));
             }
 
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-            navigationViewItem.TabSettingsDict ??= ClonePerTabSettings(PerTabInterpreterParameters);
+            navigationViewItem.TabSettingsDict ??= ShallowCopyPerTabSetting(PerTabInterpreterParameters);
 
             UpdateTabDocumentNameIfOnlyOneAndFirst(tabControl, Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName"));
 
@@ -303,7 +304,7 @@ namespace PelotonIDE.Presentation
         {
             Telemetry.SetEnabled(false);
 
-            string transput = Type_1_GetVirtualRegistry<long>("Transput").ToString();
+            string transput = Type_1_GetVirtualRegistry<long>("pOps.Transput").ToString();
             foreach (var mfi in from MenuFlyoutSubItem mfsi in mnuTransput.Items.Cast<MenuFlyoutSubItem>()
                                 where mfsi != null
                                 where mfsi.Items.Count > 0
@@ -320,7 +321,7 @@ namespace PelotonIDE.Presentation
 
         private void UpdateRenderingInMenu()
         {
-            List<string> renderers = Type_1_GetVirtualRegistry<string>("outputOps.Renderers").Split(',').Select(x => x.Trim()).ToList();
+            List<string> renderers = Type_1_GetVirtualRegistry<string>("outputOps.ActiveRenderers").Split(',').Select(x => x.Trim()).ToList();
 
             mnuRendering.Items.ForEach(item =>
             {

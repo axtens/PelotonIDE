@@ -269,7 +269,7 @@ namespace PelotonIDE.Presentation
         }
 
         #region Event Handlers
-        private static InterpreterParametersStructure ClonePerTabSettings(InterpreterParametersStructure? perTabInterpreterParameters)
+        private static InterpreterParametersStructure ShallowCopyPerTabSetting(InterpreterParametersStructure? perTabInterpreterParameters)
         {
             InterpreterParametersStructure clone = [];
             foreach (string outerKey in perTabInterpreterParameters.Keys)
@@ -327,15 +327,16 @@ namespace PelotonIDE.Presentation
 
             InterpreterParametersStructure? inFocusTab = navigationViewItem.TabSettingsDict;
             Regex ques = new(Regex.Escape("?"));
-            string info = @"{\info {\*\ilang ?} {\*\ilength ?} {\*\itimeout ?} {\*\iquietude ?} {\*\itransput ?} {\*\irendering ?} {\*\iinterpreter ?} {\*\iselected ?} }"; // {\*\ipadout ?}
+            string info = @"{\info {\*\ilang ?} {\*\ilength ?} {\*\itimeout ?} {\*\iquietude ?} {\*\itransput ?} {\*\irendering ?} {\*\iinterpreter ?} {\*\iselected ?} {\*\ipadded ?} }"; // 
             info = ques.Replace(info, $"{inFocusTab["Language"]["Value"]}", ONCE);
             info = ques.Replace(info, (bool)inFocusTab["mainOps.VariableLength"]["Value"] ? "1" : "0", ONCE);
             info = ques.Replace(info, $"{(long)inFocusTab["ideOps.Timeout"]["Value"]}", ONCE);
             info = ques.Replace(info, $"{(long)inFocusTab["pOps.Quietude"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["Transput"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(string)inFocusTab["outputOps.Renderers"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["pOps.Transput"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(string)inFocusTab["outputOps.ActiveRenderers"]["Value"]}", ONCE);
             info = ques.Replace(info, $"{(long)inFocusTab["ideOps.Engine"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["outputOps.SelectedRenderer"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["outputOps.TappedRenderer"]["Value"]}", ONCE);
+            info = ques.Replace(info, $"{(long)inFocusTab["mainOps.Padded"]["Value"]}", ONCE);
 
             Telemetry.Transmit("info=", info);
 
@@ -411,9 +412,9 @@ namespace PelotonIDE.Presentation
 
                 MarkupToInFocusSettingLong(matches, @"\itimeout", "ideOps.Timeout");
                 MarkupToInFocusSettingLong(matches, @"\iquietude", "pOps.Quietude");
-                MarkupToInFocusSettingLong(matches, @"\itransput", "Transput");
-                MarkupToInFocusSettingString(matches, @"\irendering", "outputOps.Renderers");
-                MarkupToInFocusSettingLong(matches, @"\iselected", "outputOps.SelectedRenderer");
+                MarkupToInFocusSettingLong(matches, @"\itransput", "pOps.Transput");
+                MarkupToInFocusSettingString(matches, @"\irendering", "outputOps.ActiveRenderers");
+                MarkupToInFocusSettingLong(matches, @"\iselected", "outputOps.TappedRenderer");
                 MarkupToInFocusSettingLong(matches, @"\iinterpreter", "ideOps.Engine");
 
             }
@@ -641,7 +642,7 @@ namespace PelotonIDE.Presentation
 
             //object prevContent = me.Content;
 
-            string? inFocusTabRenderers = Type_3_GetInFocusTab<string>("outputOps.Renderers");
+            string? inFocusTabRenderers = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
 
             foreach (TabViewItem tvi in outputPanelTabView.TabItems)
             {
@@ -672,16 +673,16 @@ namespace PelotonIDE.Presentation
             DeselectAndDisableAllOutputPanelTabs();
             EnableAllOutputPanelTabsMatchingRendering();
 
-            string? rendering = Type_3_GetInFocusTab<string>("outputOps.Renderers");
+            string? rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
 
             if (rendering != null && rendering.Split(",", StringSplitOptions.RemoveEmptyEntries).Any())
             {
-                var selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.SelectedRenderer");
+                var selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
                 (from TabViewItem tvi in outputPanelTabView.TabItems where long.Parse((string)tvi.Tag) == selectedRenderer select tvi).ForEach(tvi =>
                 {
                     tvi.IsSelected = true;
                     Telemetry.Transmit(tvi.Name, tvi.Tag, "frontmost");
-                    Type_3_UpdateInFocusTabSettings<long>("outputOps.SelectedRenderer", true, selectedRenderer);
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, selectedRenderer);
                 });
             }
         }
@@ -694,11 +695,11 @@ namespace PelotonIDE.Presentation
             //string meName = me.Name.Replace("tab", "");
             string key = (string)me.Tag;
 
-            string render = ((long)RenderingConstants["outputOps.Renderers"][key]).ToString();
+            string render = ((long)RenderingConstants["outputOps.ActiveRenderers"][key]).ToString();
 
             if (AnInFocusTabExists())
             {
-                List<string> keys = [.. Type_3_GetInFocusTab<string>("outputOps.Renderers").Split(',', StringSplitOptions.RemoveEmptyEntries)];
+                List<string> keys = [.. Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Split(',', StringSplitOptions.RemoveEmptyEntries)];
                 if (keys.Contains(render))
                 {
                     keys.Remove(render);
@@ -707,11 +708,11 @@ namespace PelotonIDE.Presentation
                 {
                     keys.Add(render);
                 }
-                Type_3_UpdateInFocusTabSettings<string>("outputOps.Renderers", true, string.Join(",", keys));
+                Type_3_UpdateInFocusTabSettings<string>("outputOps.ActiveRenderers", true, string.Join(",", keys));
 
-                if (Type_3_GetInFocusTab<string>("outputOps.Renderers").Trim().Length == 0)
+                if (Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Trim().Length == 0)
                 {
-                    Type_3_UpdateInFocusTabSettings<long>("outputOps.SelectedRenderer", true, -1);
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, -1);
                 }
 
                 DeselectAndDisableAllOutputPanelTabs();
@@ -726,7 +727,7 @@ namespace PelotonIDE.Presentation
         {
             if (!AnInFocusTabExists()) return;
             if (InFocusTab().TabSettingsDict == null) return;
-            foreach (string key2 in Type_3_GetInFocusTab<string>("outputOps.Renderers").Split(",", StringSplitOptions.RemoveEmptyEntries))
+            foreach (string key2 in Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Split(",", StringSplitOptions.RemoveEmptyEntries))
             {
                 foreach (object? item in outputPanelTabView.TabItems)
                 {
@@ -770,8 +771,8 @@ namespace PelotonIDE.Presentation
                     MenuItemHighlightController((MenuFlyoutItem)mfi, true);
                 }
             }
-            Type_2_UpdatePerTabSettings("Transput", true, long.Parse((string)me.Tag));
-            Type_3_UpdateInFocusTabSettings("Transput", true, long.Parse((string)me.Tag));
+            Type_2_UpdatePerTabSettings("pOps.Transput", true, long.Parse((string)me.Tag));
+            Type_3_UpdateInFocusTabSettings("pOps.Transput", true, long.Parse((string)me.Tag));
             UpdateCommandLineInStatusBar();
         }
 
@@ -940,7 +941,7 @@ namespace PelotonIDE.Presentation
         {
             Telemetry.SetEnabled(true);
             TabViewItem me = (TabViewItem)sender;
-            long selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.SelectedRenderer");
+            long selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
             Telemetry.Transmit(selectedRenderer);
             //Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
             // AssertSelectedOutputTab();

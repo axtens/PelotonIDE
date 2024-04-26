@@ -482,8 +482,8 @@ namespace PelotonIDE.Presentation
             Telemetry.SetEnabled(false);
 
             if (!AnInFocusTabExists()) return;
-            string? rendering = Type_3_GetInFocusTab<string>("outputOps.Renderers");
-            long rend = Type_3_GetInFocusTab<long>("outputOps.SelectedRenderer");
+            string? rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
+            long rend = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
             if (rendering == null || rendering.Split(',',StringSplitOptions.RemoveEmptyEntries).Length == 0)
             {
                 return;

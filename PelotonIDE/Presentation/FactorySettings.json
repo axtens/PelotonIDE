@@ -3,7 +3,7 @@
   "ideOps.InterfaceLanguageID": 0,
   "mainOps.InterpreterLanguageName": "English",
   "mainOps.InterpreterLanguageID": 0,
-  "ideOps.Engine":3,
+  "ideOps.Engine": 3,
   "ideOps.OutputPanelHeight": 200.0,
   "ideOps.OutputPanelWidth": 400.0,
   "ideOps.OutputPanelShowing": true,
@@ -15,7 +15,9 @@
   "ideOps.Timeout": 1,
   "mainOps.VariableLength": false,
   "ideOps.FontSize": 12.0,
-  "outputOps.Renderers": "0,3",
-  "outputOps.SelectedRenderer":  -1,
-  "ideOps.OutputPanelSettings": "True|Bottom|200|400"
+  "outputOps.AvailableRenderers": "3,0,21,42,31",
+  "outputOps.ActiveRenderers": "0,3",
+  "outputOps.TappedRenderer": -1,
+  "ideOps.OutputPanelSettings": "True|Bottom|200|400",
+  "pOps.Padding": false
 }

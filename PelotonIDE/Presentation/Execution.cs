@@ -76,9 +76,9 @@ namespace PelotonIDE.Presentation
 
             Telemetry.Transmit("stdOut=", stdOut, "stdErr=", stdErr);
 
-            IEnumerable<long> rendering = Type_3_GetInFocusTab<string>("outputOps.Renderers").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(e => long.Parse(e)); // strip focuser
+            IEnumerable<long> rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(e => long.Parse(e)); // strip focuser
 
-            IEnumerable<string> list = (from item in RenderingConstants["outputOps.Renderers"]
+            IEnumerable<string> list = (from item in RenderingConstants["outputOps.ActiveRenderers"]
                                         where rendering.Contains((long)item.Value)
                                         select item.Key);
 

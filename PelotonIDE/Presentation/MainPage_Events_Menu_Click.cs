@@ -152,7 +152,7 @@ namespace PelotonIDE.Presentation
                 //Content = "Tab " + (tabControl.MenuItems.Count + 1),
                 Tag = "Tab" + TabControlCounter,//(tabControl.MenuItems.Count + 1),
                 IsNewFile = true,
-                TabSettingsDict = ClonePerTabSettings(PerTabInterpreterParameters),
+                TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters),
                 Height = 30
             };
             richEditBox.Tag = navigationViewItem.Tag;
@@ -161,10 +161,14 @@ namespace PelotonIDE.Presentation
             tabControl.MenuItems.Add(navigationViewItem);
             tabControl.SelectedItem = navigationViewItem; // in focus?
             richEditBox.Focus(FocusState.Keyboard);
+
+            UpdateStatusBar(navigationViewItem.TabSettingsDict);
+            UpdateOutputTabs();
+
             UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
             UpdateCommandLineInStatusBar();
-
             AssertSelectedOutputTab();
+ 
             TabControlCounter += 1;
         }
 
@@ -369,7 +373,7 @@ namespace PelotonIDE.Presentation
 
             string render = (string)me.Tag;
 
-            List<string> renderers = [.. Type_1_GetVirtualRegistry<string>("outputOps.Renderers").Split(',')];
+            List<string> renderers = [.. Type_1_GetVirtualRegistry<string>("outputOps.ActiveRenderers").Split(',')];
             if (renderers.Contains(render))
             {
                 renderers.Remove(render);
@@ -391,11 +395,11 @@ namespace PelotonIDE.Presentation
                 });
             });
 
-            Type_1_UpdateVirtualRegistry<string>("outputOps.Renderers", renderers.JoinBy(","));
-            Type_2_UpdatePerTabSettings<string>("outputOps.Renderers", true, renderers.JoinBy(","));
-            Type_3_UpdateInFocusTabSettings<string>("outputOps.Renderers", true, renderers.JoinBy(","));
+            Type_1_UpdateVirtualRegistry<string>("outputOps.ActiveRenderers", renderers.JoinBy(","));
+            Type_2_UpdatePerTabSettings<string>("outputOps.ActiveRenderers", true, renderers.JoinBy(","));
+            Type_3_UpdateInFocusTabSettings<string>("outputOps.ActiveRenderers", true, renderers.JoinBy(","));
 
-            Type_2_UpdatePerTabSettings<long>("outputOps.SelectedRenderer", true, Type_1_GetVirtualRegistry<long>("outputOps.SelectedRenderer"));
+            Type_2_UpdatePerTabSettings<long>("outputOps.TappedRenderer", true, Type_1_GetVirtualRegistry<long>("outputOps.TappedRenderer"));
 
             AssertSelectedOutputTab();
         }
@@ -523,7 +527,7 @@ namespace PelotonIDE.Presentation
                 navigationViewItem.SavedFilePath = pickedFile;
                 navigationViewItem.Content = pickedFile.Name;
                 navigationViewItem.Height = 30; // FIXME is this where to do it?
-                navigationViewItem.TabSettingsDict = ClonePerTabSettings(PerTabInterpreterParameters);
+                navigationViewItem.TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters);
                 // navigationViewItem.MaxHeight = 60; // FIXME is this where to do it?
                 // navigationViewItem.VerticalAlignment = VerticalAlignment.Bottom;
                 CustomRichEditBox newestRichEditBox = _richEditBoxes[navigationViewItem.Tag];
