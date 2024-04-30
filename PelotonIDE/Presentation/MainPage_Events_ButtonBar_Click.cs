@@ -13,12 +13,13 @@ namespace PelotonIDE.Presentation
     {
         private void MnuTranslate_Click(object sender, RoutedEventArgs e)
         {
-            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-            CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
+            CustomTabItem? inFocusTab = InFocusTab();
+            //CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
+            CustomRichEditBox currentRichEditBox = _richEditBoxes[inFocusTab.Tag];
             currentRichEditBox.Document.GetText(TextGetOptions.None, out string? text);
-            long tabLangId = Type_3_GetInFocusTab<long>("Language");
+            long tabLangId = Type_3_GetInFocusTab<long>("pOps.Language");
             IEnumerable<string> tabLangName = from lang in LanguageSettings where long.Parse(lang.Value["GLOBAL"]["ID"]) == tabLangId select lang.Key;
-            string? savedFilePath = navigationViewItem.SavedFilePath != null ? Path.GetDirectoryName(navigationViewItem.SavedFilePath.Path) : null;
+            string? savedFilePath = inFocusTab.SavedFilePath != null ? Path.GetDirectoryName(inFocusTab.SavedFilePath.Path) : null;
             string? mostRecentPickedFilePath;
             if (Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath") != null)
             {
@@ -42,15 +43,14 @@ namespace PelotonIDE.Presentation
                     { "ideOps.InterfaceLanguageID", Type_1_GetVirtualRegistry<long>("ideOps.InterfaceLanguageID")},
                     { "ideOps.InterfaceLanguageName",Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") },
                     { "Languages", LanguageSettings! },
-                    { "SourceSpec", navigationViewItem.SavedFilePath == null ? navigationViewItem.Content : navigationViewItem.SavedFilePath.Path},
+                    { "SourceSpec", inFocusTab.SavedFilePath == null ? inFocusTab.Content : inFocusTab.SavedFilePath.Path},
                     { "SourcePath", $"{savedFilePath ?? mostRecentPickedFilePath ?? Scripts}" },
                     { "pOps.Quietude", Type_3_GetInFocusTab<long>("pOps.Quietude") },
+                    { "InFocusTabSettingsDict", inFocusTab.TabSettingsDict! },
                     { "Plexes", Plexes! }
                 }
             });
         }
-
-
         private void ToggleOutputButton_Click(object sender, RoutedEventArgs e)
         {
             bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing");
@@ -58,7 +58,6 @@ namespace PelotonIDE.Presentation
             outputPanelShowing = !outputPanelShowing;
             Type_1_UpdateVirtualRegistry<bool>("ideOps.OutputPanelShowing", outputPanelShowing);
         }
-
         private void RunCodeButton_Click(object sender, RoutedEventArgs e)
         {
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
@@ -68,7 +67,6 @@ namespace PelotonIDE.Presentation
             if (selectedText.Length > 0)
                 ExecuteInterpreter(selectedText);
         }
-
         private void RunSelectedCodeButton_Click(object sender, RoutedEventArgs e)
         {
             Windows.UI.Color highlight = Windows.UI.Color.FromArgb(0x00, 0x8d, 0x6e, 0x5b);

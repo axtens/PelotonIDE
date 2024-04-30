@@ -1,9 +1,9 @@
 {
-  "Rendering": {
-    "tabOutput": 3,
-    "tabError": 0,
-    "tabRTF": 31,
-    "tabHTML": 21,
-    "tabLogo": 42
+  "outputOps.ActiveRenderers": {
+    "Output": 3,
+    "Error": 0,
+    "RTF": 31,
+    "HTML": 21,
+    "Logo": 42
   }
 }

@@ -1,23 +1,9 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using DocumentFormat.OpenXml.Wordprocessing;
-
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Documents;
+﻿using Microsoft.UI.Dispatching;
 
 using System.Diagnostics;
 using System.Text;
 
-using Uno.Extensions;
-
-using Windows.Devices.PointOfService;
 using Windows.Storage;
-using Windows.UI.Core;
-
-using Paragraph = Microsoft.UI.Xaml.Documents.Paragraph;
-using Run = Microsoft.UI.Xaml.Documents.Run;
-using System.Linq;
-using System.Resources;
 
 namespace PelotonIDE.Presentation
 {
@@ -140,7 +126,6 @@ namespace PelotonIDE.Presentation
             }
 
         }
-
         private string TurtleFrameworkPlus(string jsBlock)
         {
             /*var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
@@ -166,7 +151,6 @@ namespace PelotonIDE.Presentation
                     $"<script type='text/javascript'>{jsBlock}</script>";
             */
             }
-
         private string ParseLogoIntoJavascript(string v)
         {
             Telemetry.SetEnabled(false);
@@ -248,17 +232,14 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit(result.JoinBy("\r\n"));
             return result.JoinBy("\n");
         }
-
-        public void AddOutput(string text)
-        {
-            AddInsertParagraph(outputText, text, true, false);
-        }
-
-        public void AddError(string text)
-        {
-            AddInsertParagraph(errorText, text, true, false);
-        }
-
+        //public void AddOutput(string text)
+        //{
+        //    AddInsertParagraph(outputText, text, true, false);
+        //}
+        //public void AddError(string text)
+        //{
+        //    AddInsertParagraph(errorText, text, true, false);
+        //}
         private static void AddInsertParagraph(RichEditBox reb, string text, bool addInsert = true, bool withPrefix = true)
         {
             Telemetry.SetEnabled(false);
@@ -286,7 +267,6 @@ namespace PelotonIDE.Presentation
             reb.Focus(FocusState.Programmatic);
             //reb.IsReadOnly = true;
         }
-
         public (string StdOut, string StdErr) RunProtium(string args, string buff, long quietude)
         {
             Telemetry.SetEnabled(false);
@@ -315,50 +295,48 @@ namespace PelotonIDE.Presentation
 
             return (StdOut: File.ReadAllText(System.IO.Path.ChangeExtension(temp, "out")), StdErr: string.Empty);
         }
+        //public (string StdOut, string StdErr) RunPeloton(string args, string buff, long quietude)
+        //{
+        //    Telemetry.SetEnabled(false);
 
-        public (string StdOut, string StdErr) RunPeloton(string args, string buff, long quietude)
-        {
-            Telemetry.SetEnabled(false);
+        //    string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
+        //    string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
 
-            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
-            string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
+        //    Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff, "Quietude=", quietude);
 
-            Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff, "Quietude=", quietude);
+        //    string t_in = System.IO.Path.GetTempFileName();
+        //    string t_out = System.IO.Path.ChangeExtension(t_in, "out");
+        //    string t_err = System.IO.Path.ChangeExtension(t_in, "err");
 
-            string t_in = System.IO.Path.GetTempFileName();
-            string t_out = System.IO.Path.ChangeExtension(t_in, "out");
-            string t_err = System.IO.Path.ChangeExtension(t_in, "err");
+        //    File.WriteAllText(t_in, buff);
 
-            File.WriteAllText(t_in, buff);
+        //    //args = args.Replace(":", "=");
 
-            //args = args.Replace(":", "=");
+        //    args += $" /F:\"{t_in}\""; // 1>\"{t_out}\" 2>\"{t_err}\"";
 
-            args += $" /F:\"{t_in}\""; // 1>\"{t_out}\" 2>\"{t_err}\"";
+        //    Telemetry.Transmit(args, buff);
 
-            Telemetry.Transmit(args, buff);
+        //    ProcessStartInfo info = new()
+        //    {
+        //        Arguments = $"{args}",
+        //        FileName = Exe,
+        //        UseShellExecute = false,
+        //        CreateNoWindow = args.Contains("/Q:0"),
+        //    };
 
-            ProcessStartInfo info = new()
-            {
-                Arguments = $"{args}",
-                FileName = Exe,
-                UseShellExecute = false,
-                CreateNoWindow = args.Contains("/Q:0"),
-            };
+        //    Process? proc = Process.Start(info);
+        //    proc.WaitForExit();
+        //    proc.Dispose();
 
-            Process? proc = Process.Start(info);
-            proc.WaitForExit();
-            proc.Dispose();
-
-            return (StdOut: File.Exists(t_out) ? File.ReadAllText(t_out) : string.Empty, StdErr: File.Exists(t_err) ? File.ReadAllText(t_err) : string.Empty);
-        }
-
-        public void Inject(string? arg)
-        {
-            //outputText.IsReadOnly = false;
-            outputText.Document.GetText(Microsoft.UI.Text.TextGetOptions.AdjustCrlf, out string? value);
-            outputText.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, $"{value}{arg}");
-            //outputText.IsReadOnly = true;
-        }
+        //    return (StdOut: File.Exists(t_out) ? File.ReadAllText(t_out) : string.Empty, StdErr: File.Exists(t_err) ? File.ReadAllText(t_err) : string.Empty);
+        //}
+        //public void Inject(string? arg)
+        //{
+        //    //outputText.IsReadOnly = false;
+        //    outputText.Document.GetText(Microsoft.UI.Text.TextGetOptions.AdjustCrlf, out string? value);
+        //    outputText.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, $"{value}{arg}");
+        //    //outputText.IsReadOnly = true;
+        //}
         public (string StdOut, string StdErr) RunPeloton2(string args, string buff, long quietude, DispatcherQueue dispatcher)
         {
             Telemetry.SetEnabled(false);
@@ -433,7 +411,6 @@ namespace PelotonIDE.Presentation
 
             return (StdOut: stdout.ToString().Trim(), StdErr: stderr.ToString().Trim());
         }
-
         private int GetTimeoutInMilliseconds()
         {
             long timeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");

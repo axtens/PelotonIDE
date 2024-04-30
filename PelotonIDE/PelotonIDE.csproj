@@ -130,12 +130,13 @@
         <UpToDateCheckInput Remove="Presentation\TranslatePage.xaml" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Peloton_Logo_MarkOnly_TransparentBack-lighter.ico">
+        <Content Include="peloton_logo_markonly_transparentback-lighter.ico">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Presentation\PerTabInterpreterParameters.json" />
         <Content Include="Presentation\FactorySettings.json" />
         <Content Include="Presentation\LanguageConfiguration.json" />
+        <Content Include="Presentation\RenderingConstants.json" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Remove="Presentation\TranslatePage.xaml" />

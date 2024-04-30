@@ -16,7 +16,6 @@ namespace PelotonIDE.Presentation
         private Dictionary<long, string> _opids;
         private Dictionary<string, long> _optxs; 
         private string _name;
-
         public PropertyBag()
         {
             _values = [];
@@ -25,10 +24,8 @@ namespace PelotonIDE.Presentation
             _optxs = [];
             _name = string.Empty;
         }
-
         public Dictionary<string, object> Contents { get { return _values; } }
         public string Name { get { return _name; } }
-
         public void LoadBagFromFile(string fileName, bool debug = false)
         {
             if (debug) Debugger.Launch();
@@ -44,7 +41,6 @@ namespace PelotonIDE.Presentation
                 _optxs[txkey!] = Id;
             }
         }
-
         private void LoadBagFromByteArray(byte[] data, bool debug = false)
         {
             if (debug) Debugger.Launch();
@@ -187,12 +183,9 @@ namespace PelotonIDE.Presentation
             }
         }
         public IEnumerable<string> Keys => _values.Keys.ToList();
-
         public string AsJSON() => JsonConvert.SerializeObject(_values);
         public string DuplicatesAsJSON() => JsonConvert.SerializeObject(_duplicates);
-
         public bool HasDuplicates => _duplicates.Count > 0;
-
         public Dictionary<long, string> Identifiers => _opids;
         public string IdentifiersAsJSON => JsonConvert.SerializeObject(Identifiers);
         public Dictionary<string, long> Keywords => _optxs;

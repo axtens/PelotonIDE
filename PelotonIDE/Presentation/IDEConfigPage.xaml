@@ -34,6 +34,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -43,28 +44,22 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!--<utu:NavigationBar Content="IDE Configuration" Grid.ColumnSpan="3">
-            <utu:NavigationBar.MainCommand>
-                <AppBarButton>
-                    <AppBarButton.Icon>
-                        <BitmapIcon UriSource="ms-appx:///PelotonIDE/Assets/Icons/back.png" />
-                    </AppBarButton.Icon>
-                </AppBarButton>
-            </utu:NavigationBar.MainCommand>
-        </utu:NavigationBar>-->
-
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Interpreter Location" VerticalAlignment="Center" Margin="10,0,10,0"/>
-        <TextBox x:Name="interpreterTextBox" Grid.Row="1" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Protium (P2) Interpreter" VerticalAlignment="Center" Margin="10,0,10,0"/>
+        <TextBox x:Name="protiumInterpreterTextBox" Grid.Row="1" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
                      Margin="0,5,10,5" />
-        <Button x:Name="interpreterLocationBtn" Grid.Row="1" Grid.Column="2" Content="Browse..." Click="InterpreterLocationBtn_Click"/>
+        <Button x:Name="protiumInterpreterLocationBtn" Grid.Row="1" Grid.Column="2" Content="Browse..." Click="ProtiumInterpreterLocationBtn_Click"/>
 
-
-        <TextBlock x:Name="lblSourceDirectory" Grid.Row="2" Grid.Column="0" Text="Script Location" VerticalAlignment="Center" Margin="10,0,10,0"/>
-        <TextBox x:Name="sourceTextBox" Grid.Row="2" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Peloton (P3) Interpreter" VerticalAlignment="Center" Margin="10,0,10,0"/>
+        <TextBox x:Name="pelotonInterpreterTextBox" Grid.Row="2" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
                      Margin="0,5,10,5" />
-        <Button x:Name="sourceDirectoryBtn" Grid.Row="2" Grid.Column="2" Content="Browse..." Click="SourceDirectoryBtn_Click"/>
+        <Button x:Name="pelotonInterpreterLocationBtn" Grid.Row="2" Grid.Column="2" Content="Browse..." Click="PelotonInterpreterLocationBtn_Click"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+        <TextBlock x:Name="lblSourceDirectory" Grid.Row="3" Grid.Column="0" Text="Script Location" VerticalAlignment="Center" Margin="10,0,10,0"/>
+        <TextBox x:Name="sourceTextBox" Grid.Row="3" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
+                     Margin="0,5,10,5" />
+        <Button x:Name="sourceDirectoryBtn" Grid.Row="3" Grid.Column="2" Content="Browse..." Click="SourceDirectoryBtn_Click"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <Button x:Name="cmdSaveMemory" Content="Apply" Margin="0,0,10,10" Click="IDEConfig_Apply_Button_Click"/>
             <Button x:Name="cmdCancel" Content="Cancel" Margin="0,0,10,10" Click="IDEConfig_Cancel_Button_Click"/>
         </StackPanel>

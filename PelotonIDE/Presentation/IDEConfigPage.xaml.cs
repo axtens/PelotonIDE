@@ -1,23 +1,5 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Input;
-using Microsoft.UI.Text;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-
-using Newtonsoft.Json;
-
-using System.Diagnostics;
-using System.Text;
-
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
+﻿using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.Storage.Provider;
-using Windows.System;
-using Windows.UI;
-using Windows.UI.Core;
 
 using LanguageConfigurationStructureSelection =
     System.Collections.Generic.Dictionary<string,
@@ -31,7 +13,6 @@ namespace PelotonIDE.Presentation
         {
             this.InitializeComponent();
         }
-
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -40,15 +21,16 @@ namespace PelotonIDE.Presentation
 
             if (parameters.Source == "MainPage")
             {
-                interpreterTextBox.Text = parameters.KVPs["Interpreter"].ToString();
+                protiumInterpreterTextBox.Text = parameters.KVPs["ideOps.Engine.2"].ToString();
+                pelotonInterpreterTextBox.Text = parameters.KVPs["ideOps.Engine.3"].ToString();
                 sourceTextBox.Text = parameters.KVPs["ideOps.ScriptsFolder"].ToString();
-                LanguageConfigurationStructureSelection lcs = (LanguageConfigurationStructureSelection)parameters.KVPs["Language"];
+                LanguageConfigurationStructureSelection lcs = (LanguageConfigurationStructureSelection)parameters.KVPs["pOps.Language"];
                 cmdCancel.Content = lcs["frmMain"]["cmdCancel"];
                 cmdSaveMemory.Content = lcs["frmMain"]["cmdSaveMemory"];
                 lblSourceDirectory.Text = lcs["frmMain"]["lblSourceDirectory"];
             }
         }
-        private async void InterpreterLocationBtn_Click(object sender, RoutedEventArgs e)
+        private async void ProtiumInterpreterLocationBtn_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker open = new()
             {
@@ -63,10 +45,27 @@ namespace PelotonIDE.Presentation
             StorageFile pickedFile = await open.PickSingleFileAsync();
             if (pickedFile != null)
             {
-                interpreterTextBox.Text = pickedFile.Path;
+                protiumInterpreterTextBox.Text = pickedFile.Path;
             }
         }
+        private async void PelotonInterpreterLocationBtn_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker open = new()
+            {
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+            };
+            open.FileTypeFilter.Add(".exe");
 
+            // For Uno.WinUI-based apps
+            nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+            WinRT.Interop.InitializeWithWindow.Initialize(open, hwnd);
+
+            StorageFile pickedFile = await open.PickSingleFileAsync();
+            if (pickedFile != null)
+            {
+                pelotonInterpreterTextBox.Text = pickedFile.Path;
+            }
+        }
         private async void SourceDirectoryBtn_Click(object sender, RoutedEventArgs e)
         {
             FolderPicker folderPicker = new()
@@ -85,7 +84,6 @@ namespace PelotonIDE.Presentation
                 sourceTextBox.Text = pickedFolder.Path;
             }
         }
-
         private void IDEConfig_Apply_Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationData nd = new()
@@ -93,7 +91,8 @@ namespace PelotonIDE.Presentation
                 Source = "IDEConfig",
                 KVPs = new()
                 {
-                    { "Interpreter" , interpreterTextBox.Text },
+                    { "ideOps.Engine.2" , protiumInterpreterTextBox.Text },
+                    { "ideOps.Engine.3" , pelotonInterpreterTextBox.Text },
                     { "ideOps.ScriptsFolder" ,  sourceTextBox.Text}
                 }
             };

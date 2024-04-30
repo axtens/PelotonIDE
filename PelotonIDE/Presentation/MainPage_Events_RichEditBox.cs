@@ -56,9 +56,5 @@ namespace PelotonIDE.Presentation
                 ((CustomRichEditBox)me).IsDirty = true;
             }
         }
-
-        private void CustomREBox_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-        }
     }
 }

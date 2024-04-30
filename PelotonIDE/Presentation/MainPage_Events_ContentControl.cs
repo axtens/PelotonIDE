@@ -1,14 +1,8 @@
 ﻿using Microsoft.UI;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
-using Newtonsoft.Json;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
+        System.Collections.Generic.Dictionary<string, object>>;
 
 namespace PelotonIDE.Presentation
 {
@@ -24,7 +18,7 @@ namespace PelotonIDE.Presentation
 
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             if (navigationViewItem == null) return;
-            string? inFocusTabLanguageName = GetLanguageNameFromID((long)navigationViewItem.TabSettingsDict["Language"]["Value"]);
+            string? inFocusTabLanguageName = GetLanguageNameFromID((long)navigationViewItem.TabSettingsDict["pOps.Language"]["Value"]);
 
 
             string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
@@ -62,8 +56,6 @@ namespace PelotonIDE.Presentation
 
             //me.Content = mfsu;
         }
-
-
         private void ContentControl_Click(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
@@ -73,23 +65,24 @@ namespace PelotonIDE.Presentation
             Dictionary<string, string> globals = LanguageSettings[name]["GLOBAL"];
             string id = globals["ID"];
 
-            //CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-            //CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
+            Type_3_UpdateInFocusTabSettings<long>("pOps.Language", true, long.Parse(id));
 
-            //Dictionary<string, Dictionary<string, object>>? currentTabSettings = navigationViewItem.TabSettingsDict;
-            Type_3_UpdateInFocusTabSettings<long>("Language", true, long.Parse(id));
-
-            //ChangeHighlightOfMenuBarForLanguage((MenuBarItem)me, name);
             UpdateLanguageInContextualMenu(me, me.Text, name);
             if (me.Tag is Dictionary<string, object> parent)
             {
                 if (parent.ContainsKey("ContentControl") && parent.ContainsKey("ContentControlPreviousContent"))
                     parent["ContentControl"] = parent["ContentControlPreviousContent"];
-                // ((MenuFlyoutSubItem)parent["MenuFlyoutSubItem"]) ;
             }
-            UpdateCommandLineInStatusBar();
+            //UpdateCommandLineInStatusBar();
+            if (AnInFocusTabExists())
+            {
+                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                if (tabset != null)
+                {
+                    UpdateStatusBar(tabset);
+                }
+            }
         }
-
         private void UpdateLanguageInContextualMenu(MenuFlyoutItem me, string internationalizedName, string name)
         {
             Telemetry.SetEnabled(false);
@@ -118,7 +111,6 @@ namespace PelotonIDE.Presentation
                 }
             }
         }
-
         private void ContentControl_FixedVariable_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -133,7 +125,7 @@ namespace PelotonIDE.Presentation
 
             if (!AnInFocusTabExists()) return;
 
-            bool inFocusTabVariableLength = Type_3_GetInFocusTab<bool>("mainOps.VariableLength");
+            bool inFocusTabVariableLength = Type_3_GetInFocusTab<bool>("pOps.VariableLength");
             Telemetry.Transmit("inFocusTabTimeout=", inFocusTabVariableLength);
 
             Dictionary<string, string> globals = LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")]["GLOBAL"];
@@ -177,12 +169,19 @@ namespace PelotonIDE.Presentation
 
             bool isVariableLength = me.Name == "variableLength";
             if (AnInFocusTabExists())
-                Type_3_UpdateInFocusTabSettings<bool>("mainOps.VariableLength", isVariableLength, isVariableLength);
+                Type_3_UpdateInFocusTabSettings<bool>("pOps.VariableLength", isVariableLength, isVariableLength);
 
             fixedVariableStatus.Text = (isVariableLength ? "#" : "@") + (string)globals[isVariableLength ? "variableLength" : "fixedLength"];
-            UpdateCommandLineInStatusBar();
+            // UpdateCommandLineInStatusBar();
+            if (AnInFocusTabExists())
+            {
+                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                if (tabset != null)
+                {
+                    UpdateStatusBar(tabset);
+                }
+            }
         }
-
         private void ContentControl_Quietude_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -230,7 +229,6 @@ namespace PelotonIDE.Presentation
 
 
         }
-
         private void ContentControl_Quietude_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -248,10 +246,16 @@ namespace PelotonIDE.Presentation
                 Type_3_UpdateInFocusTabSettings<long>("pOps.Quietude", true, quietude);
 
             quietudeStatus.Text = (string)globals[quietudes.ElementAt(quietude)];
-            UpdateCommandLineInStatusBar();
+            // UpdateCommandLineInStatusBar();
+            if (AnInFocusTabExists())
+            {
+                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                if (tabset != null)
+                {
+                    UpdateStatusBar(tabset);
+                }
+            }
         }
-
-
         private void ContentControl_Timeout_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -296,11 +300,7 @@ namespace PelotonIDE.Presentation
 
             //the code can show the flyout in your mouse click 
             mf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
-
-
-
         }
-
         private void ContentControl_Timeout_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -315,10 +315,17 @@ namespace PelotonIDE.Presentation
             var timeout = timeouts.IndexOf(me.Name);
 
             if (AnInFocusTabExists())
+            {
                 Type_3_UpdateInFocusTabSettings<long>("ideOps.Timeout", true, timeout);
+                Dictionary<string, Dictionary<string, object>>? tabset = InFocusTab().TabSettingsDict;
+                if (tabset != null)
+                {
+                    UpdateStatusBar(tabset);
+                }
+            }
+            //timeoutStatus.Text = $"{globals["mnuTimeout"]}: {(string)globals[timeouts.ElementAt(timeout)]}";
+            //UpdateCommandLineInStatusBar();
 
-            timeoutStatus.Text = $"{globals["mnuTimeout"]}: {(string)globals[timeouts.ElementAt(timeout)]}";
-            UpdateCommandLineInStatusBar();
         }
     }
 }

@@ -78,11 +78,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Peloton_Logo_MarkOnly_TransparentBack-lighter.ico" />
+	  <Content Include="peloton_logo_markonly_transparentback-lighter.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\Peloton_Logo_MarkOnly_TransparentBack-lighter.png">
+	  <None Include="..\peloton_logo_markonly_transparentback-lighter.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>

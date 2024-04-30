@@ -27,7 +27,6 @@ namespace PelotonIDE.Presentation
             if (sortedDictionary.Count == 0) return (false, sortedDictionary);
             return (true, sortedDictionary);
         }
-
         private (bool stOk, int sourceCol, int targetCol) GetSourceAndTargetColumnsFromWorksheet(IXLWorksheet? worksheet, long sourceLanguageId, long targetLanguageId)
         {
             // find column named after name of target language
@@ -56,14 +55,12 @@ namespace PelotonIDE.Presentation
             if (sourceCol == -1 || targetCol == -1) return (false, sourceCol, targetCol);
             return (true, sourceCol, targetCol);
         }
-
         private (bool wsOk, IXLWorksheet? xLWorksheet) GetNamedWorksheetInExcelWorkbook(XLWorkbook? workbook, string? nameOfSource)
         {
             if (!workbook.Worksheets.Contains(nameOfSource)) return (false, null);
             IXLWorksheet worksheet = workbook.Worksheet(nameOfSource);
             return (true, worksheet);
         }
-
         private (bool ok, XLWorkbook? workbook) GetNamedExcelWorkbook(string? xlsxPath)
         {
             if (!File.Exists(xlsxPath)) return (false, null);

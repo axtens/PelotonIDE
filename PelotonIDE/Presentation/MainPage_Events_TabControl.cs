@@ -1,13 +1,7 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+﻿using Microsoft.UI.Xaml.Input;
 
-using Newtonsoft.Json;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
+        System.Collections.Generic.Dictionary<string, object>>;
 
 namespace PelotonIDE.Presentation
 {
@@ -41,16 +35,15 @@ namespace PelotonIDE.Presentation
                     }
                 }
             }
-            //AssertSelectedOutputTab();
+            //UpdateOutputTabs();
             UpdateOutputTabs();
         }
-        private void TabControl_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            Telemetry.SetEnabled(false);
-            CustomTabItem me = (CustomTabItem)sender;
-            Telemetry.Transmit(me.Name, e.GetType().FullName);
-        }
-
+        //private void TabControl_KeyDown(object sender, KeyRoutedEventArgs e)
+        //{
+        //    Telemetry.SetEnabled(false);
+        //    CustomTabItem me = (CustomTabItem)sender;
+        //    Telemetry.Transmit(me.Name, e.GetType().FullName);
+        //}
         private void CustomTabItem_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -58,7 +51,6 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit(me.Name, e.GetType().FullName);
 
         }
-
         private async void TabControl_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires first for all tabs other than tab1
         {
             Telemetry.SetEnabled(false);
@@ -81,10 +73,17 @@ namespace PelotonIDE.Presentation
                 tabControl.Content = null;
                 tabControl.SelectedItem = null;
             }
-            UpdateCommandLineInStatusBar();
+            // UpdateCommandLineInStatusBar();
+            if (AnInFocusTabExists())
+            {
+                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                if (tabset != null)
+                {
+                    UpdateStatusBar(tabset);
+                }
+            }
             UpdateStatusBarFromInFocusTab();
         }
-
         private void CustomTabItem_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires on tab1 then fires TabControl_RightTapped
         {
             Telemetry.SetEnabled(false);

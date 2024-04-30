@@ -5,7 +5,6 @@ namespace PelotonIDE
     {
         public static Window? _window;
         public static IHost? Host { get; private set; }
-
         protected async override void OnLaunched(LaunchActivatedEventArgs args)
         {
             IApplicationBuilder builder = this.CreateBuilder(args)
@@ -60,7 +59,6 @@ namespace PelotonIDE
             _window.SizeChanged += Window_SizeChanged;
             Host = await builder.NavigateAsync<Shell>();
         }
-
         private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
         {
             Telemetry.SetEnabled(true);
@@ -69,7 +67,6 @@ namespace PelotonIDE
             double width = args.Size.Width;
             Telemetry.Transmit(me.Title, "WindowSizeChangedEventArgs.Size.Height=", height, "WindowSizeChangedEventArgs.Size.Width=", width);
         }
-
         private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
         {
             views.Register(

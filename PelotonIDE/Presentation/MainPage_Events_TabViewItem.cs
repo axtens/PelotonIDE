@@ -24,14 +24,12 @@ namespace PelotonIDE.Presentation
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
             flyoutBase.ShowAt(senderElement);
         }
-
         private void TabViewItem_Error_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             FrameworkElement? senderElement = sender as FrameworkElement;
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
             flyoutBase.ShowAt(senderElement);
         }
-
         private async void OutputTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
             FileSavePicker savePicker = new()
@@ -72,7 +70,6 @@ namespace PelotonIDE.Presentation
                 }
             }
         }
-
         private void OutputTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
             Focus(FocusState.Pointer);
@@ -86,14 +83,12 @@ namespace PelotonIDE.Presentation
                 Clipboard.SetContent(dataPackage);
             }
         }
-
         private void OutputTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
             //outputText.IsReadOnly = false;
             outputText.Document.SetText(TextSetOptions.None, null);
             //outputText.IsReadOnly = true;
         }
-
         private async void ErrorTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
             FileSavePicker savePicker = new()
@@ -131,7 +126,6 @@ namespace PelotonIDE.Presentation
                 await errorBox.ShowAsync();
             }
         }
-
         private void ErrorTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
             {
@@ -145,28 +139,24 @@ namespace PelotonIDE.Presentation
                 Clipboard.SetContent(dataPackage);
             }
         }
-
         private void ErrorTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
             //errorText.IsReadOnly = false;
             errorText.Document.SetText(TextSetOptions.None, null);
             //errorText.IsReadOnly = true;
         }
-
         private void HtmlTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
-
         private void HtmlTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
-
         private void HtmlTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -176,21 +166,18 @@ namespace PelotonIDE.Presentation
             string code = Convert.ToBase64String(Encoding.UTF8.GetBytes("<html></html>"));
             LogoText.Source = new Uri($"data:text/html;base64,{code}");
         }
-
         private void LogoTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
-
         private void LogoTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
-
         private void LogoTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -200,27 +187,22 @@ namespace PelotonIDE.Presentation
             string code = Convert.ToBase64String(Encoding.UTF8.GetBytes(TurtleFrameworkPlus("turtle.clear()")));
             LogoText.Source = new Uri($"data:text/html;base64,{code}");
         }
-
         private void TabViewItem_RTF_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             FrameworkElement? senderElement = sender as FrameworkElement;
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
             flyoutBase.ShowAt(senderElement);
         }
-
         private void RtfTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
         }
-
         private void RtfTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
         }
-
         private void RtfTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
             rtfText.Document.SetText(TextSetOptions.None, null);
         }
-
         private void TabViewItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -231,7 +213,6 @@ namespace PelotonIDE.Presentation
             //UpdateOutputTabsFromRenderers();
             //AssertSelectedOutputTab();
         }
-
         private void TabViewItem_Html_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -242,7 +223,6 @@ namespace PelotonIDE.Presentation
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
             flyoutBase.ShowAt(senderElement);
         }
-
         private void TabViewItem_Logo_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);

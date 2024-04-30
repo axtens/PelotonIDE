@@ -1,29 +1,13 @@
 ﻿using ClosedXML.Excel;
 
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Office2010.CustomUI;
-using DocumentFormat.OpenXml.Office2019.Presentation;
-
-using Microsoft.UI.Text;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
-
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks.Dataflow;
-
-using Windows.Storage;
 
 using Group = System.Text.RegularExpressions.Group;
 using LanguageConfigurationStructure = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, string>>>;
 using LanguageConfigurationStructureSelection =
     System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, string>>;
-using System.Linq;
-using DocumentFormat.OpenXml.Wordprocessing;
+using TabSettingJson = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace PelotonIDE.Presentation
 {
@@ -40,6 +24,8 @@ namespace PelotonIDE.Presentation
 
         long Quietude { get; set; }
         internal static List<Plex>? Plexes { get; private set; }
+
+        TabSettingJson? SourceInFocusTabSettings { get; set; }
 
         [GeneratedRegex(@"<(?:#|@) (.+?)>(.*?)</(?:#|@)>", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled, "en-AU")]
         private static partial Regex PelotonFullPattern();
@@ -63,6 +49,7 @@ namespace PelotonIDE.Presentation
 
             if (parameters.Source == "MainPage")
             {
+                SourceInFocusTabSettings = (TabSettingJson?)parameters.KVPs["InFocusTabSettingsDict"];
                 Plexes = (List<Plex>?)parameters.KVPs["Plexes"];
                 Langs = (LanguageConfigurationStructure)parameters.KVPs["Languages"];
                 //string? tabLanguageName = parameters.KVPs["TabLanguageName"].ToString();

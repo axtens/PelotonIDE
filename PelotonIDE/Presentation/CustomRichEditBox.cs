@@ -1,16 +1,6 @@
-﻿using DocumentFormat.OpenXml.Office2019.Presentation;
-
-using Microsoft.UI;
-using Microsoft.UI.Input;
+﻿using Microsoft.UI.Input;
 using Microsoft.UI.Text;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-
-using Newtonsoft.Json;
-
-using System.Diagnostics;
-
-using Uno.Extensions;
 
 
 
@@ -18,7 +8,6 @@ using Uno.Extensions;
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
-using Windows.UI;
 using Windows.UI.Core;
 
 namespace PelotonIDE.Presentation
@@ -28,7 +17,6 @@ namespace PelotonIDE.Presentation
         public bool IsRTF { get; set; }
         public bool IsDirty { get; set; }
         //public string PreviousSelection { get; set; }
-
         public CustomRichEditBox()
         {
             IsSpellCheckEnabled = false;
@@ -41,7 +29,6 @@ namespace PelotonIDE.Presentation
             PointerReleased += CustomRichEditBox_PointerReleased;
             SelectionChanged += CustomRichEditBox_SelectionChanged;
         }
-
         private void CustomRichEditBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -59,14 +46,12 @@ namespace PelotonIDE.Presentation
 
             }
         }
-
         private void CustomRichEditBox_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             Telemetry.Transmit(((RichEditBox)sender).Name, e.GetType().FullName);
             base.OnPointerReleased(e);
         }
-
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -112,7 +97,6 @@ namespace PelotonIDE.Presentation
             }
             base.OnKeyDown(e);
         }
-
         private void Cut()
         {
             string selectedText = Document.Selection.Text;
@@ -121,7 +105,6 @@ namespace PelotonIDE.Presentation
             Clipboard.SetContent(dataPackage);
             Document.Selection.Delete(Microsoft.UI.Text.TextRangeUnit.Character, 1);
         }
-
         private void CopyText()
         {
             string selectedText = Document.Selection.Text;
@@ -129,7 +112,6 @@ namespace PelotonIDE.Presentation
             dataPackage.SetText(selectedText);
             Clipboard.SetContent(dataPackage);
         }
-
         private async void PasteText()
         {
             DataPackageView dataPackageView = Clipboard.GetContent();
@@ -143,7 +125,6 @@ namespace PelotonIDE.Presentation
                 }
             }
         }
-
         private void SelectAll()
         {
             Focus(FocusState.Pointer);

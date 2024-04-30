@@ -1,10 +1,4 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 using Windows.Storage;
 
@@ -14,24 +8,22 @@ namespace PelotonIDE.Presentation
     {
         private static Dictionary<string,bool> InModuleEnabled = new();
         private static bool firsted = false;
-        public static bool GetEnabled()
-        {
-            System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();
-            string you = trace.GetFrame(1).GetMethod().Name;
-            if (InModuleEnabled.ContainsKey(you))
-            {
-                return InModuleEnabled[you];
-            }
-            return false;
-        }
-
+        //public static bool GetEnabled()
+        //{
+        //    System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();
+        //    string you = trace.GetFrame(1).GetMethod().Name;
+        //    if (InModuleEnabled.ContainsKey(you))
+        //    {
+        //        return InModuleEnabled[you];
+        //    }
+        //    return false;
+        //}
         public static void SetEnabled(bool value)
         {
             System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();
             string you = trace.GetFrame(1).GetMethod().Name;
             InModuleEnabled[you] = value;
         }
-
         public static void Transmit(params object?[] args)
         {
             System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();

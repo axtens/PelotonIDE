@@ -1,161 +1,161 @@
 {
-  "After": {
+  "pOps.After": {
     "Defined": false,
     "Key": "+",
     "Value": "",
     "Internal": false
   },
-  "Assert": {
+  "pOps.Assert": {
     "Defined": false,
     "Key": "A",
     "Value": false,
     "Internal": false
   },
-  "Base": {
+  "pOps.Base": {
     "Defined": false,
     "Key": "B",
     "Value": "",
     "Internal": false
   },
-  "Before": {
+  "pOps.Before": {
     "Defined": false,
     "Key": "-",
     "Value": "",
     "Internal": false
   },
-  "Brace": {
+  "pOps.Brace": {
     "Defined": false,
     "Key": "{",
     "Value": false,
     "Internal": false
   },
-  "Brackets": {
+  "pOps.Brackets": {
     "Defined": false,
     "Key": "(",
     "Value": false,
     "Internal": false
   },
-  "Check": {
+  "pOps.Check": {
     "Defined": false,
     "Key": "C",
     "Value": false,
     "Internal": false
   },
-  "Comma": {
+  "pOps.Comma": {
     "Defined": false,
     "Key": ",",
     "Value": false,
     "Internal": false
   },
-  "Debug": {
+  "pOps.Debug": {
     "Defined": false,
     "Key": "D",
     "Value": false,
     "Internal": false
   },
-  "Environment": {
+  "pOps.Environment": {
     "Defined": false,
     "Key": "E",
     "Value": "",
     "Internal": false
   },
-  "Exclaim": {
+  "pOps.Exclaim": {
     "Defined": false,
     "Key": "!",
     "Value": false,
     "Internal": false
   },
-  "eXecute": {
+  "pOps.eXecute": {
     "Defined": false,
     "Key": "X",
     "Value": "",
     "Internal": false
   },
-  "Filespec": {
+  "pOps.Filespec": {
     "Defined": false,
     "Key": "F",
     "Value": "",
     "Internal": false
   },
-  "Get": {
+  "pOps.Get": {
     "Defined": false,
     "Key": "G",
     "Value": "",
     "Internal": false
   },
-  "Help": {
+  "pOps.Help": {
     "Defined": false,
     "Key": "?",
     "Value": false,
     "Internal": false
   },
-  "Host": {
+  "pOps.Host": {
     "Defined": false,
     "Key": "H",
     "Value": -1,
     "Internal": false
   },
-  "Input": {
+  "pOps.Input": {
     "Defined": false,
     "Key": "I",
     "Value": "",
     "Internal": false
   },
-  "Jump": {
+  "pOps.Jump": {
     "Defined": false,
     "Key": "J",
     "Value": -1,
     "Internal": false
   },
-  "Keyword": {
+  "pOps.Keyword": {
     "Defined": false,
     "Key": "K",
     "Value": "",
     "Internal": false
   },
-  "Language": {
+  "pOps.Language": {
     "Defined": true,
     "Key": "L",
     "Value": 0,
     "Internal": false
   },
-  "Listen": {
+  "pOps.Listen": {
     "Defined": false,
     "Key": ".",
     "Value": -1,
     "Internal": false
   },
-  "Literate": {
+  "pOps.Literate": {
     "Defined": false,
     "Key": "*",
     "Value": false,
     "Internal": false
   },
-  "Memory": {
+  "pOps.Memory": {
     "Defined": false,
     "Key": "M",
     "Value": "",
     "Internal": false
   },
-  "Nanny": {
+  "pOps.Nanny": {
     "Defined": false,
     "Key": "N",
     "Value": false,
     "Internal": false
   },
-  "Override": {
+  "pOps.Override": {
     "Defined": true,
     "Key": "O",
     "Value": false,
     "Internal": false
   },
-  "PreventUnicode": {
+  "pOps.PreventUnicode": {
     "Defined": false,
     "Key": "$",
     "Value": false,
     "Internal": false
   },
-  "Project": {
+  "pOps.Project": {
     "Defined": false,
     "Key": "P",
     "Value": "",
@@ -167,19 +167,19 @@
     "Value": 2,
     "Internal": false
   },
-  "Recordset": {
+  "pOps.Recordset": {
     "Defined": false,
     "Key": "R",
     "Value": "",
     "Internal": false
   },
-  "Spaced": {
+  "pOps.Spaced": {
     "Defined": false,
     "Key": "_",
     "Value": false,
     "Internal": false
   },
-  "Structure": {
+  "pOps.Structure": {
     "Defined": false,
     "Key": "S",
     "Value": "",
@@ -191,37 +191,37 @@
     "Value": 3,
     "Internal": false
   },
-  "Use": {
+  "pOps.Use": {
     "Defined": false,
     "Key": "U",
     "Value": "",
     "Internal": false
   },
-  "mainOps.VariableLength": {
+  "pOps.VariableLength": {
     "Defined": false,
     "Key": "#",
     "Value": false,
     "Internal": false
   },
-  "Variables": {
+  "pOps.Variables": {
     "Defined": false,
     "Key": "V",
     "Value": "",
     "Internal": false
   },
-  "Workspace": {
+  "pOps.Workspace": {
     "Defined": false,
     "Key": "W",
     "Value": "",
     "Internal": false
   },
-  "Yonder": {
+  "pOps.Yonder": {
     "Defined": false,
     "Key": "Y",
     "Value": -1,
     "Internal": false
   },
-  "Zone": {
+  "pOps.Zone": {
     "Defined": false,
     "Key": "Z",
     "Value": "",
@@ -251,7 +251,7 @@
     "Value": 3,
     "Internal": true
   },
-  "mainOps.Padded": {
+  "pOps.Padding": {
     "Defined": true,
     "Key": "p",
     "Value": false,

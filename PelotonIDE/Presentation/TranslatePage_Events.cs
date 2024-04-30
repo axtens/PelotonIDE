@@ -41,17 +41,16 @@ namespace PelotonIDE.Presentation
                         { "TargetVariableLength", chkVarLengthTo.IsChecked ?? false},
                         { "TargetPadOutCode", chkSpaceOut.IsChecked ?? false},
                         { "TargetText" ,  txt},
-                        { "pOps.Quietude",   Quietude}
+                        { "pOps.Quietude",   Quietude},
+                        { "SourceInFocusTabSettings", SourceInFocusTabSettings! }
                     }
                 });
             }
         }
-
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(MainPage), null);
         }
-
         private void ChkSpaceOut_Click(object sender, RoutedEventArgs e)
         {
             if (targetLanguageList.SelectedItem == null) return;
@@ -65,7 +64,6 @@ namespace PelotonIDE.Presentation
                     TranslateCode(code, ((ListBoxItem)sourceLanguageList.SelectedItem).Name, ((ListBoxItem)targetLanguageList.SelectedItem).Name));
             targetText.FlowDirection = GetFlowDirection(((ListBoxItem)targetLanguageList.SelectedItem).Name);
         }
-
         private void TargetLanguageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             sourceText.Document.GetText(TextGetOptions.None, out string code);
@@ -80,7 +78,6 @@ namespace PelotonIDE.Presentation
                     TranslateCode(code, ((ListBoxItem)sourceLanguageList.SelectedItem).Name, ((ListBoxItem)targetLanguageList.SelectedItem).Name));
             targetText.FlowDirection = GetFlowDirection(((ListBoxItem)targetLanguageList.SelectedItem).Name);
         }
-
         private void SourceLanguageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             sourceText.Document.GetText(TextGetOptions.None, out string code);
@@ -98,7 +95,6 @@ namespace PelotonIDE.Presentation
                 targetText.FlowDirection = GetFlowDirection(((ListBoxItem)targetLanguageList.SelectedItem).Name);
             }
         }
-
         private void ChkVarLengthFrom_Click(object sender, RoutedEventArgs e)
         {
             if (targetLanguageList.SelectedItem == null) return;
@@ -116,7 +112,6 @@ namespace PelotonIDE.Presentation
                     TranslateCode(code, ((ListBoxItem)sourceLanguageList.SelectedItem).Name, ((ListBoxItem)targetLanguageList.SelectedItem).Name));
             targetText.FlowDirection = GetFlowDirection(((ListBoxItem)targetLanguageList.SelectedItem).Name);
         }
-
         private void ChkVarLengthTo_Click(object sender, RoutedEventArgs e)
         {
             if (targetLanguageList.SelectedItem == null) return;
@@ -134,11 +129,9 @@ namespace PelotonIDE.Presentation
                     TranslateCode(code, ((ListBoxItem)sourceLanguageList.SelectedItem).Name, ((ListBoxItem)targetLanguageList.SelectedItem).Name));
             targetText.FlowDirection = GetFlowDirection(((ListBoxItem)targetLanguageList.SelectedItem).Name);
         }
-
         private void ChkSpaceIn_Click(object sender, RoutedEventArgs e)
         {
         }
-
         private FlowDirection GetFlowDirection(string name)
         {
             Dictionary<string, string> globals = Langs[name]["GLOBAL"];

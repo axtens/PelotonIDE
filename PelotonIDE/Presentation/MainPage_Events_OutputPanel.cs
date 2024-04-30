@@ -2,12 +2,6 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Windows.UI.Core;
 
 namespace PelotonIDE.Presentation
@@ -50,7 +44,6 @@ namespace PelotonIDE.Presentation
             //oHW.Text = $"OutputPanel: {e.NewSize.Height}/{e.NewSize.Width}";
 
         }
-
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -92,7 +85,6 @@ namespace PelotonIDE.Presentation
                 this.ProtectedCursor = InputCursor.CreateFromCoreCursor(new CoreCursor(CoreCursorType.SizeWestEast, 0));
             }
         }
-
         private void OutputThumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             Telemetry.SetEnabled(true);
@@ -114,7 +106,6 @@ namespace PelotonIDE.Presentation
             this.ProtectedCursor = InputCursor.CreateFromCoreCursor(new CoreCursor(CoreCursorType.Arrow, 0));
 
         }
-
         private async void OutputThumb_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
@@ -131,32 +122,26 @@ namespace PelotonIDE.Presentation
             }
             Telemetry.Transmit(this.ProtectedCursor);
         }
-
         private void OutputThumb_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             this.ProtectedCursor = InputCursor.CreateFromCoreCursor(new CoreCursor(CoreCursorType.Arrow, 0));
             Telemetry.Transmit(this.ProtectedCursor);
         }
-
         private void OutputLeft_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             HandleOutputPanelChange("Left");
         }
-
         private void OutputBottom_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             HandleOutputPanelChange("Bottom");
         }
-
         private void OutputRight_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.SetEnabled(false);
             HandleOutputPanelChange("Right");
         }
-
-
     }
 }
