@@ -62,7 +62,7 @@ namespace PelotonIDE.Presentation
         {
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-            currentRichEditBox.Document.GetText(TextGetOptions.UseCrlf, out string selectedText); // FIXME don't interpret nothig
+            currentRichEditBox.Document.GetText(TextGetOptions.UseCrlf, out string selectedText); 
             selectedText = selectedText.TrimEnd("\r\n");
             if (selectedText.Length > 0)
                 ExecuteInterpreter(selectedText);
@@ -82,7 +82,7 @@ namespace PelotonIDE.Presentation
             selectedText = selectedText.TrimEnd('\r');
             if (selectedText.Length > 0)
             {
-                ExecuteInterpreter(selectedText.Replace("\r", "\r\n")); // FIXME pass in some kind of identifier to connect to the tab
+                ExecuteInterpreter(selectedText.Replace("\r", "\r\n"));
             }
 
             selection.CharacterFormat.BackgroundColor = normal;

@@ -524,7 +524,7 @@ namespace PelotonIDE.Presentation
                 navigationViewItem.IsNewFile = false;
                 navigationViewItem.SavedFilePath = pickedFile;
                 navigationViewItem.Content = pickedFile.Name;
-                navigationViewItem.Height = 30; // FIXME is this where to do it?
+                navigationViewItem.Height = 30; 
                 navigationViewItem.TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters);
                 CustomRichEditBox newestRichEditBox = _richEditBoxes[navigationViewItem.Tag];
                 using (Windows.Storage.Streams.IRandomAccessStream randAccStream =
@@ -577,11 +577,8 @@ namespace PelotonIDE.Presentation
                         UpdateStatusBar(tabset);
                     }
                 }
-                //UpdateInterpreterInStatusBar(); // FIXME duplication?
-                //UpdateTopMostRendererInCurrentTab();
 
                 UpdateOutputTabs();
-                //bool flag = InFocusTabIsPrFile(); // FIXME What's this for??
             }
         }
         private async void Paste()

@@ -484,18 +484,10 @@ namespace PelotonIDE.Presentation
                     break;
             }
         }
-        //private void StyleTab(TabViewItem tvi, string foreGround, string backGround)
-        //{
-        //    System.Drawing.Color fg = ColorTranslator.FromHtml(foreGround);
-        //    System.Drawing.Color bg = ColorTranslator.FromHtml(backGround);
-        //    SolidColorBrush fgScb = new SolidColorBrush(new Color() { A = fg.A, R = fg.R, G = fg.G, B = fg.B });
-        //    SolidColorBrush bgScb = new SolidColorBrush(new Color() { A =bg.A, R = bg.R, G = bg.G, B = bg.B });
-        //    tvi.Foreground = fgScb;
-        //    tvi.Background = bgScb;
-        //}
+
         private void UpdateOutputTabs()
         {
-            // FIXME            Telemetry.SetEnabled(true);
+            Telemetry.SetEnabled(true);
             if (!AnInFocusTabExists()) return;
 
             DeselectAndDisableAllOutputPanelTabs();
@@ -515,7 +507,6 @@ namespace PelotonIDE.Presentation
         }
         private void UpdateStatusBar(TabSettingJson tabSettingsDict)
         {
-            // FIXME
             languageName.Text = GetLanguageNameOfCurrentTab(tabSettingsDict);
             tabCommandLine.Text = BuildTabCommandLine();
 
