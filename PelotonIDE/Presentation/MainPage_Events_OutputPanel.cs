@@ -11,7 +11,7 @@ namespace PelotonIDE.Presentation
         private void OutputPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 
-            Telemetry.SetEnabled(true);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit("e.NewSize.Height=", e.NewSize.Height, "e.NewSize.Width=", e.NewSize.Width, "e.PreviousSize.Height=", e.PreviousSize.Height, "e.PreviousSize.Width=", e.PreviousSize.Width);
 
             string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";
@@ -29,14 +29,14 @@ namespace PelotonIDE.Presentation
                     outputPanel.ClearValue(HeightProperty);
                     outputPanelTabView.Width = outputPanel.ActualWidth;
                     outputPanelTabView.Height = outputPanel.ActualHeight;
-                    outputThumb.Width = 10;
+                    outputThumb.Width = 5;
                     outputThumb.Height = outputPanel.ActualHeight;
                     break;
                 case OutputPanelPosition.Left:
                     outputPanel.ClearValue(HeightProperty);
                     outputPanelTabView.Width = outputPanel.ActualWidth;
                     outputPanelTabView.Height = outputPanel.ActualHeight;
-                    outputThumb.Width = 10;
+                    outputThumb.Width = 5;
                     outputThumb.Height = outputPanel.ActualHeight;
                     Canvas.SetLeft(outputThumb, outputPanel.ActualWidth - 1);
                     break;
@@ -46,7 +46,7 @@ namespace PelotonIDE.Presentation
         }
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Thumb me = (Thumb)sender;
 
 
@@ -87,7 +87,7 @@ namespace PelotonIDE.Presentation
         }
         private void OutputThumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            Telemetry.SetEnabled(true);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Thumb me = (Thumb)sender;
 
             Telemetry.Transmit(me.Name, "e.HorizontalChange=", e.HorizontalChange, "e.VerticalChange=", e.VerticalChange, "outputPanel.Width=", outputPanel.Width, "outputPanel.Height=", outputPanel.Height);
@@ -108,7 +108,7 @@ namespace PelotonIDE.Presentation
         }
         private async void OutputThumb_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition"));
 
@@ -124,23 +124,23 @@ namespace PelotonIDE.Presentation
         }
         private void OutputThumb_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             this.ProtectedCursor = InputCursor.CreateFromCoreCursor(new CoreCursor(CoreCursorType.Arrow, 0));
             Telemetry.Transmit(this.ProtectedCursor);
         }
         private void OutputLeft_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             HandleOutputPanelChange("Left");
         }
         private void OutputBottom_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             HandleOutputPanelChange("Bottom");
         }
         private void OutputRight_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             HandleOutputPanelChange("Right");
         }
     }

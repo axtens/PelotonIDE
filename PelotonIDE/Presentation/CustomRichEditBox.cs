@@ -31,7 +31,7 @@ namespace PelotonIDE.Presentation
         }
         private void CustomRichEditBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             CustomRichEditBox me = ((CustomRichEditBox)sender);
             ITextSelection selection = me.Document.Selection;
             selection.GetText(TextGetOptions.None, out string text);
@@ -48,13 +48,13 @@ namespace PelotonIDE.Presentation
         }
         private void CustomRichEditBox_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit(((RichEditBox)sender).Name, e.GetType().FullName);
             base.OnPointerReleased(e);
         }
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             CoreVirtualKeyStates ctrlState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control);
             CoreVirtualKeyStates shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
             bool isCtrlPressed = ctrlState.HasFlag(CoreVirtualKeyStates.Down);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml.Input;
 
-using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
-        System.Collections.Generic.Dictionary<string, object>>;
+using TabSettingJson = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
+
 
 namespace PelotonIDE.Presentation
 {
@@ -76,7 +76,7 @@ namespace PelotonIDE.Presentation
             //UpdateCommandLineInStatusBar();
             if (AnInFocusTabExists())
             {
-                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
                 if (tabset != null)
                 {
                     UpdateStatusBar(tabset);
@@ -85,7 +85,7 @@ namespace PelotonIDE.Presentation
         }
         private void UpdateLanguageInContextualMenu(MenuFlyoutItem me, string internationalizedName, string name)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             if (me.Tag is Dictionary<string, object> parent)
             {
                 IList<MenuFlyoutItemBase> subMenus = ((MenuFlyout)parent["MenuFlyout"]).Items; //  from menu in ((MenuFlyoutSubItem)me.Tag).Items select menu;
@@ -113,7 +113,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_FixedVariable_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             ContentControl me = (ContentControl)sender;
 
@@ -159,7 +159,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_FixedVariable_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
 
@@ -175,7 +175,7 @@ namespace PelotonIDE.Presentation
             // UpdateCommandLineInStatusBar();
             if (AnInFocusTabExists())
             {
-                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
                 if (tabset != null)
                 {
                     UpdateStatusBar(tabset);
@@ -184,7 +184,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Quietude_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             ContentControl me = (ContentControl)sender;
 
@@ -231,7 +231,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Quietude_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             string[] quietudes = ["mnuQuiet", "mnuVerbose", "mnuVerbosePauseOnExit"];
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
@@ -249,7 +249,7 @@ namespace PelotonIDE.Presentation
             // UpdateCommandLineInStatusBar();
             if (AnInFocusTabExists())
             {
-                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
                 if (tabset != null)
                 {
                     UpdateStatusBar(tabset);
@@ -258,7 +258,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Timeout_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             ContentControl me = (ContentControl)sender;
 
@@ -303,7 +303,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Timeout_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             string[] timeouts = ["mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite"];
             MenuFlyoutItem me = (MenuFlyoutItem)sender;

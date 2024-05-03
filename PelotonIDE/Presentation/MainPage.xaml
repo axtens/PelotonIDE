@@ -242,9 +242,9 @@
                 <MenuFlyoutSubItem x:Name="mnuRendering" Text="Renderers">
                     <MenuFlyoutItem x:Name="mnuOutput" Text="Output" Click="InterpretMenu_Rendering_Click" Tag="3"/>
                     <MenuFlyoutItem x:Name="mnuError" Text="Error" Click="InterpretMenu_Rendering_Click" Tag="0"/>
+                    <MenuFlyoutItem x:Name="mnuRTF" Text="RTF" Click="InterpretMenu_Rendering_Click" Tag="31"/>
                     <MenuFlyoutItem x:Name="mnuHTML" Text="HTML" Click="InterpretMenu_Rendering_Click" Tag="21"/>
                     <MenuFlyoutItem x:Name="mnuLogo" Text="Logo" Click="InterpretMenu_Rendering_Click" Tag="42"/>
-                    <MenuFlyoutItem x:Name="mnuRTF" Text="RTF" Click="InterpretMenu_Rendering_Click" Tag="31"/>
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSubItem x:Name="mnuChooseEngine" Text="Choose runtime engine">
                     <MenuFlyoutItem Text="P2 Protium" x:Name="mnuOldEngine" Click="ChooseEngine_Click" Tag="P2"/>
@@ -413,7 +413,6 @@
                                                 <SolidColorBrush Color="AliceBlue" x:Key="TextControlBackgroundPointerOver"/>
                                                 <SolidColorBrush Color="AliceBlue" x:Key="TextControlBackgroundFocused"/>
                                                 <SolidColorBrush Color="AliceBlue" x:Key="TextControlBackground"/>
-
                                             </ResourceDictionary>
                                         </RichEditBox.Resources>
                                     </RichEditBox>

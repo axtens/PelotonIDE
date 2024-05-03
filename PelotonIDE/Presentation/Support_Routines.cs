@@ -1,4 +1,6 @@
-﻿using Microsoft.UI;
+﻿using DocumentFormat.OpenXml.Office2010.CustomUI;
+
+using Microsoft.UI;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
@@ -97,17 +99,17 @@ namespace PelotonIDE.Presentation
         }
         private void HandleOutputPanelChange(string changeTo)
         {
-            
+
             OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), changeTo);
 
             double outputPanelHeight = Type_1_GetVirtualRegistry<double>("ideOps.OutputPanelHeight");
             double outputPanelWidth = Type_1_GetVirtualRegistry<double>("ideOps.OutputPanelWidth");
             bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing");
-            
+
             string outputPanelTabViewSettings = Type_1_GetVirtualRegistry<string>("OutputPanelTabView_Settings");
             string tabControlSettings = Type_1_GetVirtualRegistry<string>("TabControl_Settings");
 
-            Telemetry.SetEnabled(true);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit("outputPanelWidth=", outputPanelWidth, "outputPanelHeight=", outputPanelHeight, "outputPanelTabViewSettings=", outputPanelTabViewSettings, "tabControlSettings=", tabControlSettings, "outputPanel.ActualHeight=", outputPanel.ActualHeight, "outputPanel.ActualWidth=", outputPanel.ActualWidth, "App._window.Bounds=", App._window.Bounds);
 
             string optvPosition = FromBarredString_String(outputPanelTabViewSettings, 0);
@@ -231,7 +233,7 @@ namespace PelotonIDE.Presentation
         }
         private void ChangeHighlightOfMenuBarForLanguage(MenuBarItem mnuRun, string InterpreterLanguageName)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             Telemetry.Transmit("InterpreterLanguageName=", InterpreterLanguageName);
             IEnumerable<MenuFlyoutItemBase> subMenus = from menu in mnuRun.Items where menu.Name == "mnuLanguage" select menu;
@@ -291,7 +293,7 @@ namespace PelotonIDE.Presentation
         #region Getters
         private T? Type_3_GetInFocusTab<T>(string name)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             T? result = default;
             if (navigationViewItem == null || navigationViewItem.TabSettingsDict == null)
@@ -303,14 +305,14 @@ namespace PelotonIDE.Presentation
         }
         private T Type_1_GetVirtualRegistry<T>(string name)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             object result = ApplicationData.Current.LocalSettings.Values[name];
             Telemetry.Transmit(name + "=", name, "result=", result);
             return (T)result;
         }
         private T? Type_2_GetPerTabSettings<T>(string name)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             return (bool)PerTabInterpreterParameters[name]["Defined"] ? (T?)(T)PerTabInterpreterParameters[name]["Value"] : default;
         }
         #endregion
@@ -318,14 +320,14 @@ namespace PelotonIDE.Presentation
         // 1. virt reg
         private void Type_1_UpdateVirtualRegistry<T>(string name, T value)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit(name, value);
             ApplicationData.Current.LocalSettings.Values[name] = value;
         }
         // 2. pertab
         private void Type_2_UpdatePerTabSettings<T>(string name, bool enabled, T value)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit(name, enabled, value);
             PerTabInterpreterParameters[name]["Defined"] = enabled;
             PerTabInterpreterParameters[name]["Value"] = value!;
@@ -333,10 +335,10 @@ namespace PelotonIDE.Presentation
         // 3. currtab
         private void Type_3_UpdateInFocusTabSettings<T>(string name, bool enabled, T value)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit(name, enabled, value);
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-            if (navigationViewItem == null || navigationViewItem.TabSettingsDict == null) 
+            if (navigationViewItem == null || navigationViewItem.TabSettingsDict == null)
             {
                 return;
             }
@@ -345,24 +347,24 @@ namespace PelotonIDE.Presentation
         }
         private async Task Type_3_UpdateInFocusTabSettingsIfPermittedAsync<T>(string name, bool defined, T value, string prompt)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit(name, defined, value);
-            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-            if (navigationViewItem == null || navigationViewItem.TabSettingsDict == null)
+            CustomTabItem? inFocusTab = InFocusTab();
+            if (inFocusTab == null || inFocusTab.TabSettingsDict == null)
             {
                 return;
             }
-            bool currentDefined = (bool)navigationViewItem.TabSettingsDict[name]["Defined"];
-            T currentValue = (T)navigationViewItem.TabSettingsDict[name]["Value"];
+            bool currentDefined = (bool)inFocusTab.TabSettingsDict[name]["Defined"];
+            T currentValue = (T)inFocusTab.TabSettingsDict[name]["Value"];
             if (currentDefined == defined && $"{currentValue}" == $"{value}")
             {
                 return;
             }
             if (await ChangingSettingsAllowed(prompt))
             {
-                navigationViewItem.TabSettingsDict[name]["Defined"] = defined;
-                navigationViewItem.TabSettingsDict[name]["Value"] = value!;
-
+                inFocusTab.TabSettingsDict[name]["Defined"] = defined;
+                inFocusTab.TabSettingsDict[name]["Value"] = value!;
+                UpdateStatusBar(inFocusTab.TabSettingsDict);
             }
         }
         private async Task<bool> ChangingSettingsAllowed(string prompt)
@@ -397,7 +399,7 @@ namespace PelotonIDE.Presentation
         }
         private void SerializeTabsToVirtualRegistry()
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             string list = string.Join(',', outputPanelTabView.TabItems.Select(e =>
             {
                 TabViewItem f = (TabViewItem)e;
@@ -408,7 +410,7 @@ namespace PelotonIDE.Presentation
         }
         private void DeserializeTabsFromVirtualRegistry()
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             string? tabViewLayout = Type_1_GetVirtualRegistry<string>("TabViewLayout");
             if (tabViewLayout == null) return;
@@ -453,12 +455,12 @@ namespace PelotonIDE.Presentation
         }
         private void UpdateTopMostRendererInCurrentTab()
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             if (!AnInFocusTabExists()) return;
             string? rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
             long rend = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
-            if (rendering == null || rendering.Split(',',StringSplitOptions.RemoveEmptyEntries).Length == 0)
+            if (rendering == null || rendering.Split(',', StringSplitOptions.RemoveEmptyEntries).Length == 0)
             {
                 return;
             }
@@ -487,7 +489,7 @@ namespace PelotonIDE.Presentation
 
         private void UpdateOutputTabs()
         {
-            Telemetry.SetEnabled(true);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             if (!AnInFocusTabExists()) return;
 
             DeselectAndDisableAllOutputPanelTabs();
@@ -535,5 +537,38 @@ namespace PelotonIDE.Presentation
                     break;
             }
         }
+
+        private async Task<bool> FileNotFoundDialog(string? file)
+        {
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = $"File '{file}' not found",
+                PrimaryButtonText = "OK"
+            };
+            ContentDialogResult result = await dialog.ShowAsync();
+            return false;
+        }
+
+        private async Task<bool> TestPresenceOfAllPlexes()
+        {
+            var plexes = GetAllPlexes();
+            if (plexes == null || plexes.Count == 0)
+            {
+                ContentDialog dialog = new()
+                {
+                    XamlRoot = this.XamlRoot,
+                    Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                    Title = "No BSON-formatted .lex files found in c:\\peloton\\bin\\lexers",
+                    PrimaryButtonText = "OK"
+                };
+                ContentDialogResult result = await dialog.ShowAsync();
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

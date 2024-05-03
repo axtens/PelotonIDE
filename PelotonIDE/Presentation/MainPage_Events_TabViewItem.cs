@@ -1,18 +1,15 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using Microsoft.UI.Text;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
-using Windows.Storage;
-using Microsoft.UI.Text;
-using Microsoft.UI;
+
+using TabSettingJson = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace PelotonIDE.Presentation
 {
@@ -147,19 +144,19 @@ namespace PelotonIDE.Presentation
         }
         private void HtmlTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
         private void HtmlTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
         private void HtmlTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
 
@@ -168,19 +165,19 @@ namespace PelotonIDE.Presentation
         }
         private void LogoTab_Contextual_SaveToFile_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
         private void LogoTab_Contextual_SaveToClipboard_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
         }
         private void LogoTab_Contextual_Clear_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
 
@@ -205,17 +202,26 @@ namespace PelotonIDE.Presentation
         }
         private void TabViewItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             TabViewItem me = (TabViewItem)sender;
+            long tag = long.Parse((string)me.Tag);
+            Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, tag);
+            Type_2_UpdatePerTabSettings<long>("outputOps.TappedRenderer", true, tag);
+            Type_1_UpdateVirtualRegistry<long>("outputOps.TappedRenderer", tag);
 
-            Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, long.Parse((string)me.Tag));
-            // remove all "selected" attributes from all tabs
-            //UpdateOutputTabsFromRenderers();
-            //AssertSelectedOutputTab();
+            if (AnInFocusTabExists())
+            {
+                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
+                if (tabset != null)
+                {
+                    UpdateStatusBar(tabset);
+                }
+            }
+            UpdateOutputTabs();
         }
         private void TabViewItem_Html_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             TabViewItem me = (TabViewItem)sender;
             Telemetry.Transmit(me.Name);
 
@@ -225,7 +231,7 @@ namespace PelotonIDE.Presentation
         }
         private void TabViewItem_Logo_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             TabViewItem me = (TabViewItem)sender;
             Telemetry.Transmit(me.Name);
 

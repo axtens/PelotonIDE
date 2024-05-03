@@ -2,6 +2,7 @@
 
 using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, object>>;
+using TabSettingJson = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace PelotonIDE.Presentation
 {
@@ -9,7 +10,7 @@ namespace PelotonIDE.Presentation
     {
         private void TabControl_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             var me = (NavigationView)sender;
             if (args.SelectedItem != null)
             {
@@ -40,20 +41,20 @@ namespace PelotonIDE.Presentation
         }
         //private void TabControl_KeyDown(object sender, KeyRoutedEventArgs e)
         //{
-        //    Telemetry.SetEnabled(false);
+        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
         //    CustomTabItem me = (CustomTabItem)sender;
         //    Telemetry.Transmit(me.Name, e.GetType().FullName);
         //}
         private void CustomTabItem_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             CustomTabItem me = (CustomTabItem)sender;
             Telemetry.Transmit(me.Name, e.GetType().FullName);
 
         }
         private async void TabControl_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires first for all tabs other than tab1
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             CustomTabItem selectedItem = (CustomTabItem)((NavigationView)sender).SelectedItem;
 
             CustomRichEditBox currentRichEditBox = _richEditBoxes[selectedItem.Tag];
@@ -76,17 +77,17 @@ namespace PelotonIDE.Presentation
             // UpdateCommandLineInStatusBar();
             if (AnInFocusTabExists())
             {
-                RenderingConstantsStructure? tabset = InFocusTab().TabSettingsDict;
+                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
                 if (tabset != null)
                 {
                     UpdateStatusBar(tabset);
                 }
             }
-            UpdateStatusBarFromInFocusTab();
+            // UpdateStatusBarFromInFocusTab();
         }
         private void CustomTabItem_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires on tab1 then fires TabControl_RightTapped
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit(((CustomTabItem)sender).Name, e.GetType().FullName);
 
         }

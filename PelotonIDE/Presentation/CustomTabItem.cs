@@ -33,7 +33,7 @@ namespace PelotonIDE.Presentation
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit("CustomTabItem", e.DeviceId, e.Handled, e.Key, e.KeyStatus, e.OriginalKey, e.OriginalSource);
             //if (e.Key == (VirtualKey.Tab|VirtualKey.Control))
             //{

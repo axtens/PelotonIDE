@@ -11,7 +11,8 @@ namespace PelotonIDE.Presentation
     {
         private async void ExecuteInterpreter(string selectedText)
         {
-            Telemetry.SetEnabled(false);
+            //Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
             DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread();
 
@@ -51,13 +52,22 @@ namespace PelotonIDE.Presentation
             // generate arguments string
             string stdOut;
             string stdErr;
+
+            string interpKey = $"ideOps.Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
+            string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
+
+            if (!File.Exists(Exe))
+            {
+                if (!await FileNotFoundDialog(Exe)) return;
+            }
             if (interpreter == 3)
             {
-                (stdOut, stdErr) = RunPeloton2(engineArguments, selectedText, quietude, dispatcher);
+
+                (stdOut, stdErr) = RunPeloton2(Exe, engineArguments, selectedText, quietude, dispatcher);
             }
             else
             {
-                (stdOut, stdErr) = RunProtium(engineArguments, selectedText, quietude);
+                (stdOut, stdErr) = RunProtium(Exe, engineArguments, selectedText, quietude);
             }
 
             Telemetry.Transmit("stdOut=", stdOut, "stdErr=", stdErr);
@@ -153,7 +163,7 @@ namespace PelotonIDE.Presentation
             }
         private string ParseLogoIntoJavascript(string v)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             
             List<string> result = [];
             string[] lines = v.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -242,7 +252,7 @@ namespace PelotonIDE.Presentation
         //}
         private static void AddInsertParagraph(RichEditBox reb, string text, bool addInsert = true, bool withPrefix = true)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             if (string.IsNullOrEmpty(text))
             {
                 return;
@@ -267,11 +277,10 @@ namespace PelotonIDE.Presentation
             reb.Focus(FocusState.Programmatic);
             //reb.IsReadOnly = true;
         }
-        public (string StdOut, string StdErr) RunProtium(string args, string buff, long quietude)
+        public (string StdOut, string StdErr) RunProtium(string? Exe, string args, string buff, long quietude)
         {
-            Telemetry.SetEnabled(false);
-            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
-            string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry(2);
+
             string temp = System.IO.Path.GetTempFileName();
             File.WriteAllText(temp, buff, Encoding.Unicode);
 
@@ -297,7 +306,7 @@ namespace PelotonIDE.Presentation
         }
         //public (string StdOut, string StdErr) RunPeloton(string args, string buff, long quietude)
         //{
-        //    Telemetry.SetEnabled(false);
+        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
         //    string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
         //    string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
@@ -337,19 +346,16 @@ namespace PelotonIDE.Presentation
         //    outputText.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, $"{value}{arg}");
         //    //outputText.IsReadOnly = true;
         //}
-        public (string StdOut, string StdErr) RunPeloton2(string args, string buff, long quietude, DispatcherQueue dispatcher)
+        public (string StdOut, string StdErr) RunPeloton2(string? Exe, string args, string buff, long quietude, DispatcherQueue dispatcher)
         {
-            Telemetry.SetEnabled(false);
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry(0);
 
             string temp = System.IO.Path.GetTempFileName();
             File.WriteAllText(temp, buff, Encoding.Unicode);
 
             Telemetry.Transmit("temp=", temp);
 
-            string interpKey = $"Engine.{Type_3_GetInFocusTab<long>("ideOps.Engine")}";
-            string? Exe = ApplicationData.Current.LocalSettings.Values[interpKey].ToString();
-
-            Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff, "Quietude=", quietude);
+            Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff);
 
             ProcessStartInfo info = new()
             {
@@ -396,7 +402,7 @@ namespace PelotonIDE.Presentation
             };
             proc.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
             {
-                Telemetry.SetEnabled(false);
+                Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
                 //Telemetry.Transmit(e.Data);
                 stderr.AppendLine(e.Data);
             };
@@ -406,8 +412,6 @@ namespace PelotonIDE.Presentation
 
             proc.WaitForExit(GetTimeoutInMilliseconds());
             proc.Dispose();
-
-            //inject($"){DateTime.Now:o}\r");
 
             return (StdOut: stdout.ToString().Trim(), StdErr: stderr.ToString().Trim());
         }
