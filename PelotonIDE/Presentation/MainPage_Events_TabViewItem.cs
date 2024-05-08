@@ -209,14 +209,7 @@ namespace PelotonIDE.Presentation
             Type_2_UpdatePerTabSettings<long>("outputOps.TappedRenderer", true, tag);
             Type_1_UpdateVirtualRegistry<long>("outputOps.TappedRenderer", tag);
 
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
+            UpdateStatusBar();
             UpdateOutputTabs();
         }
         private void TabViewItem_Html_RightTapped(object sender, RightTappedRoutedEventArgs e)

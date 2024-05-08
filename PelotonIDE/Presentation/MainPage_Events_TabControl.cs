@@ -23,11 +23,11 @@ namespace PelotonIDE.Presentation
                     if (navigationViewItem.TabSettingsDict != null)
                     {
                         string currentLanguageName = GetLanguageNameOfCurrentTab(navigationViewItem.TabSettingsDict);
-                        if (languageName.Text != currentLanguageName)
+                        if (sbLanguageName.Text != currentLanguageName)
                         {
-                            languageName.Text = currentLanguageName;
+                            sbLanguageName.Text = currentLanguageName;
                         }
-                        UpdateStatusBar(navigationViewItem.TabSettingsDict);
+                        UpdateStatusBar();
 
                         //UpdateCommandLineInStatusBar();
                         //UpdateStatusBarFromInFocusTab();
@@ -74,16 +74,8 @@ namespace PelotonIDE.Presentation
                 tabControl.Content = null;
                 tabControl.SelectedItem = null;
             }
-            // UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
-            // UpdateStatusBarFromInFocusTab();
+
+            UpdateStatusBar();
         }
         private void CustomTabItem_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires on tab1 then fires TabControl_RightTapped
         {

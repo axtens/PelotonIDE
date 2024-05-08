@@ -233,7 +233,7 @@
       "mnuSplitHorizontal": "[...]",
       "mnuSynchronizeVerticalScrolling": "[...]",
       "mnuSynchronizeHorizontalScrolling": "[...]",
-      "mnuGo": "ሥራ",
+      "mnuRunCode": "ሥራ",
       "mnuRunSelectedCode": "ተመራጭ",
       "mnuDebugging": "ስሕተት",
       "mnuEnableDebugging": "ስሕተት",
@@ -931,7 +931,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "አርቲኤፍ",
-      "txtRendering": "የተቀረጹ"
+      "sbRendering": "የተቀረጹ"
     },
     "GLOBAL": {
       "101": "እንግሊዝኛ - English",
@@ -2756,7 +2756,7 @@
       "mnuSplitHorizontal": "اقسم أفقياً",
       "mnuSynchronizeVerticalScrolling": "تزامن التحريك العمودي",
       "mnuSynchronizeHorizontalScrolling": "تزامن التحريك الأفقي",
-      "mnuGo": "تشغيل...",
+      "mnuRunCode": "تشغيل...",
       "mnuRunSelectedCode": "مدونة البعيد مختارة",
       "mnuDebugging": "تصحيح الأخطاء",
       "mnuEnableDebugging": "تمكين المصحّح",
@@ -3454,7 +3454,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "ر.ت.ف.",
-      "txtRendering": "منقوش"
+      "sbRendering": "منقوش"
     },
     "GLOBAL": {
       "101": "الانجليزيه English",
@@ -5279,7 +5279,7 @@
       "mnuSplitHorizontal": "横向分割",
       "mnuSynchronizeVerticalScrolling": "垂直同步移动",
       "mnuSynchronizeHorizontalScrolling": "水平同步移动",
-      "mnuGo": "运行",
+      "mnuRunCode": "运行",
       "mnuRunSelectedCode": "运行选定的代码",
       "mnuDebugging": "调试",
       "mnuEnableDebugging": "启用调试器",
@@ -5977,7 +5977,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "渲染"
+      "sbRendering": "渲染"
     },
     "GLOBAL": {
       "101": "英语 - English",
@@ -7802,7 +7802,7 @@
       "mnuSplitHorizontal": "水平分割",
       "mnuSynchronizeVerticalScrolling": "垂直同步移動",
       "mnuSynchronizeHorizontalScrolling": "水平同步移動",
-      "mnuGo": "快速鍵管理...",
+      "mnuRunCode": "快速鍵管理...",
       "mnuRunSelectedCode": "運行選定代碼",
       "mnuDebugging": "調試",
       "mnuEnableDebugging": "啟用除錯器",
@@ -8500,7 +8500,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "渲染"
+      "sbRendering": "渲染"
     },
     "GLOBAL": {
       "101": "英語 - English",
@@ -10325,7 +10325,7 @@
       "mnuSplitHorizontal": "Opdel vandret",
       "mnuSynchronizeVerticalScrolling": "Synkoniser Lodret Rulning",
       "mnuSynchronizeHorizontalScrolling": "Synkroniser Vandret Rulning",
-      "mnuGo": "Kør...",
+      "mnuRunCode": "Kør...",
       "mnuRunSelectedCode": "Markeret tekst",
       "mnuDebugging": "Fejlfinding",
       "mnuEnableDebugging": "Aktivér fejlsøger",
@@ -11023,7 +11023,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "imprint"
+      "sbRendering": "imprint"
     },
     "GLOBAL": {
       "101": "Engelsk - English",
@@ -12848,7 +12848,7 @@
       "mnuSplitHorizontal": "Split horizontal",
       "mnuSynchronizeVerticalScrolling": "Synchronize Vertical Scrolling",
       "mnuSynchronizeHorizontalScrolling": "Synchronize Horizontal Scrolling",
-      "mnuGo": "Run code",
+      "mnuRunCode": "Run code",
       "mnuRunSelectedCode": "Run selected code",
       "mnuDebugging": "Debugging",
       "mnuEnableDebugging": "Enable debugging",
@@ -13546,7 +13546,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "Renderers"
+      "sbRendering": "Renderers"
     },
     "GLOBAL": {
       "101": "English",
@@ -15371,7 +15371,7 @@
       "mnuSplitHorizontal": "شکافتن &افقی‌",
       "mnuSynchronizeVerticalScrolling": "همزمان عمودی پیمایش",
       "mnuSynchronizeHorizontalScrolling": "همزمان افقی پیمایش",
-      "mnuGo": "اجرا کن...",
+      "mnuRunCode": "اجرا کن...",
       "mnuRunSelectedCode": "متن برگزیده",
       "mnuDebugging": "اشکال زدایی",
       "mnuEnableDebugging": "فعال‌سازی اشکال‌زدا",
@@ -16069,7 +16069,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "رندر"
+      "sbRendering": "رندر"
     },
     "GLOBAL": {
       "101": "انگلیسی - English",
@@ -17894,7 +17894,7 @@
       "mnuSplitHorizontal": "Scinder la vue &horizontalement",
       "mnuSynchronizeVerticalScrolling": "Synchronisation du scroll vertical",
       "mnuSynchronizeHorizontalScrolling": "Synchronisation du scroll horizontal",
-      "mnuGo": "Exécuter...",
+      "mnuRunCode": "Exécuter...",
       "mnuRunSelectedCode": "Exécuter le code sélectionné",
       "mnuDebugging": "Débogage",
       "mnuEnableDebugging": "Activer le débogueur",
@@ -18592,7 +18592,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "le rendu"
+      "sbRendering": "le rendu"
     },
     "GLOBAL": {
       "101": "Anglais - English",
@@ -20417,7 +20417,7 @@
       "mnuSplitHorizontal": "Waagrecht teilen",
       "mnuSynchronizeVerticalScrolling": "Synchrones vertikales Scrollen",
       "mnuSynchronizeHorizontalScrolling": "Synchrones horizontales Scrollen",
-      "mnuGo": "Ausführen...",
+      "mnuRunCode": "Ausführen...",
       "mnuRunSelectedCode": "Ausgewählten Code",
       "mnuDebugging": "Debuggen",
       "mnuEnableDebugging": "Debuggen aktivieren",
@@ -21115,7 +21115,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "Rendern"
+      "sbRendering": "Rendern"
     },
     "GLOBAL": {
       "101": "Englisch - English",
@@ -22940,7 +22940,7 @@
       "mnuSplitHorizontal": "Οριζόντιος χωρισμός",
       "mnuSynchronizeVerticalScrolling": "[...]",
       "mnuSynchronizeHorizontalScrolling": "[...]",
-      "mnuGo": "Εκτέλεση...",
+      "mnuRunCode": "Εκτέλεση...",
       "mnuRunSelectedCode": "τρεχει επιλεγμενο κωδικο",
       "mnuDebugging": "Εντοπισμού σφαλμάτων",
       "mnuEnableDebugging": "Ενεργοποίηση αποσφαλματωτή",
@@ -23638,7 +23638,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "αποτύπωμα"
+      "sbRendering": "αποτύπωμα"
     },
     "GLOBAL": {
       "101": "Αγγλικα-English",
@@ -25463,7 +25463,7 @@
       "mnuSplitHorizontal": "수평 분할",
       "mnuSynchronizeVerticalScrolling": "수직 스크롤 동기화",
       "mnuSynchronizeHorizontalScrolling": "수평 스크롤 동기화",
-      "mnuGo": "실행",
+      "mnuRunCode": "실행",
       "mnuRunSelectedCode": "선택한 코드를 실행",
       "mnuDebugging": "디버깅",
       "mnuEnableDebugging": "디버거 사용",
@@ -26161,7 +26161,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "렌더링"
+      "sbRendering": "렌더링"
     },
     "GLOBAL": {
       "101": "영어 - English",
@@ -27986,7 +27986,7 @@
       "mnuSplitHorizontal": "פצל אופקית",
       "mnuSynchronizeVerticalScrolling": "[...]",
       "mnuSynchronizeHorizontalScrolling": "[...]",
-      "mnuGo": "הרצה...",
+      "mnuRunCode": "הרצה...",
       "mnuRunSelectedCode": "טקסט נבחר",
       "mnuDebugging": "ניפוי",
       "mnuEnableDebugging": "אפשר מנפה שגיאות",
@@ -28684,7 +28684,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "חֲרִיטָה"
+      "sbRendering": "חֲרִיטָה"
     },
     "GLOBAL": {
       "101": "אנגלית - אנגלית",
@@ -30509,7 +30509,7 @@
       "mnuSplitHorizontal": "आड़े में विभाजित करें",
       "mnuSynchronizeVerticalScrolling": "[...]",
       "mnuSynchronizeHorizontalScrolling": "[...]",
-      "mnuGo": "चलाएँ",
+      "mnuRunCode": "चलाएँ",
       "mnuRunSelectedCode": "चुना गया पाठ",
       "mnuDebugging": "डीबगिंग",
       "mnuEnableDebugging": "डिबगर सक्षम करें",
@@ -31207,7 +31207,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "आरटीएफ",
-      "txtRendering": "एनग्रेविंग"
+      "sbRendering": "एनग्रेविंग"
     },
     "GLOBAL": {
       "101": "अंग्रेजी भाषा - English",
@@ -33032,7 +33032,7 @@
       "mnuSplitHorizontal": "Pisah Melintang",
       "mnuSynchronizeVerticalScrolling": "[...]",
       "mnuSynchronizeHorizontalScrolling": "[...]",
-      "mnuGo": "Jalankan...",
+      "mnuRunCode": "Jalankan...",
       "mnuRunSelectedCode": "Jalan yang penpilihan",
       "mnuDebugging": "Penyahpepijat",
       "mnuEnableDebugging": "Aktifkan penyahpepijat",
@@ -33730,7 +33730,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "ukiran"
+      "sbRendering": "ukiran"
     },
     "GLOBAL": {
       "101": "Bahasa Inggris - English",
@@ -35555,7 +35555,7 @@
       "mnuSplitHorizontal": "Dividi orizzontalmente",
       "mnuSynchronizeVerticalScrolling": "Sincronizza scorrimento verticale",
       "mnuSynchronizeHorizontalScrolling": "Sincronizza scorrimento orizzontale",
-      "mnuGo": "Esegui...",
+      "mnuRunCode": "Esegui...",
       "mnuRunSelectedCode": "Eseguire codice selezionato",
       "mnuDebugging": "Debug",
       "mnuEnableDebugging": "Abilita debugger",
@@ -36253,7 +36253,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "intaglio"
+      "sbRendering": "intaglio"
     },
     "GLOBAL": {
       "101": "Inglese - English",
@@ -38078,7 +38078,7 @@
       "mnuSplitHorizontal": "水平分割",
       "mnuSynchronizeVerticalScrolling": "縦方向スクロールを同期",
       "mnuSynchronizeHorizontalScrolling": "横方向スクロールを同期",
-      "mnuGo": "実行...",
+      "mnuRunCode": "実行...",
       "mnuRunSelectedCode": "選択したコードを実行する",
       "mnuDebugging": "デバッグ",
       "mnuEnableDebugging": "デバッガを有効にする",
@@ -38776,7 +38776,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "印象"
+      "sbRendering": "印象"
     },
     "GLOBAL": {
       "101": "英語- English",
@@ -40572,7 +40572,7 @@
       "mnuSplitHorizontal": "Pisah Melintang",
       "mnuSynchronizeVerticalScrolling": "",
       "mnuSynchronizeHorizontalScrolling": "",
-      "mnuGo": "Pergi!",
+      "mnuRunCode": "Pergi!",
       "mnuRunSelectedCode": "Penpilihan",
       "mnuEnableDebugging": "Aktifkan penyahpepijat",
       "mnuRunningMode": "Mod operasi",
@@ -41371,7 +41371,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "ukiran",
-      "txtRendering": "Renderers"
+      "sbRendering": "Renderers"
     },
     "GLOBAL": {
       "101": "Bahasa Inggeris - English",
@@ -43282,7 +43282,7 @@
       "mnuSplitHorizontal": "Aqsam orizzontali",
       "mnuSynchronizeVerticalScrolling": "[...]",
       "mnuSynchronizeHorizontalScrolling": "[...]",
-      "mnuGo": "Tella",
+      "mnuRunCode": "Tella",
       "mnuRunSelectedCode": "Test magħżul",
       "mnuDebugging": "Tiddibaggja",
       "mnuEnableDebugging": "Ixghel id-dibagg",
@@ -43980,7 +43980,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "inċiżjoni"
+      "sbRendering": "inċiżjoni"
     },
     "GLOBAL": {
       "101": "Ingliż - English",
@@ -45805,7 +45805,7 @@
       "mnuSplitHorizontal": "Dividir horizontalmente",
       "mnuSynchronizeVerticalScrolling": "Sincronizar o 'Deslocamento Vertical'",
       "mnuSynchronizeHorizontalScrolling": "Sincronizar o 'Deslocamento Horizontal'",
-      "mnuGo": "Executar...",
+      "mnuRunCode": "Executar...",
       "mnuRunSelectedCode": "Execute código selecionado",
       "mnuDebugging": "Depurador",
       "mnuEnableDebugging": "Activar o depurador",
@@ -46502,7 +46502,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "gravura"
+      "sbRendering": "gravura"
     },
     "GLOBAL": {
       "101": "inglês - English",
@@ -48327,7 +48327,7 @@
       "mnuSplitHorizontal": "Сплит горизонтальной",
       "mnuSynchronizeVerticalScrolling": "Синхронизировать вертикальную полосу прокрутки",
       "mnuSynchronizeHorizontalScrolling": "Синхронизировать горизонтальную полосу прокрутки",
-      "mnuGo": "Запуск...",
+      "mnuRunCode": "Запуск...",
       "mnuRunSelectedCode": "запустить выбранный код",
       "mnuDebugging": "отладка",
       "mnuEnableDebugging": "Включить отладчик",
@@ -49025,7 +49025,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "РТФ",
-      "txtRendering": "гравировка"
+      "sbRendering": "гравировка"
     },
     "GLOBAL": {
       "101": "английском English",
@@ -50850,7 +50850,7 @@
       "mnuSplitHorizontal": "Dividir en horizontal",
       "mnuSynchronizeVerticalScrolling": "Sincronización Vertical",
       "mnuSynchronizeHorizontalScrolling": "Sincronización Horizontal",
-      "mnuGo": "Ejecutar...",
+      "mnuRunCode": "Ejecutar...",
       "mnuRunSelectedCode": "Ejecutar código seleccionado",
       "mnuDebugging": "Depurador",
       "mnuEnableDebugging": "Activar depurador",
@@ -51548,7 +51548,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "renderizado"
+      "sbRendering": "renderizado"
     },
     "GLOBAL": {
       "101": "Inglés - English",
@@ -53373,7 +53373,7 @@
       "mnuSplitHorizontal": "Yatay Böl",
       "mnuSynchronizeVerticalScrolling": "Senkronize et Vertical Scrolling",
       "mnuSynchronizeHorizontalScrolling": "Senkronize et Horizontal Scrolling",
-      "mnuGo": "Yürüt...",
+      "mnuRunCode": "Yürüt...",
       "mnuRunSelectedCode": "Seçili Metin",
       "mnuDebugging": "Hata ayıklama",
       "mnuEnableDebugging": "Hata ayıklayıcısını etkinleştir",
@@ -54071,7 +54071,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "rendering"
+      "sbRendering": "rendering"
     },
     "GLOBAL": {
       "101": "İngilizce - English",
@@ -55896,7 +55896,7 @@
       "mnuSplitHorizontal": "اُفقی طور پر ٹکڑے کریں",
       "mnuSynchronizeVerticalScrolling": "عمودی اسکرولینگ کو سِنکرونائز کریں",
       "mnuSynchronizeHorizontalScrolling": "اُفقی اسکرولینگ کو سِنکرونائز کریں",
-      "mnuGo": "چلائیں",
+      "mnuRunCode": "چلائیں",
       "mnuRunSelectedCode": "منتخب کوڈ کو چلائیں",
       "mnuDebugging": "ٹھیک کر رہا ہے",
       "mnuEnableDebugging": "ڈی بَگِنگ کو انیبل کریں",
@@ -56594,7 +56594,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "آر ٹی ایف",
-      "txtRendering": "پیش"
+      "sbRendering": "پیش"
     },
     "GLOBAL": {
       "101": " انگریزی زبان   - English",
@@ -58390,7 +58390,7 @@
       "mnuSplitHorizontal": "Chia ngang",
       "mnuSynchronizeVerticalScrolling": "",
       "mnuSynchronizeHorizontalScrolling": "",
-      "mnuGo": "Đi tới",
+      "mnuRunCode": "Đi tới",
       "mnuRunSelectedCode": "Văn bản đã chọn",
       "mnuEnableDebugging": "Bật gỡ lỗi",
       "mnuRunningMode": "Chế độ thao tác",
@@ -59189,7 +59189,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "kết xuất"
+      "sbRendering": "kết xuất"
     },
     "GLOBAL": {
       "101": "*English",
@@ -61098,7 +61098,7 @@
       "mnuSplitHorizontal": "Scinder la vue &horizontalement",
       "mnuSynchronizeVerticalScrolling": "Synchronisation du scroll vertical",
       "mnuSynchronizeHorizontalScrolling": "Synchronisation du scroll horizontal",
-      "mnuGo": "Exécuter...",
+      "mnuRunCode": "Exécuter...",
       "mnuRunSelectedCode": "Exécuter le code sélectionné",
       "mnuDebugging": "Débogage",
       "mnuEnableDebugging": "Activer le débogueur",
@@ -61796,7 +61796,7 @@
       "tabHtml": "HTML",
       "tabLogo": "Logo",
       "tabRTF": "RTF",
-      "txtRendering": "Renderers"
+      "sbRendering": "Renderers"
     },
     "GLOBAL": {
       "101": "Anglais - English",

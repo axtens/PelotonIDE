@@ -28,6 +28,7 @@ namespace PelotonIDE.Presentation
             FontFamily = new FontFamily("Lucida Sans Unicode,Tahoma");
             PointerReleased += CustomRichEditBox_PointerReleased;
             SelectionChanged += CustomRichEditBox_SelectionChanged;
+            SelectionHighlightColorWhenNotFocused = new SolidColorBrush(Microsoft.UI.Colors.DarkSlateGray);
         }
         private void CustomRichEditBox_SelectionChanged(object sender, RoutedEventArgs e)
         {

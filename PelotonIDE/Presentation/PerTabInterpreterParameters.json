@@ -227,6 +227,12 @@
     "Value": "",
     "Internal": false
   },
+  "pOps.Padding": {
+    "Defined": true,
+    "Key": "`",
+    "Value": false,
+    "Internal": false
+  },
   "ideOps.Timeout": {
     "Defined": true,
     "Key": "~",
@@ -251,10 +257,10 @@
     "Value": 3,
     "Internal": true
   },
-  "pOps.Padding": {
+  "ideOps.FontSize": {
     "Defined": true,
-    "Key": "p",
-    "Value": false,
+    "Key": "f",
+    "Value": 12.0,
     "Internal": true
   }
 }

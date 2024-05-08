@@ -60,7 +60,7 @@ namespace PelotonIDE.Presentation
         {
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             string name = me.Name;
-            languageName.Text = me.Text;
+            sbLanguageName.Text = me.Text;
             // change the current tab to that lang but don't change the pertab settings
             Dictionary<string, string> globals = LanguageSettings[name]["GLOBAL"];
             string id = globals["ID"];
@@ -73,15 +73,7 @@ namespace PelotonIDE.Presentation
                 if (parent.ContainsKey("ContentControl") && parent.ContainsKey("ContentControlPreviousContent"))
                     parent["ContentControl"] = parent["ContentControlPreviousContent"];
             }
-            //UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
+            UpdateStatusBar();
         }
         private void UpdateLanguageInContextualMenu(MenuFlyoutItem me, string internationalizedName, string name)
         {
@@ -171,16 +163,9 @@ namespace PelotonIDE.Presentation
             if (AnInFocusTabExists())
                 Type_3_UpdateInFocusTabSettings<bool>("pOps.VariableLength", isVariableLength, isVariableLength);
 
-            fixedVariableStatus.Text = (isVariableLength ? "#" : "@") + (string)globals[isVariableLength ? "variableLength" : "fixedLength"];
+            sbFixedVariable.Text = (isVariableLength ? "#" : "@") + (string)globals[isVariableLength ? "variableLength" : "fixedLength"];
             // UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
+            UpdateStatusBar();
         }
         private void ContentControl_Quietude_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
@@ -245,16 +230,10 @@ namespace PelotonIDE.Presentation
             if (AnInFocusTabExists())
                 Type_3_UpdateInFocusTabSettings<long>("pOps.Quietude", true, quietude);
 
-            quietudeStatus.Text = (string)globals[quietudes.ElementAt(quietude)];
-            // UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
+            sbQuietude.Text = (string)globals[quietudes.ElementAt(quietude)];
+            
+            UpdateStatusBar();
+            
         }
         private void ContentControl_Timeout_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
@@ -317,15 +296,9 @@ namespace PelotonIDE.Presentation
             if (AnInFocusTabExists())
             {
                 Type_3_UpdateInFocusTabSettings<long>("ideOps.Timeout", true, timeout);
-                Dictionary<string, Dictionary<string, object>>? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
             }
-            //timeoutStatus.Text = $"{globals["mnuTimeout"]}: {(string)globals[timeouts.ElementAt(timeout)]}";
-            //UpdateCommandLineInStatusBar();
 
+            UpdateStatusBar();
         }
     }
 }

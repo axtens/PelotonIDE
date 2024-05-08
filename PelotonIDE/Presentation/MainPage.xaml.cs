@@ -46,6 +46,8 @@ namespace PelotonIDE.Presentation
         }
 
         long Engine = 3;
+        bool UsePerTabSettingsWhenCreatingTab = true;
+
         string? Scripts = string.Empty;
         string? InterpreterP2 = string.Empty;
         string? InterpreterP3 = string.Empty;
@@ -86,15 +88,7 @@ namespace PelotonIDE.Presentation
             tab1.TabSettingsDict = null;
             tabControl.SelectedItem = tab1;
             App._window.Closed += MainWindow_Closed;
-            //UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
+            UpdateStatusBar();
             customREBox.Document.Selection.SetIndex(TextRangeUnit.Character, 1, false);
 
         }
@@ -152,6 +146,7 @@ namespace PelotonIDE.Presentation
                         Name = names.First(),
                         Foreground = names.First() == Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") ? new SolidColorBrush(Colors.White) : new SolidColorBrush(Colors.Black),
                         Background = names.First() == Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White),
+                        Tag = i.ToString()
                     };
                     menuFlyoutItem.Click += routedEventHandler; //  Internationalization_Click;
                     menuBarItem.Items.Add(menuFlyoutItem);
@@ -222,83 +217,102 @@ namespace PelotonIDE.Presentation
             }
         }
         // private void ToggleVariableLengthModeInMenu(InterpreterParameterStructure variableLength) => MenuItemHighlightController(mnuVariableLength, (bool)variableLength["Defined"]);
-        private void SetVariableLengthModeInMenu(MenuFlyoutItem? menuFlyoutItem, bool showEnabled)
+        //private void SetVariableLengthModeInMenu(MenuFlyoutItem? menuFlyoutItem, bool showEnabled)
+        //{
+        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+        //    Telemetry.Transmit("menuFlyoutItem.Name=", menuFlyoutItem.Name, "showEnabled=", showEnabled);
+        //    if (showEnabled)
+        //    {
+        //        menuFlyoutItem.Background = new SolidColorBrush(Colors.Black);
+        //        menuFlyoutItem.Foreground = new SolidColorBrush(Colors.White);
+        //    }
+        //    else
+        //    {
+        //        menuFlyoutItem.Background = new SolidColorBrush(Colors.White);
+        //        menuFlyoutItem.Foreground = new SolidColorBrush(Colors.Black);
+        //    }
+        //}
+        //private void ToggleVariableLengthModeInMenu(bool flag) => MenuItemHighlightController(mnuVariableLength, flag);
+        //private void UpdateTimeoutInMenu()
+        //{
+        //    foreach (MenuFlyoutItemBase? item in mnuTimeout.Items)
+        //    {
+        //        MenuItemHighlightController((MenuFlyoutItem)item!, false);
+        //    }
+        //    long currTimeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");
+
+        //    switch (currTimeout)
+        //    {
+        //        case 0:
+        //            MenuItemHighlightController(mnu20Seconds, true);
+        //            break;
+
+        //        case 1:
+        //            MenuItemHighlightController(mnu100Seconds, true);
+        //            break;
+
+        //        case 2:
+        //            MenuItemHighlightController(mnu200Seconds, true);
+        //            break;
+
+        //        case 3:
+        //            MenuItemHighlightController(mnu1000Seconds, true);
+        //            break;
+
+        //        case 4:
+        //            MenuItemHighlightController(mnuInfinite, true);
+        //            break;
+
+        //    }
+        //}
+        //private void UpdateMenuRunningModeInMenu(InterpreterParameterStructure quietude)
+        //{
+        //    if ((bool)quietude["Defined"])
+        //    {
+        //        mnuRunningMode.Items.ForEach(item =>
+        //        {
+        //            MenuItemHighlightController((MenuFlyoutItem)item, false);
+        //            if ((long)quietude["Value"] == long.Parse((string)item.Tag))
+        //            {
+        //                MenuItemHighlightController((MenuFlyoutItem)item, true);
+        //            }
+        //        });
+        //    }
+        //}
+
+        #region Event Handlers
+        private InterpreterParametersStructure ShallowCopyPerTabSetting(InterpreterParametersStructure? perTabInterpreterParameters)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-            Telemetry.Transmit("menuFlyoutItem.Name=", menuFlyoutItem.Name, "showEnabled=", showEnabled);
-            if (showEnabled)
+            if (UsePerTabSettingsWhenCreatingTab)
             {
-                menuFlyoutItem.Background = new SolidColorBrush(Colors.Black);
-                menuFlyoutItem.Foreground = new SolidColorBrush(Colors.White);
+                return parameterBlock(perTabInterpreterParameters);
             }
             else
             {
-                menuFlyoutItem.Background = new SolidColorBrush(Colors.White);
-                menuFlyoutItem.Foreground = new SolidColorBrush(Colors.Black);
-            }
-        }
-        private void ToggleVariableLengthModeInMenu(bool flag) => MenuItemHighlightController(mnuVariableLength, flag);
-        private void UpdateTimeoutInMenu()
-        {
-            foreach (MenuFlyoutItemBase? item in mnuTimeout.Items)
-            {
-                MenuItemHighlightController((MenuFlyoutItem)item!, false);
-            }
-            long currTimeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");
-
-            switch (currTimeout)
-            {
-                case 0:
-                    MenuItemHighlightController(mnu20Seconds, true);
-                    break;
-
-                case 1:
-                    MenuItemHighlightController(mnu100Seconds, true);
-                    break;
-
-                case 2:
-                    MenuItemHighlightController(mnu200Seconds, true);
-                    break;
-
-                case 3:
-                    MenuItemHighlightController(mnu1000Seconds, true);
-                    break;
-
-                case 4:
-                    MenuItemHighlightController(mnuInfinite, true);
-                    break;
-
-            }
-        }
-        private void UpdateMenuRunningModeInMenu(InterpreterParameterStructure quietude)
-        {
-            if ((bool)quietude["Defined"])
-            {
-                mnuRunningMode.Items.ForEach(item =>
+                if (AnInFocusTabExists())
                 {
-                    MenuItemHighlightController((MenuFlyoutItem)item, false);
-                    if ((long)quietude["Value"] == long.Parse((string)item.Tag))
-                    {
-                        MenuItemHighlightController((MenuFlyoutItem)item, true);
-                    }
-                });
-            }
-        }
-
-        #region Event Handlers
-        private static InterpreterParametersStructure ShallowCopyPerTabSetting(InterpreterParametersStructure? perTabInterpreterParameters)
-        {
-            InterpreterParametersStructure clone = [];
-            foreach (string outerKey in perTabInterpreterParameters.Keys)
-            {
-                FactorySettingsStructure inner = [];
-                foreach (string innerKey in perTabInterpreterParameters[outerKey].Keys)
-                {
-                    inner[innerKey] = perTabInterpreterParameters[outerKey][innerKey];
+                    return parameterBlock(InFocusTab().TabSettingsDict);
                 }
-                clone[outerKey] = inner;
+                else
+                {
+                    return parameterBlock(perTabInterpreterParameters);
+                }
             }
-            return clone;
+
+            static InterpreterParametersStructure parameterBlock(RenderingConstantsStructure? parameterBlk)
+            {
+                InterpreterParametersStructure clone = [];
+                foreach (string outerKey in parameterBlk.Keys)
+                {
+                    FactorySettingsStructure inner = [];
+                    foreach (string innerKey in parameterBlk[outerKey].Keys)
+                    {
+                        inner[innerKey] = parameterBlk[outerKey][innerKey];
+                    }
+                    clone[outerKey] = inner;
+                }
+                return clone;
+            }
         }
         public string GetLanguageNameOfCurrentTab(InterpreterParametersStructure? tabSettingJson)
         {
@@ -321,7 +335,7 @@ namespace PelotonIDE.Presentation
         }
         //private void UpdateLanguageNameInStatusBar(InterpreterParametersStructure? tabSettingJson)
         //{
-        //    languageName.Text = GetLanguageNameOfCurrentTab(tabSettingJson);
+        //    sbLanguageName.Text = GetLanguageNameOfCurrentTab(tabSettingJson);
         //}
         private string? GetLanguageNameFromID(long interpreterLanguageID) => (from lang
                                                                               in LanguageSettings
@@ -614,24 +628,34 @@ namespace PelotonIDE.Presentation
                 return paras;
             }
 
-            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
+            TabSettingJson? tsd = AnInFocusTabExists() ? InFocusTab().TabSettingsDict : PerTabInterpreterParameters;
             List<string> paras = [];
-            if (navigationViewItem != null)
-                paras = [.. BuildWith(navigationViewItem.TabSettingsDict)];
+            paras = [.. BuildWith(tsd)];
 
             return string.Join<string>(" ", [.. paras]);
         }
         private void FormatMenu_FontSize_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+            Dictionary<string, string> global = LanguageSettings[interfaceLanguageName]["GLOBAL"];
+            Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
             var me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
 
             CustomRichEditBox currentRichEditBox = _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag];
-
-            currentRichEditBox.Document.Selection.CharacterFormat.Size = long.Parse((string)me.Tag);
+            double tag = double.Parse((string)me.Tag);
+            currentRichEditBox.Document.Selection.CharacterFormat.Size = (float)tag;
             currentRichEditBox.Document.Selection.SelectOrDefault(x => x);
+
+            Type_1_UpdateVirtualRegistry<double>("ideOps.FontSize", tag);
+            Type_2_UpdatePerTabSettings<double>("ideOps.FontSize", true,  tag);
+            Type_3_UpdateInFocusTabSettings<double>("ideOps.FontSize", true, tag);
+            //if (tag != Type_3_GetInFocusTab<double>("ideOps.FontSize"))
+            //{
+            //    _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<double>("ideOps.FontSize", true, tag, $"{global["Document"]}: {frmMain["mnuFontSize"]} = '{tag}'?");
+            //}
+            UpdateMenus();
         }
         private void ContentControl_Rendering_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
@@ -643,7 +667,6 @@ namespace PelotonIDE.Presentation
             Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
 
             MenuFlyout mf = new();
-
 
             SolidColorBrush white = new(Colors.White);
             SolidColorBrush black = new(Colors.Black);
@@ -683,7 +706,7 @@ namespace PelotonIDE.Presentation
             //string meName = me.Name.Replace("tab", "");
             string key = (string)me.Tag;
 
-            string render = ((long)RenderingConstants["outputOps.ActiveRenderers"][key]).ToString();
+            string render = ((long)RenderingConstants["outputOps.ActiveRenderers"][key.ToUpper()]).ToString();
             long tapped = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
 
             if (AnInFocusTabExists())
@@ -713,15 +736,7 @@ namespace PelotonIDE.Presentation
                     Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, -1);
                 }
 
-                //UpdateCommandLineInStatusBar();
-                if (AnInFocusTabExists())
-                {
-                    TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                    if (tabset != null)
-                    {
-                        UpdateStatusBar(tabset);
-                    }
-                }
+                UpdateStatusBar();
                 UpdateOutputTabs();
             }
         }
@@ -775,15 +790,8 @@ namespace PelotonIDE.Presentation
             }
             Type_2_UpdatePerTabSettings("pOps.Transput", true, long.Parse((string)me.Tag));
             Type_3_UpdateInFocusTabSettings("pOps.Transput", true, long.Parse((string)me.Tag));
-            //UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
-            {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
-            }
+
+            UpdateStatusBar();
         }
         private void Help_Click(object sender, RoutedEventArgs e)
         {
@@ -914,7 +922,7 @@ namespace PelotonIDE.Presentation
             {
                 Type_3_UpdateInFocusTabSettings<long>("ideOps.Engine", true, (long)me.Tag);
             }
-            UpdateInterpreterInStatusBar();
+            UpdateStatusBar();
         }
         private void TabViewItem_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -928,34 +936,31 @@ namespace PelotonIDE.Presentation
             TabViewItem me = (TabViewItem)sender;
             long selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
             Telemetry.Transmit(selectedRenderer);
-            //Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
-            // UpdateOutputTabs();
-            //Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
         }
-        //private void TabViewItem_GotFocus(object sender, RoutedEventArgs e)
-        //{
-        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-        //    TabViewItem me = (TabViewItem)sender;
-        //    Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
-        //}
-
-        //private void TabViewItem_LayoutUpdated(object sender, object e)
-        //{
-        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-        //    outputPanelTabView.TabItems.ForEach(item =>
-        //    {
-        //        var tvi = (TabViewItem)item;
-        //        if (tvi != null)
-        //        {
-        //            Telemetry.Transmit("tvi.Name=", tvi.Name, "tvi.Tag=", tvi.Tag, "tvi.IsSelected=", tvi.IsSelected, "tvi.IsEnabled=", tvi.IsEnabled);
-        //        }
-        //    });
-        //}
         private void TabViewItem_Loaded(object sender, RoutedEventArgs e)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             TabViewItem me = (TabViewItem)sender;
             Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
+        }
+
+        private void SettingsMenu_EditorConfiguration_Click(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem me = (MenuFlyoutItem)sender;
+            switch ((string)me.Tag)
+            {
+                case "PerTab":
+                    MenuItemHighlightController(mnuPerTabSettings, true);
+                    MenuItemHighlightController(mnuCurrentTabSettings, false);
+                    UsePerTabSettingsWhenCreatingTab = true;
+                    break
+;
+                case "CurrentTab":
+                    MenuItemHighlightController(mnuPerTabSettings, false);
+                    MenuItemHighlightController(mnuCurrentTabSettings, true);
+                    UsePerTabSettingsWhenCreatingTab = false;
+                    break;
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
 {
   "outputOps.ActiveRenderers": {
-    "Output": 3,
-    "Error": 0,
+    "OUTPUT": 3,
+    "ERROR": 0,
     "RTF": 31,
     "HTML": 21,
-    "Logo": 42
+    "LOGO": 42
   }
 }

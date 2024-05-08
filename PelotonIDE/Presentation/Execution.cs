@@ -82,19 +82,19 @@ namespace PelotonIDE.Presentation
             {
                 switch (item)
                 {
-                    case "Output":
+                    case "OUTPUT":
                         if (!string.IsNullOrEmpty(stdOut))
                         {
                             AddInsertParagraph(outputText, stdOut, false);
                         }
                         break;
-                    case "Error":
+                    case "ERROR":
                         if (!string.IsNullOrEmpty(stdErr))
                         {
                             AddInsertParagraph(errorText, stdErr, false);
                         }
                         break;
-                    case "Html":
+                    case "HTML":
                         if (!string.IsNullOrEmpty(stdOut))
                         {
                             if (stdOut.StartsWith("Status: 200 OK"))
@@ -116,7 +116,7 @@ namespace PelotonIDE.Presentation
                             rtfText.Document.SetText(Microsoft.UI.Text.TextSetOptions.FormatRtf, stdOut);
                         }
                         break;
-                    case "Logo":
+                    case "LOGO":
                         if (!string.IsNullOrEmpty(stdOut))
                         {
                             StorageFolder folder = ApplicationData.Current.LocalFolder;

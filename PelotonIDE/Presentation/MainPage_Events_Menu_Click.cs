@@ -15,6 +15,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Uno.UI.Extensions;
+
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -53,7 +55,7 @@ namespace PelotonIDE.Presentation
 
             string tag = new string[] { "mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite" }[Type_3_GetInFocusTab<long>("ideOps.Timeout")];
 
-            string title = $"{frmMain["mnuGo"]} '{frmMain[tag]}' {frmMain["mnuTimeout"].ToLower()}, '{frmMain["mnuQuiet"].ToLower(cultureInfo)}' {frmMain["mnuRunningMode"].ToLower(cultureInfo)}?";
+            string title = $"{frmMain["mnuRunCode"]} '{frmMain[tag]}' {frmMain["mnuTimeout"].ToLower()}, '{frmMain["mnuQuiet"].ToLower(cultureInfo)}' {frmMain["mnuRunningMode"].ToLower(cultureInfo)}?";
             string secondary = $"'{frmMain["mnuVerbose"]}' {frmMain["mnuTimeout"]}";
 
             ContentDialog dialog = new()
@@ -74,21 +76,18 @@ namespace PelotonIDE.Presentation
             if (result == ContentDialogResult.Secondary)
             {
                 Type_3_UpdateInFocusTabSettings<long>("pOps.Quietude", true, 1);
-                //UpdateStatusBarFromInFocusTab();
-                if (AnInFocusTabExists())
-                {
-                    TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                    if (tabset != null)
-                    {
-                        UpdateStatusBar(tabset);
-                    }
-                }
+                UpdateStatusBar();
                 return true;
             }
             return false;
         }
         private void ChooseEngine_Click(object sender, RoutedEventArgs e)
         {
+            string il = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+            Dictionary<string, string> global = LanguageSettings[il]["GLOBAL"];
+            Dictionary<string, string> frmMain = LanguageSettings[il]["frmMain"];
+            CultureInfo cultureInfo = new(global["Locale"]);
+
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             switch ((string)me.Tag)
             {
@@ -104,12 +103,15 @@ namespace PelotonIDE.Presentation
                     Engine = 3;
                     break;
             }
-            interpreter.Text = (string)me.Tag;
-            if (AnInFocusTabExists())
+
+            Type_2_UpdatePerTabSettings("ideOps.Engine", true, Engine);
+
+            if (Engine != Type_3_GetInFocusTab<long>("ideOps.Engine"))
             {
-                Type_2_UpdatePerTabSettings("ideOps.Engine", true, Engine);
-                Type_3_UpdateInFocusTabSettings("ideOps.Engine", true, Engine);
+                _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<long>("ideOps.Engine", true, Engine, $"{global["Document"]}: {frmMain["mnuUpdate"]} {frmMain["mnuConfiguration"]} = '{me.Tag}'?");
             }
+
+            UpdateStatusBar();
         }
         private async void Close()
         {
@@ -133,15 +135,8 @@ namespace PelotonIDE.Presentation
                     tabControl.Content = null;
                     tabControl.SelectedItem = null;
                 }
-                // UpdateCommandLineInStatusBar();
-                if (AnInFocusTabExists())
-                {
-                    TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                    if (tabset != null)
-                    {
-                        UpdateStatusBar(tabset);
-                    }
-                }
+
+                UpdateStatusBar();
             }
         }
         private void CopyText()
@@ -177,7 +172,7 @@ namespace PelotonIDE.Presentation
             tabControl.SelectedItem = navigationViewItem; // in focus?
             richEditBox.Focus(FocusState.Keyboard);
 
-            UpdateStatusBar(navigationViewItem.TabSettingsDict);
+            UpdateStatusBar();
             UpdateOutputTabs();
 
             //UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
@@ -248,16 +243,7 @@ namespace PelotonIDE.Presentation
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             if (navigationViewItem.TabSettingsDict != null)
             {
-                //UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
-                // UpdateStatusBarFromInFocusTab();
-                if (AnInFocusTabExists())
-                {
-                    TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                    if (tabset != null)
-                    {
-                        UpdateStatusBar(tabset);
-                    }
-                }
+                UpdateStatusBar();
             }
         }
         private void HelpAbout_Click(object sender, RoutedEventArgs e)
@@ -328,6 +314,7 @@ namespace PelotonIDE.Presentation
             CultureInfo cultureInfo = new(global["Locale"]);
 
             long quietude = 0;
+
             foreach (MenuFlyoutItemBase? item in from key in new string[] { "mnuQuiet", "mnuVerbose", "mnuVerbosePauseOnExit" }
                                                  let items = from item in mnuRunningMode.Items where item.Name == key select item
                                                  from item in items
@@ -362,21 +349,26 @@ namespace PelotonIDE.Presentation
 
             if (AnInFocusTabExists())
             {
-                _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<long>("pOps.Quietude", true, quietude, $"{frmMain["mnuUpdate"]} {frmMain["mnuRunningMode"].ToLower(cultureInfo)} = '{frmMain[me.Name].ToLower(cultureInfo)}'");
-
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
+                if (quietude != Type_3_GetInFocusTab<long>("pOps.Quietude"))
                 {
-                    UpdateStatusBar(tabset);
+                    _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<long>("pOps.Quietude", true, quietude, $"{global["Document"]}: {frmMain["mnuUpdate"]} {frmMain["mnuRunningMode"].ToLower(cultureInfo)} = '{frmMain[me.Name].ToLower(cultureInfo)}'?");
+
+                    UpdateStatusBar();
+
                 }
             }
-
             UpdateOutputTabs();
 
         }
         private void InterpretMenu_Rendering_Click(object sender, RoutedEventArgs e)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+
+            string il = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+            Dictionary<string, string> global = LanguageSettings[il]["GLOBAL"];
+            Dictionary<string, string> frmMain = LanguageSettings[il]["frmMain"];
+            CultureInfo cultureInfo = new(global["Locale"]);
+
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
 
             SolidColorBrush black = new(Colors.Black);
@@ -408,9 +400,25 @@ namespace PelotonIDE.Presentation
                 });
             });
 
-            Type_1_UpdateVirtualRegistry<string>("outputOps.ActiveRenderers", renderers.JoinBy(","));
-            Type_2_UpdatePerTabSettings<string>("outputOps.ActiveRenderers", true, renderers.JoinBy(","));
-            Type_3_UpdateInFocusTabSettings<string>("outputOps.ActiveRenderers", true, renderers.JoinBy(","));
+            string joinedRenderers = renderers.JoinBy(",");
+
+            Dictionary<string, object>.KeyCollection kiz = RenderingConstants["outputOps.ActiveRenderers"].Keys;
+            List<string> renderersNamed = [];
+            renderersNamed.AddRange(from string rend in renderers
+                                    let r = long.Parse(rend)
+                                    from string k in kiz
+                                    where (long)RenderingConstants["outputOps.ActiveRenderers"][k] == r
+                                    select k);
+
+            Type_1_UpdateVirtualRegistry<string>("outputOps.ActiveRenderers", joinedRenderers);
+            Type_2_UpdatePerTabSettings<string>("outputOps.ActiveRenderers", true, joinedRenderers);
+
+            if (joinedRenderers != Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers"))
+            {
+                _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<string>("outputOps.ActiveRenderers", true, joinedRenderers, $"{global["Document"]}: {frmMain["sbRendering"]} = '{renderersNamed.JoinBy(", ")}'?");
+
+            }
+            UpdateStatusBar();
 
             Type_2_UpdatePerTabSettings<long>("outputOps.TappedRenderer", true, Type_1_GetVirtualRegistry<long>("outputOps.TappedRenderer"));
 
@@ -465,7 +473,10 @@ namespace PelotonIDE.Presentation
             }
             Type_1_UpdateVirtualRegistry<long>("ideOps.Timeout", timeout);
             Type_2_UpdatePerTabSettings<long>("ideOps.Timeout", true, timeout);
-            _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<long>("ideOps.Timeout", true, timeout, $"{frmMain["mnuUpdate"]} {frmMain["mnuTimeout"].ToLower(cultureInfo)} = '{frmMain[me.Name].ToLower(cultureInfo)}'");
+            if (timeout != Type_3_GetInFocusTab<long>("ideOps.Timeout"))
+            {
+                _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<long>("ideOps.Timeout", true, timeout, $"{global["Document"]}: {frmMain["mnuUpdate"]} {frmMain["mnuTimeout"].ToLower(cultureInfo)} = '{frmMain[me.Name].ToLower(cultureInfo)}'?");
+            }
         }
         private void MnuIDEConfiguration_Click(object sender, RoutedEventArgs e)
         {
@@ -502,21 +513,15 @@ namespace PelotonIDE.Presentation
 
             Type_2_UpdatePerTabSettings("pOps.Language", true, long.Parse(id));
 
-            string message = $"{frmMain["mnuUpdate"]} {frmMain["mnuLanguage"].ToLower(cultureInfo)} = '{LanguageSettings[lang]["GLOBAL"]["153"][..1].ToUpper(cultureInfo)}{LanguageSettings[lang]["GLOBAL"]["153"][1..].ToLower(cultureInfo)}'";
-            await Type_3_UpdateInFocusTabSettingsIfPermittedAsync("pOps.Language", true, long.Parse(id), message);
-
-            ChangeHighlightOfMenuBarForLanguage(mnuRun, Type_1_GetVirtualRegistry<string>("mainOps.InterpreterLanguageName"));
-
-            //UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict);
-            // UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
+            if (long.Parse(id) != Type_3_GetInFocusTab<long>("pOps.Language"))
             {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
+                string message = $"{global["Document"]}: {frmMain["mnuUpdate"]} {frmMain["mnuLanguage"].ToLower(cultureInfo)} = '{LanguageSettings[lang]["GLOBAL"]["153"][..1].ToUpper(cultureInfo)}{LanguageSettings[lang]["GLOBAL"]["153"][1..].ToLower(cultureInfo)}'?";
+                await Type_3_UpdateInFocusTabSettingsIfPermittedAsync("pOps.Language", true, long.Parse(id), message);
             }
+
+            // ChangeHighlightOfMenuBarForLanguage(mnuRun, Type_1_GetVirtualRegistry<string>("mainOps.InterpreterLanguageName"));
+            UpdateMenus();
+            UpdateStatusBar();
         }//
         private async void Open()
         {
@@ -581,17 +586,7 @@ namespace PelotonIDE.Presentation
                     HandleCustomPropertyLoading(pickedFile, newestRichEditBox);
                 }
 
-                //UpdateLanguageNameInStatusBar(navigationViewItem.TabSettingsDict); // REMOVEME
-                //UpdateStatusBarFromInFocusTab();
-                //UpdateCommandLineInStatusBar();
-                if (AnInFocusTabExists())
-                {
-                    TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                    if (tabset != null)
-                    {
-                        UpdateStatusBar(tabset);
-                    }
-                }
+                UpdateStatusBar();
 
                 UpdateOutputTabs();
             }
@@ -611,19 +606,7 @@ namespace PelotonIDE.Presentation
                 }
             }
         }
-        //private void InsertVariableLengthCodeTemplate_Click(object sender, RoutedEventArgs e)
-        //{
-        //    CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-        //    CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-        //    ITextSelection selection = currentRichEditBox.Document.Selection;
-        //    if (selection != null)
-        //    {
-        //        selection.StartPosition = selection.EndPosition;
-        //        selection.Text = ;
-        //        selection.EndPosition = selection.StartPosition;
-        //        currentRichEditBox.Document.Selection.Move(TextRangeUnit.Character, 3);
-        //    }
-        //}
+
         private async void ResetToFactorySettings_Click(object sender, RoutedEventArgs e)
         {
             ContentDialog dialog = new()
@@ -938,8 +921,9 @@ namespace PelotonIDE.Presentation
 
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             Dictionary<string, Dictionary<string, object>>? currentTabSettings = navigationViewItem.TabSettingsDict;
-            List<string> lines = ["Current Tab"];
-            foreach (string key in currentTabSettings.Keys)
+            List<string> lines = ["Current Tab Settings"];
+            IOrderedEnumerable<string> kiz = from key in currentTabSettings.Keys orderby key select key;
+            foreach (string key in kiz)
             {
                 bool isInternal = (bool)currentTabSettings[key]["Internal"];
                 if ((bool)currentTabSettings[key]["Defined"])
@@ -956,7 +940,8 @@ namespace PelotonIDE.Presentation
             }
             lines.Add("");
             lines.Add("PerTab Settings");
-            foreach (string key in PerTabInterpreterParameters.Keys)
+            kiz = from key in PerTabInterpreterParameters.Keys orderby key select key;
+            foreach (string key in kiz)
             {
                 bool isInternal = (bool)PerTabInterpreterParameters[key]["Internal"];
                 if ((bool)PerTabInterpreterParameters[key]["Defined"])
@@ -973,7 +958,7 @@ namespace PelotonIDE.Presentation
             }
 
             lines.Add("");
-            lines.Add("Virtual Registry");
+            lines.Add("Virtual Registry Settings");
             foreach (KeyValuePair<string, object> val in ApplicationData.Current.LocalSettings.Values.OrderBy(pair => pair.Key))
             {
                 lines.Add($"\t{val.Key} -> {val.Value}");
@@ -982,12 +967,14 @@ namespace PelotonIDE.Presentation
             ContentDialog dialog = new()
             {
                 XamlRoot = this.XamlRoot,
-                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style, // DefaultContentDialogStyle
                 Title = "Show Memory",
                 Content = lines.JoinBy("\n"),
                 PrimaryButtonText = "OK",
                 DefaultButton = ContentDialogButton.Primary,
                 CanBeScrollAnchor = true,
+
+
             };
             _ = await dialog.ShowAsync();
         }
@@ -1004,33 +991,25 @@ namespace PelotonIDE.Presentation
 
             bool varlen = Type_1_GetVirtualRegistry<bool>("pOps.VariableLength");
             bool VariableLength;
-            if (!varlen)
-            {
-                MenuItemHighlightController(mnuVariableLength, true);
-                VariableLength = true;
-            }
-            else
+            if (varlen)
             {
                 MenuItemHighlightController(mnuVariableLength, false);
                 VariableLength = false;
             }
+            else
+            {
+                MenuItemHighlightController(mnuVariableLength, true);
+                VariableLength = true;
+            }
             Type_1_UpdateVirtualRegistry("pOps.VariableLength", VariableLength);
             Type_2_UpdatePerTabSettings("pOps.VariableLength", VariableLength, VariableLength);
-            string message = VariableLength ? global["fixedLength"].ToLower(cultureInfo) : global["variableLength"].ToLower(cultureInfo);
-            _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<bool>("pOps.VariableLength", VariableLength, VariableLength, $"{frmMain["mnuUpdate"]} = {message}?"); // mnuUpdate
-
-            SwapCodeTemplatesLabels(VariableLength);
-
-            //UpdateCommandLineInStatusBar();
-            if (AnInFocusTabExists())
+            string message = varlen ? global["fixedLength"].ToLower(cultureInfo) : global["variableLength"].ToLower(cultureInfo);
+            if (VariableLength != Type_3_GetInFocusTab<bool>("pOps.VariableLength"))
             {
-                TabSettingJson? tabset = InFocusTab().TabSettingsDict;
-                if (tabset != null)
-                {
-                    UpdateStatusBar(tabset);
-                }
+                _ = Type_3_UpdateInFocusTabSettingsIfPermittedAsync<bool>("pOps.VariableLength", VariableLength, VariableLength, $"{global["Document"]}: {frmMain["mnuUpdate"]} {frmMain["mnuVariableLength"]} = '{message}'?"); // mnuUpdate
             }
-            // UpdateStatusBarFromInFocusTab();
+            SwapCodeTemplatesLabels(VariableLength);
+            UpdateStatusBar();
         }
     }
 }

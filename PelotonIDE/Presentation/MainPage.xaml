@@ -71,7 +71,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <!--<Style TargetType="WebView2" x:Key="HtmlOutputStyle">
             <Setter Property="Background" Value="LightSteelBlue"/>
             -->
@@ -187,7 +186,7 @@
             </MenuBarItem>
             <MenuBarItem Title="View" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuView"/>
             <MenuBarItem Title="Interpreter" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuRun">
-                <MenuFlyoutItem x:Name="mnuGo" Text="Run Code" Click="RunCodeButton_Click">
+                <MenuFlyoutItem x:Name="mnuRunCode" Text="Run Code" Click="RunCodeButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="None" Key="F5"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -270,6 +269,11 @@
             <MenuBarItem Title="Settings" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuSettings">
                 <MenuFlyoutItem x:Name="mnuIDEConfiguration" Text="Editor Configuration" Click="MnuIDEConfiguration_Click" Command="{Binding GoToIDEConfig}"/>
                 <MenuFlyoutSubItem x:Name="mnuSelectLanguage" Text="Choose interface language"/>
+                <MenuFlyoutSubItem x:Name="mnuTabCreationMethod" Text="Tab Creation Method">
+                    <MenuFlyoutItem x:Name="mnuPerTabSettings" Text="Inherit PerTab Settings" Click="SettingsMenu_EditorConfiguration_Click" Tag="PerTab" />
+                    <MenuFlyoutItem x:Name="mnuCurrentTabSettings" Text="Inherit Current Tab Settings" Click="SettingsMenu_EditorConfiguration_Click" Tag="CurrentTab"/>
+                </MenuFlyoutSubItem>
+
             </MenuBarItem>
             <MenuBarItem Title="Window" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuWindow"/>
             <MenuBarItem x:Name="mnuHelp" Title="Help" BorderBrush="LightGray" BorderThickness="1">
@@ -506,38 +510,38 @@
             <!--<TextBlock Text="0 words" Margin="0,0,20,0" Name="wordCount"/>-->
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_LanguageName_RightTapped">
-                    <TextBlock Name="languageName" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="5"/>
+                    <TextBlock Name="sbLanguageName" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="5"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_Quietude_RightTapped">
-                    <TextBlock Name="quietudeStatus" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="quietude status"/>
+                    <TextBlock Name="sbQuietude" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="quietude status"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_FixedVariable_RightTapped">
-                    <TextBlock Name="fixedVariableStatus" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="fixed variable status"/>
+                    <TextBlock Name="sbFixedVariable" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="fixed variable status"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_Timeout_RightTapped">
-                    <TextBlock Name="timeoutStatus" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="timeout status"/>
+                    <TextBlock Name="sbTimeout" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="timeout status"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
-                <TextBlock Name="tabCommandLine" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+                <TextBlock Name="sbCommandLine" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_Rendering_RightTapped">
-                    <TextBlock Name="txtRendering" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="Renderers"/>
+                    <TextBlock Name="sbRendering" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="Renderers"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
-                <TextBlock Name="cursorPosition" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+                <TextBlock Name="sbCursorPosition" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_Interpreter_RightTapped">
-                    <TextBlock Name="interpreter" Height="30" MinWidth="30" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+                    <TextBlock Name="sbEngine" Height="30" MinWidth="30" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
