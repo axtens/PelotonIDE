@@ -20,5 +20,7 @@
   "outputOps.TappedRenderer": -1,
   "ideOps.OutputPanelSettings": "True|Bottom|200|400",
   "pOps.Padding": false,
-  "ideOps.Telemetry": "ExecuteInterpreter,RunProtium,RunPeloton2"
+  "ideOps.Telemetry": "ExecuteInterpreter,RunProtium,RunPeloton2",
+  "ideOps.UsePerTabSettingsWhenCreatingTab": true,
+  "pOps.Transput": 2
 }

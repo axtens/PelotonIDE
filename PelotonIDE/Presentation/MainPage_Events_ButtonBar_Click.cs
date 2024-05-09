@@ -1,11 +1,4 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Text;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.UI.Text;
 
 namespace PelotonIDE.Presentation
 {
@@ -50,27 +43,41 @@ namespace PelotonIDE.Presentation
                     { "Plexes", Plexes! }
                 }
             });
+
         }
-        private void ToggleOutputButton_Click(object sender, RoutedEventArgs e)
+        private void MnuTranslateButton_Click(object sender, RoutedEventArgs e)
+        {
+            MnuTranslate_Click(sender, e);
+        }
+        private void ToggleOutput_Click(object sender, RoutedEventArgs e)
         {
             bool outputPanelShowing = Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing");
             outputPanel.Visibility = outputPanelShowing ? Visibility.Collapsed : Visibility.Visible;
             outputPanelShowing = !outputPanelShowing;
             Type_1_UpdateVirtualRegistry<bool>("ideOps.OutputPanelShowing", outputPanelShowing);
+
         }
-        private void RunCodeButton_Click(object sender, RoutedEventArgs e)
+        private void ToggleOutputButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleOutput_Click(sender, e);
+        }
+        private void RunCode_Click(object sender, RoutedEventArgs e)
         {
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-            currentRichEditBox.Document.GetText(TextGetOptions.UseCrlf, out string selectedText); 
+            currentRichEditBox.Document.GetText(TextGetOptions.UseCrlf, out string selectedText);
             selectedText = selectedText.TrimEnd("\r\n");
             if (selectedText.Length > 0)
                 ExecuteInterpreter(selectedText);
         }
-        private void RunSelectedCodeButton_Click(object sender, RoutedEventArgs e)
+        private void RunCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            RunCode_Click(sender, e);
+        }
+        private void RunSelectedCode_Click(Object sender, RoutedEventArgs e)
         {
             Windows.UI.Color highlight = Windows.UI.Color.FromArgb(0x00, 0x8d, 0x6e, 0x5b);
-            Windows.UI.Color normal = Windows.UI.Color.FromArgb(0x00,0xf9,0xf8, 0xbd);
+            Windows.UI.Color normal = Windows.UI.Color.FromArgb(0x00, 0xf9, 0xf8, 0xbd);
 
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
@@ -87,6 +94,10 @@ namespace PelotonIDE.Presentation
 
             selection.CharacterFormat.BackgroundColor = normal;
             selection.SelectOrDefault(x => x);
+        }
+        private void RunSelectedCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            RunSelectedCode_Click(sender, e);
         }
     }
 }

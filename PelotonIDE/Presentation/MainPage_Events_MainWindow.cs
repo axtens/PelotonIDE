@@ -130,8 +130,9 @@ namespace PelotonIDE.Presentation
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("outputOps.ActiveRenderers", FactorySettings, "3,0");
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("outputOps.TappedRenderer", FactorySettings, -1);
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<double>("ideOps.FontSize", FactorySettings, (double)12.0);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<bool>("ideOps.UsePerTabSettingsWhenCreatingTab", FactorySettings, true);
 
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("pOps.Transput", FactorySettings, 3);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("pOps.Transput", FactorySettings, 2);
 
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("ideOps.Timeout", FactorySettings, 1);
             // UpdateTimeoutInMenu(); // BOOM
@@ -141,10 +142,10 @@ namespace PelotonIDE.Presentation
 
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.OutputPanelSettings", FactorySettings, "True|Bottom|200|400");
 
-            var position = FromBarredString_String(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 1);
+            var position = FromBarredString_GetString(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 1);
             Type_1_UpdateVirtualRegistry<string>("ideOps.OutputPanelPosition", position);
 
-            Type_1_UpdateVirtualRegistry<bool>("ideOps.OutputPanelShowing", FromBarredString_Boolean(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 0));
+            Type_1_UpdateVirtualRegistry<bool>("ideOps.OutputPanelShowing", FromBarredString_GetBoolean(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 0));
             Type_1_UpdateVirtualRegistry<double>("ideOps.OutputPanelHeight", (double)FromBarredString_GetDouble(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 2));
             Type_1_UpdateVirtualRegistry<double>("ideOps.OutputPanelWidth", (double)FromBarredString_GetDouble(Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelSettings"), 3));
 

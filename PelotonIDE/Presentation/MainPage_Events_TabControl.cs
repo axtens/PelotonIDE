@@ -83,5 +83,16 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit(((CustomTabItem)sender).Name, e.GetType().FullName);
 
         }
+        private void TabControl_SizeChanged(object sender, SizeChangedEventArgs args)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            NavigationView me = (NavigationView)sender;
+            Telemetry.Transmit(me.Name, "e.PreviousSize=", args.PreviousSize, "e.NewSize=", args.NewSize, "args.OriginalSource=", args.OriginalSource);
+            string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";
+            Type_1_UpdateVirtualRegistry<string>("TabControl_Settings", string.Join("|", [pos, args.NewSize.Height, args.NewSize.Width]));
+            //tHW.Text = $"Editing: {args.NewSize.Height}/{args.NewSize.Width}";
+
+        }
+
     }
 }

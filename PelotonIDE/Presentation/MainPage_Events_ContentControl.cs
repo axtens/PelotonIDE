@@ -300,5 +300,138 @@ namespace PelotonIDE.Presentation
 
             UpdateStatusBar();
         }
+        private void ContentControl_Interpreter_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+
+            var white = new SolidColorBrush(Colors.White);
+            var black = new SolidColorBrush(Colors.Black);
+
+            ContentControl me = (ContentControl)sender;
+
+            object prevContent = me.Content;
+
+            MenuFlyout mf = new();
+
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+
+            long inFocusInterpreter = AnInFocusTabExists() ? Type_3_GetInFocusTab<long>("ideOps.Engine") : Type_1_GetVirtualRegistry<long>("ideOps.Engine");
+
+            Telemetry.Transmit("inFocusInterpreter=", inFocusInterpreter);
+
+            foreach (long key in new long[] { 2, 3 })
+            {
+                MenuFlyoutItem menuFlyoutItem = new()
+                {
+                    Name = $"P{key}",
+                    Text = $"P{key}",
+                    Foreground = inFocusInterpreter == key ? white : black,
+                    Background = inFocusInterpreter == key ? black : white,
+                    Tag = key
+                };
+                menuFlyoutItem.Click += ContentControl_Interpreter_MenuFlyoutItem_Click; // this has to reset the cell to its original value
+                Telemetry.Transmit(menuFlyoutItem.Text, menuFlyoutItem.Name, menuFlyoutItem.Foreground.ToString(), menuFlyoutItem.Background.ToString());
+                mf.Items.Add(menuFlyoutItem);
+            }
+
+            mf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+
+        }
+        private void ContentControl_Interpreter_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+
+            MenuFlyoutItem me = (MenuFlyoutItem)sender;
+
+            if (AnInFocusTabExists())
+            {
+                Type_3_UpdateInFocusTabSettings<long>("ideOps.Engine", true, (long)me.Tag);
+            }
+            UpdateStatusBar();
+        }
+        private void ContentControl_Rendering_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+
+            if (!AnInFocusTabExists()) return;
+
+            string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
+            Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
+
+            MenuFlyout mf = new();
+
+            SolidColorBrush white = new(Colors.White);
+            SolidColorBrush black = new(Colors.Black);
+            SolidColorBrush darkGrey = new(Colors.DarkGray);
+
+            //ContentControl me = (ContentControl)sender;
+
+            //object prevContent = me.Content;
+
+            string? inFocusTabRenderers = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
+
+            foreach (TabViewItem tvi in outputPanelTabView.TabItems)
+            {
+                long renderNumber = long.Parse((string)tvi.Tag);
+                MenuFlyoutItem menuFlyoutItem = new()
+                {
+                    Name = tvi.Name,
+                    Text = frmMain[$"{tvi.Name}"],
+                    Foreground = inFocusTabRenderers.Contains(renderNumber.ToString()) ? white : black,
+                    Background = inFocusTabRenderers.Contains(renderNumber.ToString()) ? black : white,
+                    Tag = tvi.Name.Replace("tab", ""),
+                };
+                menuFlyoutItem.Click += ContentControl_Rendering_MenuFlyoutItem_Click; // this has to reset the cell to its original value
+                Telemetry.Transmit(menuFlyoutItem.Text, menuFlyoutItem.Name);
+                mf.Items.Add(menuFlyoutItem);
+            }
+
+            UpdateOutputTabs();
+
+            mf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+        }
+        private void ContentControl_Rendering_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+
+            MenuFlyoutItem me = (MenuFlyoutItem)sender;
+            //string meName = me.Name.Replace("tab", "");
+            string key = (string)me.Tag;
+
+            string render = ((long)RenderingConstants["outputOps.ActiveRenderers"][key.ToUpper()]).ToString();
+            long tapped = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
+
+            if (AnInFocusTabExists())
+            {
+                List<string> keys = [.. Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Split(',', StringSplitOptions.RemoveEmptyEntries)];
+                if (keys.Contains(render))
+                {
+                    keys.Remove(render);
+                }
+                else
+                {
+                    keys.Add(render);
+                }
+                Type_3_UpdateInFocusTabSettings<string>("outputOps.ActiveRenderers", true, string.Join(",", keys));
+
+                if (Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Trim().Length == 0)
+                {
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, -1);
+                }
+
+                DeselectAndDisableAllOutputPanelTabs();
+                EnableAllOutputPanelTabsMatchingRendering();
+
+                List<long> lkeys = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(n => long.Parse(n)).ToList();
+                if (!lkeys.Contains(tapped))
+                {
+                    Type_3_UpdateInFocusTabSettings<long>("outputOps.TappedRenderer", true, -1);
+                }
+
+                UpdateStatusBar();
+                UpdateOutputTabs();
+            }
+        }
+
     }
 }

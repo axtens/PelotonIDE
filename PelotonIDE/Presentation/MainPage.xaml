@@ -283,52 +283,52 @@
                 <MenuFlyoutItem x:Name="mnuHelpAbout" Text="About" Click="HelpAbout_Click"/>
             </MenuBarItem>
         </MenuBar>
-        <Button x:Name="butNew" AutomationProperties.Name="New" ToolTipService.ToolTip="New" Click="FileNew_Click" RelativePanel.Below="menuBar">
+        <Button x:Name="butNew" AutomationProperties.Name="New" ToolTipService.ToolTip="New" Click="FileNewButton_Click" RelativePanel.Below="menuBar">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8F4;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butOpen" AutomationProperties.Name="Open" ToolTipService.ToolTip="Open" RelativePanel.RightOf="butNew" RelativePanel.Below="menuBar" Click="FileOpen_Click">
+        <Button x:Name="butOpen" AutomationProperties.Name="Open" ToolTipService.ToolTip="Open" RelativePanel.RightOf="butNew" RelativePanel.Below="menuBar" Click="FileOpenButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8E5;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butClose" AutomationProperties.Name="Close" ToolTipService.ToolTip="Close" RelativePanel.RightOf="butOpen" RelativePanel.Below="menuBar" Click="FileClose_Click">
+        <Button x:Name="butClose" AutomationProperties.Name="Close" ToolTipService.ToolTip="Close" RelativePanel.RightOf="butOpen" RelativePanel.Below="menuBar" Click="FileCloseButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8BB;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butSave" AutomationProperties.Name="Save" ToolTipService.ToolTip="Save" RelativePanel.RightOf="butClose" RelativePanel.Below="menuBar" Click="FileSave_Click">
+        <Button x:Name="butSave" AutomationProperties.Name="Save" ToolTipService.ToolTip="Save" RelativePanel.RightOf="butClose" RelativePanel.Below="menuBar" Click="FileSaveButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74E;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butSaveAs" AutomationProperties.Name="Save As" ToolTipService.ToolTip="Save As" RelativePanel.RightOf="butSave" RelativePanel.Below="menuBar" Click="FileSaveAs_Click">
+        <Button x:Name="butSaveAs" AutomationProperties.Name="Save As" ToolTipService.ToolTip="Save As" RelativePanel.RightOf="butSave" RelativePanel.Below="menuBar" Click="FileSaveAsButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE792;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butCopy" AutomationProperties.Name="Copy" ToolTipService.ToolTip="Copy" RelativePanel.RightOf="butSaveAs" RelativePanel.Below="menuBar" Click="EditCopy_Click">
+        <Button x:Name="butCopy" AutomationProperties.Name="Copy" ToolTipService.ToolTip="Copy" RelativePanel.RightOf="butSaveAs" RelativePanel.Below="menuBar" Click="EditCopyButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8C8;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butCut" AutomationProperties.Name="Cut" ToolTipService.ToolTip="Cut" RelativePanel.RightOf="butCopy" RelativePanel.Below="menuBar" Click="EditCut_Click">
+        <Button x:Name="butCut" AutomationProperties.Name="Cut" ToolTipService.ToolTip="Cut" RelativePanel.RightOf="butCopy" RelativePanel.Below="menuBar" Click="EditCutButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8C6;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butPaste" AutomationProperties.Name="Paste" ToolTipService.ToolTip="Paste" RelativePanel.RightOf="butCut" RelativePanel.Below="menuBar" Click="EditPaste_Click">
+        <Button x:Name="butPaste" AutomationProperties.Name="Paste" ToolTipService.ToolTip="Paste" RelativePanel.RightOf="butCut" RelativePanel.Below="menuBar" Click="EditPasteButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE77F;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butSelectAll" AutomationProperties.Name="Select All" ToolTipService.ToolTip="Select All" RelativePanel.RightOf="butPaste" RelativePanel.Below="menuBar" Click="EditSelectAll_Click">
+        <Button x:Name="butSelectAll" AutomationProperties.Name="Select All" ToolTipService.ToolTip="Select All" RelativePanel.RightOf="butPaste" RelativePanel.Below="menuBar" Click="EditSelectAllButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8B3;"/>
             </Button.Content>
         </Button>
-        <Button x:Name="butTransform" AutomationProperties.Name="Transform" ToolTipService.ToolTip="Transform" RelativePanel.RightOf="butSelectAll" RelativePanel.Below="menuBar" Click="MnuTranslate_Click">
+        <Button x:Name="butTransform" AutomationProperties.Name="Transform" ToolTipService.ToolTip="Transform" RelativePanel.RightOf="butSelectAll" RelativePanel.Below="menuBar" Click="MnuTranslateButton_Click">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE13C;"/>
             </Button.Content>

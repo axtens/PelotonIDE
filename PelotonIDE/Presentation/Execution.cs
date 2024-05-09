@@ -18,15 +18,6 @@ namespace PelotonIDE.Presentation
 
             if (Type_3_GetInFocusTab<long>("pOps.Quietude") == 0 && Type_3_GetInFocusTab<long>("ideOps.Timeout") > 0)
             {
-                // Yes, No, Cancel
-
-                //Task<int> sure = AreYouSureYouWantToRunALongTimeSilently();
-                //sure.ContinueWith(t => t);
-                //if (sure.Result == 2) return;
-                //if (sure.Result == 1)
-                //    Type_3_UpdateInFocusTabSettings<long>("pOps.Quietude", true, 1);
-                // Task<ContentDialogResult> task = AreYouSureYouWantToRunALongTimeSilently();
-                // task.Wait();
                 if (!await AreYouSureYouWantToRunALongTimeSilently())
                 {
                     return;
@@ -112,7 +103,6 @@ namespace PelotonIDE.Presentation
                     case "RTF":
                         if (!string.IsNullOrEmpty(stdOut))
                         {
-                            //AddInsertParagraph(rtfText, stdOut, false);
                             rtfText.Document.SetText(Microsoft.UI.Text.TextSetOptions.FormatRtf, stdOut);
                         }
                         break;
@@ -128,8 +118,6 @@ namespace PelotonIDE.Presentation
                             file = await folder.CreateFileAsync($"{guid}.html", CreationCollisionOption.ReplaceExisting);
                             await FileIO.WriteTextAsync(file, TurtleFrameworkPlus(jsBlock));
                             LogoText.Source = new Uri(file.Path);
-                            //await LogoText.EnsureCoreWebView2Async();
-                            //await LogoText.ExecuteScriptAsync(jsBlock);
                         }
                         break;
                 }
@@ -138,33 +126,15 @@ namespace PelotonIDE.Presentation
         }
         private string TurtleFrameworkPlus(string jsBlock)
         {
-            /*var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-
-            var library = resourceLoader.GetString("real-turtle_js");
-            var simple = resourceLoader.GetString("simple_js");
-
-            return $"<script type='text/javascript'>{library}</script>" +
-                "<canvas id='real-turtle'></canvas>" +
-                $"<script type='text/javascript'>{simple}</script>" +
-                $"<script type='text/javascript'>{jsBlock}</script>";
-            */
-            //string tmp = JavaScriptLibrariesHelper.GetJavaScriptLibrariesResource("real-turtle");
-            //string pmt = JavaScriptLibrariesHelper.GetResource("real-turtle");
             return $@"<script type='text/javascript' src='https://unpkg.com/real-turtle'></script>" +
                     "<canvas id='real-turtle'></canvas>" +
                     "<script type='text/javascript' src='https://unpkg.com/real-turtle/build/helpers/simple.js'></script>" +
                     $"<script type='text/javascript'>{jsBlock}</script>";
-            /*
-            return $@"<script type='text/javascript'>{JavaScriptLibrariesHelper.GetJavaScriptLibrariesResource("real-turtle")}</script>" +
-                    "<canvas id='real-turtle'></canvas>" +
-                    $"<script type='text/javascript'>{JavaScriptLibrariesHelper.GetJavaScriptLibrariesResource("real-turtle-helpers-simple")}</script>" +
-                    $"<script type='text/javascript'>{jsBlock}</script>";
-            */
-            }
+        }
         private string ParseLogoIntoJavascript(string v)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-            
+
             List<string> result = [];
             string[] lines = v.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string line in lines)
@@ -242,14 +212,7 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit(result.JoinBy("\r\n"));
             return result.JoinBy("\n");
         }
-        //public void AddOutput(string text)
-        //{
-        //    AddInsertParagraph(outputText, text, true, false);
-        //}
-        //public void AddError(string text)
-        //{
-        //    AddInsertParagraph(errorText, text, true, false);
-        //}
+
         private static void AddInsertParagraph(RichEditBox reb, string text, bool addInsert = true, bool withPrefix = true)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
@@ -262,20 +225,16 @@ namespace PelotonIDE.Presentation
             if (withPrefix)
                 text = text.Insert(0, stamp);
 
-            //reb.IsReadOnly = false;
             reb.Document.GetText(Microsoft.UI.Text.TextGetOptions.UseLf, out string? tx);
             if (addInsert)
             {
                 reb.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, tx + "\n" + text);
-                //reb.Document.GetRange(t.Length, t.Length).Text = t;
             }
             else
             {
-                //reb.Document.GetRange(0, 0).Text = t;
                 reb.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, text + "\n" + tx);
             }
             reb.Focus(FocusState.Programmatic);
-            //reb.IsReadOnly = true;
         }
         public (string StdOut, string StdErr) RunProtium(string? Exe, string args, string buff, long quietude)
         {
@@ -288,7 +247,7 @@ namespace PelotonIDE.Presentation
 
             args += $" /F:\"{temp}\"";
 
-            Telemetry.Transmit("Exe=", Exe, "Args:", args, "Buff=", buff, "Quietude=", quietude);
+            Telemetry.Transmit("Exe=", Exe, "Args:", args);
 
             ProcessStartInfo info = new()
             {
@@ -339,13 +298,7 @@ namespace PelotonIDE.Presentation
 
         //    return (StdOut: File.Exists(t_out) ? File.ReadAllText(t_out) : string.Empty, StdErr: File.Exists(t_err) ? File.ReadAllText(t_err) : string.Empty);
         //}
-        //public void Inject(string? arg)
-        //{
-        //    //outputText.IsReadOnly = false;
-        //    outputText.Document.GetText(Microsoft.UI.Text.TextGetOptions.AdjustCrlf, out string? value);
-        //    outputText.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, $"{value}{arg}");
-        //    //outputText.IsReadOnly = true;
-        //}
+
         public (string StdOut, string StdErr) RunPeloton2(string? Exe, string args, string buff, long quietude, DispatcherQueue dispatcher)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry(0);
@@ -382,28 +335,14 @@ namespace PelotonIDE.Presentation
 
             proc.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
             {
-                //if (quietude == 0)
-                //{
-                //if (e.Data != null)
-                //    stdout.AppendLine(e.Data);
-                //}
-                //else
-                //{
                 if (e.Data != null)
                 {
-                    //dispatcher.TryEnqueue(() =>
-                    //{
-                    //    //Inject($"{DateTime.Now:o}> {e.Data}\r");
-                    //    Inject($"> {e.Data}\r");
-                    //});
                     stdout.AppendLine(e.Data);
                 }
-                //}
             };
             proc.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
             {
                 Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-                //Telemetry.Transmit(e.Data);
                 stderr.AppendLine(e.Data);
             };
 

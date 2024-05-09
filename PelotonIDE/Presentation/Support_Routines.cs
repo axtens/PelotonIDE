@@ -20,13 +20,14 @@ namespace PelotonIDE.Presentation
 {
     public sealed partial class MainPage : Page
     {
-        private bool InFocusTabIsPrFile()
-        {
-            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-            CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-            if (navigationViewItem.IsNewFile) return false;
-            return navigationViewItem.SavedFilePath.Path.ToUpperInvariant().EndsWith(".PR");
-        }
+        //private bool InFocusTabIsPrFile()
+        //{
+        //    CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
+        //    CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
+        //    if (navigationViewItem.IsNewFile) return false;
+        //    return navigationViewItem.SavedFilePath.Path.ToUpperInvariant().EndsWith(".PR");
+        //}
+        //
         //private bool InFocusTabSettingIsDifferent<T>(string setting, T value)
         //{
         //    T? lhs = Type_3_GetInFocusTab<T>(setting);
@@ -114,11 +115,11 @@ namespace PelotonIDE.Presentation
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             Telemetry.Transmit("outputPanelWidth=", outputPanelWidth, "outputPanelHeight=", outputPanelHeight, "outputPanelTabViewSettings=", outputPanelTabViewSettings, "tabControlSettings=", tabControlSettings, "outputPanel.ActualHeight=", outputPanel.ActualHeight, "outputPanel.ActualWidth=", outputPanel.ActualWidth, "App._window.Bounds=", App._window.Bounds);
 
-            string optvPosition = FromBarredString_String(outputPanelTabViewSettings, 0);
+            string optvPosition = FromBarredString_GetString(outputPanelTabViewSettings, 0);
             double optvHeight = FromBarredString_GetDouble(outputPanelTabViewSettings, 1);
             double optvWidth = FromBarredString_GetDouble(outputPanelTabViewSettings, 2);
 
-            string tcPosition = FromBarredString_String(tabControlSettings, 0);
+            string tcPosition = FromBarredString_GetString(tabControlSettings, 0);
             double tcHeight = FromBarredString_GetDouble(tabControlSettings, 1);
             double tcWidth = FromBarredString_GetDouble(tabControlSettings, 2);
 
@@ -293,21 +294,7 @@ namespace PelotonIDE.Presentation
             }
         }
         #region Getters
-        private T? Type_3_GetInFocusTab<T>(string name)
-        {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-            T? result = default;
-            if (!AnInFocusTabExists())
-            {
-                return result;
-            }
-            CustomTabItem? ift = InFocusTab();
-            if (ift != null && ift.TabSettingsDict != null && ift.TabSettingsDict[name] != null && (bool)ift.TabSettingsDict[name]["Defined"])
-            {
-                result = (T)ift.TabSettingsDict[name]["Value"];
-            }
-            return result;
-        }
+        //private bool Type_1_ExistsVirtualRegistry(string name) => ApplicationData.Current.LocalSettings.Values.ContainsKey(name);
         private T Type_1_GetVirtualRegistry<T>(string name)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
@@ -319,6 +306,21 @@ namespace PelotonIDE.Presentation
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
             return (bool)PerTabInterpreterParameters[name]["Defined"] ? (T?)(T)PerTabInterpreterParameters[name]["Value"] : default;
+        }
+        private T? Type_3_GetInFocusTab<T>(string name)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            T? result = default;
+            if (!AnInFocusTabExists())
+            {
+                return result;
+            }
+            CustomTabItem? inFocusTab = InFocusTab();
+            if (inFocusTab != null && inFocusTab.TabSettingsDict != null && inFocusTab.TabSettingsDict[name] != null && (bool)inFocusTab.TabSettingsDict[name]["Defined"])
+            {
+                result = (T)inFocusTab.TabSettingsDict[name]["Value"];
+            }
+            return result;
         }
         #endregion
         #region Setters
@@ -443,12 +445,12 @@ namespace PelotonIDE.Presentation
                 Telemetry.Transmit(found.Name, "is selected item");
             }
         }
-        private bool FromBarredString_Boolean(string list, int entry)
+        private bool FromBarredString_GetBoolean(string list, int entry)
         {
             string item = list.Split(['|'])[entry];
             return bool.Parse(item);
         }
-        private string FromBarredString_String(string list, int entry)
+        private string FromBarredString_GetString(string list, int entry)
         {
             string item = list.Split(['|'])[entry];
             return item;
@@ -753,6 +755,7 @@ namespace PelotonIDE.Presentation
 
             void DoMnuTabCreationMethod()
             {
+                bool UsePerTabSettingsWhenCreatingTab = Type_1_GetVirtualRegistry<bool>("ideOps.UsePerTabSettingsWhenCreatingTab");
                 MenuItemHighlightController(mnuPerTabSettings, UsePerTabSettingsWhenCreatingTab);
                 MenuItemHighlightController(mnuCurrentTabSettings, !UsePerTabSettingsWhenCreatingTab);
             }

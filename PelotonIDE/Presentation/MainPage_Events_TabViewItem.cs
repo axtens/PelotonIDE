@@ -232,5 +232,24 @@ namespace PelotonIDE.Presentation
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
             flyoutBase.ShowAt(senderElement);
         }
+        private void TabViewItem_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            TabViewItem me = (TabViewItem)sender;
+            Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
+        }
+        private void TabViewItem_BringIntoViewRequested(UIElement sender, BringIntoViewRequestedEventArgs args)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            TabViewItem me = (TabViewItem)sender;
+            long selectedRenderer = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
+            Telemetry.Transmit(selectedRenderer);
+        }
+        private void TabViewItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            TabViewItem me = (TabViewItem)sender;
+            Telemetry.Transmit(me.Name, me.Tag, "IsSelected=", me.IsSelected);
+        }
     }
 }
