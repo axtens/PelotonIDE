@@ -93,4 +93,14 @@
 	    <HintPath>..\..\EncodingChecker\bin\Debug\net7.0\EncodingChecker.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Update="WebContent\js\real-turtle-simple.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="WebContent\js\real-turtle-v1.1.6.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>

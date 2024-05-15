@@ -48,6 +48,8 @@ namespace PelotonIDE.Presentation
         long Engine = 3;
 
         string? Scripts = string.Empty;
+        string? Datas = string.Empty;
+
         string? InterpreterP2 = string.Empty;
         string? InterpreterP3 = string.Empty;
 
@@ -624,8 +626,7 @@ namespace PelotonIDE.Presentation
             }
 
             TabSettingJson? tsd = AnInFocusTabExists() ? InFocusTab().TabSettingsDict : PerTabInterpreterParameters;
-            List<string> paras = [];
-            paras = [.. BuildWith(tsd)];
+            List<string> paras = [.. BuildWith(tsd)];
 
             return string.Join<string>(" ", [.. paras]);
         }
@@ -807,51 +808,6 @@ namespace PelotonIDE.Presentation
                     break;
             }
             Type_1_UpdateVirtualRegistry<bool>("ideOps.UsePerTabSettingsWhenCreatingTab", UsePerTabSettingsWhenCreatingTab);
-        }
-
-        private void FileOpenButton_Click(object sender, RoutedEventArgs e)
-        {
-            FileOpen_Click(sender, e);
-        }
-
-        private void FileCloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            FileClose_Click(sender, e);
-        }
-
-        private void FileSaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            FileSaveAs_Click(sender, e);
-        }
-
-        private void FileSaveAsButton_Click(object sender, RoutedEventArgs e)
-        {
-            FileSaveAs_Click(sender, e);
-        }
-
-        private void EditCopyButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditCopy_Click(sender, e);
-        }
-
-        private void EditCutButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditCut_Click(sender, e);
-        }
-
-        private void EditPasteButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditPaste_Click(sender, e);
-        }
-
-        private void EditSelectAllButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditSelectAll_Click(sender, e);
-        }
-
-        private void FileNewButton_Click(object sender, RoutedEventArgs e)
-        {
-            FileNew_Click(sender, e);
         }
     }
 }

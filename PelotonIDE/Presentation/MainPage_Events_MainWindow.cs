@@ -32,6 +32,7 @@ namespace PelotonIDE.Presentation
                     Type_1_UpdateVirtualRegistry("ideOps.Engine.2", parameters.KVPs["ideOps.Engine.2"].ToString());
                     Type_1_UpdateVirtualRegistry("ideOps.Engine.3", parameters.KVPs["ideOps.Engine.3"].ToString());
                     Type_1_UpdateVirtualRegistry("ideOps.ScriptsFolder", parameters.KVPs["ideOps.ScriptsFolder"].ToString());
+                    Type_1_UpdateVirtualRegistry("ideOps.DataFolder", parameters.KVPs["ideOps.DataFolder"].ToString());
                     break;
                 case "TranslatePage":
 
@@ -131,6 +132,7 @@ namespace PelotonIDE.Presentation
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("outputOps.TappedRenderer", FactorySettings, -1);
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<double>("ideOps.FontSize", FactorySettings, (double)12.0);
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<bool>("ideOps.UsePerTabSettingsWhenCreatingTab", FactorySettings, true);
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.DataFolder", FactorySettings, @"C:\Peloton\Data");
 
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("pOps.Transput", FactorySettings, 2);
 
@@ -165,7 +167,7 @@ namespace PelotonIDE.Presentation
             //  Engine will contain either 2 or 3
 
             SetEngine();
-            SetScripts();
+            SetScriptsAndData();
             SetInterpreterNew();
             SetInterpreterOld();
 
@@ -265,7 +267,7 @@ namespace PelotonIDE.Presentation
                 }
                 Type_1_UpdateVirtualRegistry("ideOps.Engine", Engine);
             }
-            void SetScripts()
+            void SetScriptsAndData()
             {
                 if (LocalSettings.Values.TryGetValue("ideOps.ScriptsFolder", out object? value))
                 {
@@ -276,7 +278,18 @@ namespace PelotonIDE.Presentation
                     Scripts = FactorySettings["ideOps.ScriptsFolder"].ToString();
                 }
                 Scripts ??= @"C:\peloton\code";
-                Type_1_UpdateVirtualRegistry("ideOps.ScriptsFolder", Scripts);
+                Type_1_UpdateVirtualRegistry("ideOps.ScriptsFolder", Scripts);            
+                    
+                if (LocalSettings.Values.TryGetValue("ideOps.DataFolder", out object? dvalue))
+                {
+                    Datas = dvalue.ToString();
+                }
+                else
+                {
+                    Datas = FactorySettings["ideOps.DataFolder"].ToString();
+                }
+                Scripts ??= @"C:\peloton\data";
+                Type_1_UpdateVirtualRegistry("ideOps.DataFolder", Scripts);
             }
             void SetInterpreterOld()
             {

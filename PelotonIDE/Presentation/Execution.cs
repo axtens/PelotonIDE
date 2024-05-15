@@ -1,4 +1,7 @@
 ﻿using Microsoft.UI.Dispatching;
+using Microsoft.Web.WebView2.Core;
+
+using Newtonsoft.Json;
 
 using System.Diagnostics;
 using System.Text;
@@ -109,6 +112,7 @@ namespace PelotonIDE.Presentation
                     case "LOGO":
                         if (!string.IsNullOrEmpty(stdOut))
                         {
+                            LogoText.CoreWebView2.SetVirtualHostNameToFolderMapping("UnoNativeAssets", "WebContent", CoreWebView2HostResourceAccessKind.Allow);
                             StorageFolder folder = ApplicationData.Current.LocalFolder;
                             string guid = Guid.NewGuid().ToString();
                             StorageFile file = await folder.CreateFileAsync($"{guid}.logo", CreationCollisionOption.ReplaceExisting);

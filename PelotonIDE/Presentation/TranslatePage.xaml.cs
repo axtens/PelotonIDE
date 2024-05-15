@@ -21,6 +21,7 @@ namespace PelotonIDE.Presentation
         LanguageConfigurationStructure? Langs;
         string? SourcePath { get; set; }
         string? SourceSpec { get; set; }
+        string? DataPath { get; set; }
 
         long Quietude { get; set; }
         internal static List<Plex>? Plexes { get; private set; }
@@ -59,7 +60,7 @@ namespace PelotonIDE.Presentation
                 //int interfaceLanguageID = (int)(long)parameters.KVPs["ideOps.InterfaceLanguageID"];
                 SourcePath = parameters.KVPs["SourcePath"].ToString();
                 SourceSpec = parameters.KVPs["SourceSpec"].ToString();
-
+                DataPath = parameters.KVPs["DataPath"].ToString();
                 FillLanguagesIntoList(Langs, interfaceLanguageName!, sourceLanguageList);
                 FillLanguagesIntoList(Langs, interfaceLanguageName!, targetLanguageList);
 
@@ -184,7 +185,7 @@ namespace PelotonIDE.Presentation
                 ? ProcessVariableToFixedOrVariable(code, source, target, spaced, variableTarget)
                 : ProcessFixedToFixedOrVariableWithOrWithoutSpace(code, source, target, spaced, variableTarget);
 
-            string? pathToSource = SourcePath; // Path.GetDirectoryName(SourceSpec);
+            string? pathToSource = DataPath; // Path.GetDirectoryName(SourceSpec);
             string? nameOfSource = Path.GetFileNameWithoutExtension(SourceSpec);
             string? xlsxPath = Path.Combine(pathToSource ?? ".", "p.xlsx");
 
@@ -297,26 +298,26 @@ namespace PelotonIDE.Presentation
             }
         }
 
-        private string UpdateInLabelSpace(string result, string sourceText, string targetText)
-        {
-            var pattern = PelotonFullPattern();
-            MatchCollection matches = pattern.Matches(result);
-            for (int i = matches.Count - 1; i >= 0; i--)
-            {
-                Match match = matches[i];
-                Group label = match.Groups[2];
-                var index = label.Index;
-                var length = label.Length;
-                var value = label.Value;
-                if (value.Contains(sourceText, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    result = result.Remove(index, length);
-                    value = value.Replace(sourceText, targetText, StringComparison.CurrentCultureIgnoreCase);
-                    result = result.Insert(index, value);
-                }
-            }
-            return result;
-        }
+        //private string UpdateInLabelSpace(string result, string sourceText, string targetText)
+        //{
+        //    var pattern = PelotonFullPattern();
+        //    MatchCollection matches = pattern.Matches(result);
+        //    for (int i = matches.Count - 1; i >= 0; i--)
+        //    {
+        //        Match match = matches[i];
+        //        Group label = match.Groups[2];
+        //        var index = label.Index;
+        //        var length = label.Length;
+        //        var value = label.Value;
+        //        if (value.Contains(sourceText, StringComparison.CurrentCultureIgnoreCase))
+        //        {
+        //            result = result.Remove(index, length);
+        //            value = value.Replace(sourceText, targetText, StringComparison.CurrentCultureIgnoreCase);
+        //            result = result.Insert(index, value);
+        //        }
+        //    }
+        //    return result;
+        //}
 
         private static string ProcessVariableToFixedOrVariable(string code, Plex source, Plex target, bool spaced, bool variableTarget)
         {
@@ -368,7 +369,7 @@ namespace PelotonIDE.Presentation
 
         private static List<Capture> GetCodeBlocks(string code)
         {
-            List<Capture> codeBlocks = new List<Capture>();
+            List<Capture> codeBlocks = [];
             Regex pattern = PelotonVariableSpacedPattern();
             MatchCollection matches = pattern.Matches(code);
             for (int mi = matches.Count - 1; mi >= 0; mi--)

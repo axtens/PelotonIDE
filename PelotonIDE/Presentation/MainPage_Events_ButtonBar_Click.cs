@@ -23,7 +23,21 @@ namespace PelotonIDE.Presentation
                 mostRecentPickedFilePath = (string?)string.Empty;
             }
 
-            Frame.Navigate(typeof(TranslatePage), new NavigationData()
+            var sourceSpec = inFocusTab.SavedFilePath == null ? inFocusTab.Content : inFocusTab.SavedFilePath.Path;
+            var sourcePath = $"{savedFilePath ?? mostRecentPickedFilePath ?? Type_1_GetVirtualRegistry<string>("ideOps.ScriptsFolder")}"; // Scripts
+            string? dataPath;
+            if (savedFilePath != null)
+            {
+                dataPath = savedFilePath;
+            } 
+            else
+            {
+                
+                    dataPath = Type_3_GetInFocusTab<string>("ideOps.DataFolder");
+                
+            }
+
+        Frame.Navigate(typeof(TranslatePage), new NavigationData()
             {
                 Source = "MainPage",
                 KVPs = new()
@@ -36,8 +50,9 @@ namespace PelotonIDE.Presentation
                     { "ideOps.InterfaceLanguageID", Type_1_GetVirtualRegistry<long>("ideOps.InterfaceLanguageID")},
                     { "ideOps.InterfaceLanguageName",Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") },
                     { "Languages", LanguageSettings! },
-                    { "SourceSpec", inFocusTab.SavedFilePath == null ? inFocusTab.Content : inFocusTab.SavedFilePath.Path},
-                    { "SourcePath", $"{savedFilePath ?? mostRecentPickedFilePath ?? Scripts}" },
+                    { "SourceSpec", sourceSpec},
+                    { "SourcePath", sourcePath },
+                    { "DataPath", dataPath! },
                     { "pOps.Quietude", Type_3_GetInFocusTab<long>("pOps.Quietude") },
                     { "InFocusTabSettingsDict", inFocusTab.TabSettingsDict! },
                     { "Plexes", Plexes! }
@@ -98,6 +113,42 @@ namespace PelotonIDE.Presentation
         private void RunSelectedCodeButton_Click(object sender, RoutedEventArgs e)
         {
             RunSelectedCode_Click(sender, e);
+        }
+        private void FileOpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpen_Click(sender, e);
+        }
+        private void FileCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileClose_Click(sender, e);
+        }
+        private void FileSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileSaveAs_Click(sender, e);
+        }
+        private void FileSaveAsButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileSaveAs_Click(sender, e);
+        }
+        private void EditCopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditCopy_Click(sender, e);
+        }
+        private void EditCutButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditCut_Click(sender, e);
+        }
+        private void EditPasteButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditPaste_Click(sender, e);
+        }
+        private void EditSelectAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditSelectAll_Click(sender, e);
+        }
+        private void FileNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileNew_Click(sender, e);
         }
     }
 }

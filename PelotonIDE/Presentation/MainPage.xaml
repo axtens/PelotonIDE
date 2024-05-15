@@ -556,10 +556,10 @@
             <Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock Name="SCRL" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
             </Border>
-            <!--<Border BorderThickness="1" BorderBrush="Black">
-                <TextBlock x:Name="oHW" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
-            </Border>
             <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock x:Name="sbPath" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+            </Border>
+            <!--<Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock x:Name="tHW" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">

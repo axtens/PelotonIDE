@@ -11,6 +11,7 @@
   "ideOps.OutputPanelShowing": true,
   "ideOps.OutputPanelPosition": "Bottom",
   "ideOps.ScriptsFolder": "c:\\peloton\\code",
+  "ideOps.DataFolder": "c:\\peloton\\data",
   "pOps.Quietude": 2,
   "ideOps.Timeout": 1,
   "pOps.VariableLength": false,
@@ -20,7 +21,7 @@
   "outputOps.TappedRenderer": -1,
   "ideOps.OutputPanelSettings": "True|Bottom|200|400",
   "pOps.Padding": false,
-  "ideOps.Telemetry": "ExecuteInterpreter,RunProtium,RunPeloton2",
+  "ideOps.Telemetry": "TranslateCode",
   "ideOps.UsePerTabSettingsWhenCreatingTab": true,
   "pOps.Transput": 2
 }

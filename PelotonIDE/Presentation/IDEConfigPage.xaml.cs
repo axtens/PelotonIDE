@@ -24,6 +24,7 @@ namespace PelotonIDE.Presentation
                 protiumInterpreterTextBox.Text = parameters.KVPs["ideOps.Engine.2"].ToString();
                 pelotonInterpreterTextBox.Text = parameters.KVPs["ideOps.Engine.3"].ToString();
                 sourceTextBox.Text = parameters.KVPs["ideOps.ScriptsFolder"].ToString();
+                dataTextBox.Text = parameters.KVPs["ideOps.DataFolder"].ToString();
                 LanguageConfigurationStructureSelection lcs = (LanguageConfigurationStructureSelection)parameters.KVPs["pOps.Language"];
                 cmdCancel.Content = lcs["frmMain"]["cmdCancel"];
                 cmdSaveMemory.Content = lcs["frmMain"]["cmdSaveMemory"];
@@ -84,6 +85,25 @@ namespace PelotonIDE.Presentation
                 sourceTextBox.Text = pickedFolder.Path;
             }
         }
+        private async void DataDirectoryBtn_Click(object sender, RoutedEventArgs e)
+        {
+            FolderPicker folderPicker = new()
+            {
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+            };
+            folderPicker.FileTypeFilter.Add("*");
+
+            // For Uno.WinUI-based apps
+            nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
+
+            StorageFolder pickedFolder = await folderPicker.PickSingleFolderAsync();
+            if (pickedFolder != null)
+            {
+                dataTextBox.Text = pickedFolder.Path;
+            }
+
+        }
         private void IDEConfig_Apply_Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationData nd = new()
@@ -93,7 +113,8 @@ namespace PelotonIDE.Presentation
                 {
                     { "ideOps.Engine.2" , protiumInterpreterTextBox.Text },
                     { "ideOps.Engine.3" , pelotonInterpreterTextBox.Text },
-                    { "ideOps.ScriptsFolder" ,  sourceTextBox.Text}
+                    { "ideOps.ScriptsFolder" ,  sourceTextBox.Text},
+                    { "ideOps.DataFolder", dataTextBox.Text },
                 }
             };
             Frame.Navigate(typeof(MainPage), nd);
@@ -103,5 +124,6 @@ namespace PelotonIDE.Presentation
         {
             Frame.Navigate(typeof(MainPage), null);
         }
+
     }
 }

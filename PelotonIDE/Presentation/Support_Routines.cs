@@ -445,41 +445,56 @@ namespace PelotonIDE.Presentation
                 Telemetry.Transmit(found.Name, "is selected item");
             }
         }
-        private bool FromBarredString_GetBoolean(string list, int entry)
-        {
-            string item = list.Split(['|'])[entry];
-            return bool.Parse(item);
-        }
-        private string FromBarredString_GetString(string list, int entry)
-        {
-            string item = list.Split(['|'])[entry];
-            return item;
-        }
-        private double FromBarredString_GetDouble(string list, int entry)
-        {
-            string item = list.Split(['|'])[entry];
-            return double.Parse(item);
-        }
-        private void UpdateTopMostRendererInCurrentTab()
-        {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+        //private void UpdateTopMostRendererInCurrentTab()
+        //{
+        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 
-            if (!AnInFocusTabExists()) return;
-            string? rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
-            long rend = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
-            if (rendering == null || rendering.Split(',', StringSplitOptions.RemoveEmptyEntries).Length == 0)
-            {
-                return;
-            }
-            Telemetry.Transmit("rend=", rend);
-            foreach (TabViewItem tvi in outputPanelTabView.TabItems)
-            {
-                if (rend != long.Parse((string)tvi.Tag)) continue;
-                tvi.IsSelected = true;
-                break;
-            }
-        }
+        //    if (!AnInFocusTabExists()) return;
+        //    string? rendering = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
+        //    long rend = Type_3_GetInFocusTab<long>("outputOps.TappedRenderer");
+        //    if (rendering == null || rendering.Split(',', StringSplitOptions.RemoveEmptyEntries).Length == 0)
+        //    {
+        //        return;
+        //    }
+        //    Telemetry.Transmit("rend=", rend);
+        //    foreach (TabViewItem tvi in outputPanelTabView.TabItems)
+        //    {
+        //        if (rend != long.Parse((string)tvi.Tag)) continue;
+        //        tvi.IsSelected = true;
+        //        break;
+        //    }
+        //}
 
+        private async Task<bool> FileNotFoundDialog(string? file)
+        {
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = $"File '{file}' not found",
+                PrimaryButtonText = "OK"
+            };
+            ContentDialogResult result = await dialog.ShowAsync();
+            return false;
+        }
+        private async Task<bool> TestPresenceOfAllPlexes()
+        {
+            var plexes = GetAllPlexes();
+            if (plexes == null || plexes.Count == 0)
+            {
+                ContentDialog dialog = new()
+                {
+                    XamlRoot = this.XamlRoot,
+                    Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                    Title = "No BSON-formatted .lex files found in c:\\peloton\\bin\\lexers",
+                    PrimaryButtonText = "OK"
+                };
+                ContentDialogResult result = await dialog.ShowAsync();
+                return false;
+            }
+
+            return true;
+        }
         private void UpdateOutputTabs()
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
@@ -560,40 +575,21 @@ namespace PelotonIDE.Presentation
                     sbEngine.Text = "P3";
                     break;
             }
-        }
 
-        private async Task<bool> FileNotFoundDialog(string? file)
-        {
-            ContentDialog dialog = new()
+            string? savedFilePath = null;
+            if (AnInFocusTabExists())
             {
-                XamlRoot = this.XamlRoot,
-                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                Title = $"File '{file}' not found",
-                PrimaryButtonText = "OK"
-            };
-            ContentDialogResult result = await dialog.ShowAsync();
-            return false;
-        }
-
-        private async Task<bool> TestPresenceOfAllPlexes()
-        {
-            var plexes = GetAllPlexes();
-            if (plexes == null || plexes.Count == 0)
-            {
-                ContentDialog dialog = new()
+                var inFocusTab = InFocusTab();
+                if (inFocusTab.SavedFilePath != null)
                 {
-                    XamlRoot = this.XamlRoot,
-                    Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                    Title = "No BSON-formatted .lex files found in c:\\peloton\\bin\\lexers",
-                    PrimaryButtonText = "OK"
-                };
-                ContentDialogResult result = await dialog.ShowAsync();
-                return false;
+                    savedFilePath = Path.GetDirectoryName(inFocusTab.SavedFilePath.Path);
+                }
             }
 
-            return true;
+            var mostRecentPickedFilePath = Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath");
+            
+            sbPath.Text = $"{global["51645"]}: {Type_3_GetInFocusTab<string>("ideOps.DataFolder") ?? Type_1_GetVirtualRegistry<string>("ideOps.DataFolder")}";
         }
-
         private void UpdateMenus() // NOTE this is all Type_1 stuff. We don't care what the Type_2 and Type_3 settings are
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
@@ -781,6 +777,21 @@ namespace PelotonIDE.Presentation
                     }
                 });
             }
+        }
+        private bool FromBarredString_GetBoolean(string list, int entry)
+        {
+            string item = list.Split(['|'])[entry];
+            return bool.Parse(item);
+        }
+        private string FromBarredString_GetString(string list, int entry)
+        {
+            string item = list.Split(['|'])[entry];
+            return item;
+        }
+        private double FromBarredString_GetDouble(string list, int entry)
+        {
+            string item = list.Split(['|'])[entry];
+            return double.Parse(item);
         }
     }
 }

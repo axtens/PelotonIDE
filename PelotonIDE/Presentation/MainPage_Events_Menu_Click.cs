@@ -19,9 +19,11 @@ using Uno.UI.Extensions;
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
 using Windows.Storage.Streams;
+
 
 using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, object>>;
@@ -488,6 +490,7 @@ namespace PelotonIDE.Presentation
                     { "ideOps.Engine.2", Type_1_GetVirtualRegistry<string>("ideOps.Engine.2")},
                     { "ideOps.Engine.3", Type_1_GetVirtualRegistry<string>("ideOps.Engine.3")},
                     { "ideOps.ScriptsFolder",  Scripts!},
+                    { "ideOps.DataFolder", Datas! },
                     { "pOps.Language", LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")] }
                 }
             });
@@ -525,18 +528,40 @@ namespace PelotonIDE.Presentation
         }//
         private async void Open()
         {
-            FileOpenPicker open = new()
-            {
-                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
-            };
+            Telemetry.SetEnabled(true);
+
+            //            Windows.System.User user = Windows.System.User.GetDefault();
+            //            var fop = FileOpenPicker.CreateForUser(user);
+
+
+            //StorageFile fle = await StorageFile.GetFileFromPathAsync("c:\\temp\\x.cmd");
+            //StorageFolder fld = await StorageFolder.GetFolderFromPathAsync("c:\\temp");
+            
+            //TransmitMRU([fle, fld]);
+            //TransmitFAL([fle, fld]);
+
+            // StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///file.txt"));
+
+
+            FileOpenPicker open = new();
+            //{
+            //    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+            //};
             open.FileTypeFilter.Add(".pr");
             open.FileTypeFilter.Add(".p");
+
+            Telemetry.Transmit("open=", JsonConvert.SerializeObject(open));
 
             // For Uno.WinUI-based apps
             nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
             WinRT.Interop.InitializeWithWindow.Initialize(open, hwnd);
 
             StorageFile pickedFile = await open.PickSingleFileAsync();
+
+            Telemetry.Transmit("pickedFile=", JsonConvert.SerializeObject(pickedFile));
+
+
+
             if (pickedFile != null)
             {
                 CreateNewRichEditBox();
@@ -546,6 +571,8 @@ namespace PelotonIDE.Presentation
                 navigationViewItem.Content = pickedFile.Name;
                 navigationViewItem.Height = 30;
                 navigationViewItem.TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters);
+                navigationViewItem.TabSettingsDict["ideOps.DataFolder"]["Defined"] = true;
+                navigationViewItem.TabSettingsDict["ideOps.DataFolder"]["Value"] = Path.GetDirectoryName(pickedFile.Path).ToString();
                 CustomRichEditBox newestRichEditBox = _richEditBoxes[navigationViewItem.Tag];
                 using (Windows.Storage.Streams.IRandomAccessStream randAccStream =
                     await pickedFile.OpenAsync(FileAccessMode.Read))
@@ -590,6 +617,39 @@ namespace PelotonIDE.Presentation
 
                 UpdateOutputTabs();
             }
+
+            //static void TransmitMRU(object[] values)
+            //{
+            //   StorageItemMostRecentlyUsedList mru = StorageApplicationPermissions.MostRecentlyUsedList;
+            //    mru.Add((StorageFile)values[0]);
+            //    mru.Add((StorageFolder)values[1]);
+
+            //    if (mru != null)
+            //    {
+            //        for (int i = 0; i < mru.Entries.Count; i++)
+            //        {
+            //            AccessListEntry e = mru.Entries[i];
+            //            Telemetry.Transmit("e.Metadata=", e.Metadata.ToString(), "e.Token=", e.Token);
+            //        }
+            //    }
+            //}
+
+            //static void TransmitFAL(object[] values)
+            //{
+
+            //    var fal = StorageApplicationPermissions.FutureAccessList;
+
+            //    fal.Add((StorageFile)values[0]);
+            //    fal.Add((StorageFolder)values[1]);
+            //    if (fal != null)
+            //    {
+            //        for (int i = 0; i < fal.Entries.Count; i++)
+            //        {
+            //            var e = fal.Entries[i];
+            //            Telemetry.Transmit("e.Metadata=", e.Metadata.ToString(), "e.Token=", e.Token);
+            //        }
+            //    }
+            //}
         }
         private async void Paste()
         {
