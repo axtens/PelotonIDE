@@ -34,6 +34,7 @@
 		<Authors>Bruce Axtens, Hakob Chalikyan</Authors>
 		<Company>The Peloton Project</Company>
 		<Product>PelotonIDE</Product>
+		<UseWindowsForms>False</UseWindowsForms>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -78,6 +79,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <COMReference Include="MSComDlg">
+	    <WrapperTool>tlbimp</WrapperTool>
+	    <VersionMinor>2</VersionMinor>
+	    <VersionMajor>1</VersionMajor>
+	    <Guid>f9043c88-f6f2-101a-a3c9-08002b2f49fb</Guid>
+	    <Lcid>0</Lcid>
+	    <Isolated>false</Isolated>
+	    <EmbedInteropTypes>true</EmbedInteropTypes>
+	  </COMReference>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="peloton_logo_markonly_transparentback-lighter.ico" />
 	</ItemGroup>
 
@@ -91,6 +104,8 @@
 	<ItemGroup>
 	  <Reference Include="EncodingChecker">
 	    <HintPath>..\..\EncodingChecker\bin\Debug\net7.0\EncodingChecker.dll</HintPath>
+	    <Private>True</Private>
+	    <EmbedInteropTypes>False</EmbedInteropTypes>
 	  </Reference>
 	</ItemGroup>
 

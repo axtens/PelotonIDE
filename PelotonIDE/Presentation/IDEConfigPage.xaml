@@ -55,12 +55,12 @@
                      Margin="0,5,10,5" />
         <Button x:Name="pelotonInterpreterLocationBtn" Grid.Row="2" Grid.Column="2" Content="Browse..." Click="PelotonInterpreterLocationBtn_Click"/>
 
-        <TextBlock x:Name="lblSourceDirectory" Grid.Row="3" Grid.Column="0" Text="Script Location" VerticalAlignment="Center" Margin="10,0,10,0"/>
+        <TextBlock x:Name="lblSourceDirectory" Grid.Row="3" Grid.Column="0" Text="Code File Folder" VerticalAlignment="Center" Margin="10,0,10,0"/>
         <TextBox x:Name="sourceTextBox" Grid.Row="3" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
                      Margin="0,5,10,5" />
         <Button x:Name="sourceDirectoryBtn" Grid.Row="3" Grid.Column="2" Content="Browse..." Click="SourceDirectoryBtn_Click"/>
 
-        <TextBlock x:Name="lblProjectDataSource" Grid.Row="4" Grid.Column="0" Text="Data File Location" VerticalAlignment="Center" Margin="10,0,10,0"/>
+        <TextBlock x:Name="lblProjectDataSource" Grid.Row="4" Grid.Column="0" Text="Data File Folder" VerticalAlignment="Center" Margin="10,0,10,0"/>
         <TextBox x:Name="dataTextBox" Grid.Row="4" Grid.Column="1" Width="400" MinHeight="0" FontSize="12"
                      Margin="0,5,10,5" />
         <Button x:Name="dataDirectoryBtn" Grid.Row="4" Grid.Column="2" Content="Browse..." Click="DataDirectoryBtn_Click"/>

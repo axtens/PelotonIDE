@@ -19,8 +19,8 @@ namespace PelotonIDE.Presentation
         //List<PropertyBag>? OldPlexes;
 
         LanguageConfigurationStructure? Langs;
-        string? SourcePath { get; set; }
-        string? SourceSpec { get; set; }
+        string? SourceName { get; set; }
+        string? SourceFolder { get; set; }
         string? DataPath { get; set; }
 
         long Quietude { get; set; }
@@ -58,9 +58,9 @@ namespace PelotonIDE.Presentation
                 string? interfaceLanguageName = parameters.KVPs["ideOps.InterfaceLanguageName"].ToString();
                 Quietude = (long)parameters.KVPs["pOps.Quietude"];
                 //int interfaceLanguageID = (int)(long)parameters.KVPs["ideOps.InterfaceLanguageID"];
-                SourcePath = parameters.KVPs["SourcePath"].ToString();
-                SourceSpec = parameters.KVPs["SourceSpec"].ToString();
-                DataPath = parameters.KVPs["DataPath"].ToString();
+                SourceName = parameters.KVPs["SourceName"].ToString();
+                SourceFolder = parameters.KVPs["SourceFolder"].ToString();
+                //DataPath = parameters.KVPs["DataPath"].ToString();
                 FillLanguagesIntoList(Langs, interfaceLanguageName!, sourceLanguageList);
                 FillLanguagesIntoList(Langs, interfaceLanguageName!, targetLanguageList);
 
@@ -185,8 +185,10 @@ namespace PelotonIDE.Presentation
                 ? ProcessVariableToFixedOrVariable(code, source, target, spaced, variableTarget)
                 : ProcessFixedToFixedOrVariableWithOrWithoutSpace(code, source, target, spaced, variableTarget);
 
-            string? pathToSource = DataPath; // Path.GetDirectoryName(SourceSpec);
-            string? nameOfSource = Path.GetFileNameWithoutExtension(SourceSpec);
+            //string? pathToSource = DataPath; // Path.GetDirectoryName(SourceFolder);
+            string? pathToSource = SourceFolder;
+            string? nameOfSource = Path.GetFileNameWithoutExtension(SourceName);
+
             string? xlsxPath = Path.Combine(pathToSource ?? ".", "p.xlsx");
 
             Telemetry.Transmit("TranslateCode", "pathToSource=", pathToSource, "nameOfSource=", nameOfSource, "xlsxPath=", xlsxPath);

@@ -152,6 +152,9 @@
         <Reference Include="EncodingChecker">
             <HintPath>..\..\EncodingChecker\bin\Debug\net7.0\EncodingChecker.dll</HintPath>
         </Reference>
+        <Reference Include="Picker">
+          <HintPath>..\..\Picker\bin\Debug\net7.0-windows7.0\Picker.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
       <Compile Update="Properties\Resources.Designer.cs">

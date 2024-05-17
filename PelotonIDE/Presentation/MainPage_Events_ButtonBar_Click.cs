@@ -6,38 +6,45 @@ namespace PelotonIDE.Presentation
     {
         private void MnuTranslate_Click(object sender, RoutedEventArgs e)
         {
+            Telemetry.SetEnabled(true);
             CustomTabItem? inFocusTab = InFocusTab();
             //CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             CustomRichEditBox currentRichEditBox = _richEditBoxes[inFocusTab.Tag];
             currentRichEditBox.Document.GetText(TextGetOptions.None, out string? text);
             long tabLangId = Type_3_GetInFocusTab<long>("pOps.Language");
             IEnumerable<string> tabLangName = from lang in LanguageSettings where long.Parse(lang.Value["GLOBAL"]["ID"]) == tabLangId select lang.Key;
-            string? savedFilePath = inFocusTab.SavedFilePath != null ? Path.GetDirectoryName(inFocusTab.SavedFilePath.Path) : null;
-            string? mostRecentPickedFilePath;
-            if (Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath") != null)
-            {
-                mostRecentPickedFilePath = Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath").ToString();
-            }
-            else
-            {
-                mostRecentPickedFilePath = (string?)string.Empty;
-            }
 
-            var sourceSpec = inFocusTab.SavedFilePath == null ? inFocusTab.Content : inFocusTab.SavedFilePath.Path;
-            var sourcePath = $"{savedFilePath ?? mostRecentPickedFilePath ?? Type_1_GetVirtualRegistry<string>("ideOps.ScriptsFolder")}"; // Scripts
-            string? dataPath;
-            if (savedFilePath != null)
-            {
-                dataPath = savedFilePath;
-            } 
-            else
-            {
-                
-                    dataPath = Type_3_GetInFocusTab<string>("ideOps.DataFolder");
-                
-            }
+            string? codeFolder = Type_3_GetInFocusTab<string>("ideOps.CodeFolder");
+            string? sourceName = inFocusTab.SavedFileName;
+            string? sourceFolder = inFocusTab.SavedFileFolder;
+            
+            //string? savedFilePath = inFocusTab.SavedFileFolder != null ? inFocusTab.SavedFileFolder : null;
+            
+            //string? mostRecentPickedFilePath;
+            //if (Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath") != null)
+            //{
+            //    mostRecentPickedFilePath = Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath").ToString();
+            //}
+            //else
+            //{
+            //    mostRecentPickedFilePath = (string?)string.Empty;
+            //}
 
-        Frame.Navigate(typeof(TranslatePage), new NavigationData()
+            //var sourceSpec = inFocusTab.SavedFilePath; // inFocusTab.SavedFilePath ?? inFocusTab.Content;
+            //var sourcePath = $"{savedFilePath ?? mostRecentPickedFilePath ?? Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder")}"; // Codes
+            //string? dataPath;
+            //if (savedFilePath != null)
+            //{
+            //    dataPath = savedFilePath;
+            //}
+            //else
+            //{
+            //    dataPath = Type_3_GetInFocusTab<string>("ideOps.CodeFolder");
+            //}
+
+            //Telemetry.Transmit("dataPath=", dataPath);
+
+            Frame.Navigate(typeof(TranslatePage), new NavigationData()
             {
                 Source = "MainPage",
                 KVPs = new()
@@ -50,9 +57,8 @@ namespace PelotonIDE.Presentation
                     { "ideOps.InterfaceLanguageID", Type_1_GetVirtualRegistry<long>("ideOps.InterfaceLanguageID")},
                     { "ideOps.InterfaceLanguageName",Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName") },
                     { "Languages", LanguageSettings! },
-                    { "SourceSpec", sourceSpec},
-                    { "SourcePath", sourcePath },
-                    { "DataPath", dataPath! },
+                    { "SourceName", sourceName!},
+                    { "SourceFolder", sourceFolder! },
                     { "pOps.Quietude", Type_3_GetInFocusTab<long>("pOps.Quietude") },
                     { "InFocusTabSettingsDict", inFocusTab.TabSettingsDict! },
                     { "Plexes", Plexes! }
@@ -124,7 +130,7 @@ namespace PelotonIDE.Presentation
         }
         private void FileSaveButton_Click(object sender, RoutedEventArgs e)
         {
-            FileSaveAs_Click(sender, e);
+            FileSave_Click(sender, e);
         }
         private void FileSaveAsButton_Click(object sender, RoutedEventArgs e)
         {

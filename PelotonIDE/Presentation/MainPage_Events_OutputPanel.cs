@@ -47,7 +47,7 @@ namespace PelotonIDE.Presentation
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-            Thumb me = (Thumb)sender;
+            //Thumb me = (Thumb)sender;
 
 
             OutputPanelPosition outputPanelPosition = (OutputPanelPosition)Enum.Parse(typeof(OutputPanelPosition), Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition"));
@@ -106,7 +106,7 @@ namespace PelotonIDE.Presentation
             this.ProtectedCursor = InputCursor.CreateFromCoreCursor(new CoreCursor(CoreCursorType.Arrow, 0));
 
         }
-        private async void OutputThumb_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private async void OutputThumb_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
 

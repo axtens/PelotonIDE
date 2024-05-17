@@ -11,7 +11,7 @@ namespace PelotonIDE.Presentation
         private void TabControl_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-            var me = (NavigationView)sender;
+            //var me = (NavigationView)sender;
             if (args.SelectedItem != null)
             {
                 Telemetry.Transmit(args.SelectedItem.ToString());

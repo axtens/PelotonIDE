@@ -47,7 +47,7 @@ namespace PelotonIDE.Presentation
 
         long Engine = 3;
 
-        string? Scripts = string.Empty;
+        string? Codes = string.Empty;
         string? Datas = string.Empty;
 
         string? InterpreterP2 = string.Empty;
@@ -290,8 +290,9 @@ namespace PelotonIDE.Presentation
             }
             else
             {
-                if (InFocusTab().TabSettingsDict != null)
-                    return parameterBlock(InFocusTab().TabSettingsDict);
+                var ift = InFocusTab();
+                if (ift != null && ift.TabSettingsDict != null)
+                    return parameterBlock(ift.TabSettingsDict);
                 else
                     return parameterBlock(perTabInterpreterParameters);
             }
@@ -339,11 +340,8 @@ namespace PelotonIDE.Presentation
                                                                               where long.Parse(lang.Value["GLOBAL"]["ID"]) == interpreterLanguageID
                                                                               select lang.Value["GLOBAL"]["Name"]).First();
         #endregion
-        public void HandleCustomPropertySaving(StorageFile file, CustomTabItem navigationViewItem)
+        public void HandleCustomPropertySaving(string rtfContent, CustomTabItem navigationViewItem, string path)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-
-            string rtfContent = File.ReadAllText(file.Path);
             StringBuilder rtfBuilder = new(rtfContent);
 
             const int ONCE = 1;
@@ -359,7 +357,7 @@ namespace PelotonIDE.Presentation
             info = ques.Replace(info, $"{(string)inFocusTab["outputOps.ActiveRenderers"]["Value"]}", ONCE);
             info = ques.Replace(info, $"{(long)inFocusTab["ideOps.Engine"]["Value"]}", ONCE);
             info = ques.Replace(info, $"{(long)inFocusTab["outputOps.TappedRenderer"]["Value"]}", ONCE);
-            info = ques.Replace(info, $"{(long)inFocusTab["pOps.Padding"]["Value"]}", ONCE);
+            info = ques.Replace(info, (bool)inFocusTab["pOps.Padding"]["Value"] ? "1" : "0", ONCE);
 
             Telemetry.Transmit("info=", info);
 
@@ -391,11 +389,26 @@ namespace PelotonIDE.Presentation
                 text = text.Remove(text.LastIndexOf("\\par\r\n}"), 6);
             }
 
-            File.WriteAllText(file.Path, text, Encoding.ASCII);
+            File.WriteAllText(path, text, Encoding.ASCII);
+
         }
-        public void HandleCustomPropertyLoading(StorageFile file, CustomRichEditBox customRichEditBox)
+
+
+        public void HandleCustomPropertySaving(string file, CustomTabItem navigationViewItem)
         {
+            string rtfContent = File.ReadAllText(file);
+            HandleCustomPropertySaving(rtfContent, navigationViewItem, file);
+
+        }
+        public void HandleCustomPropertySaving(StorageFile file, CustomTabItem navigationViewItem)
+        {
+            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+
             string rtfContent = File.ReadAllText(file.Path);
+            HandleCustomPropertySaving(rtfContent, navigationViewItem, file.Path);
+        }
+        public void HandleCustomPropertyLoading(string rtfContent, CustomRichEditBox customRichEditBox, int differentiator)
+        {
             Regex regex = CustomRTFRegex();
             string orientation = "00";
             MatchCollection matches = regex.Matches(rtfContent);
@@ -475,6 +488,17 @@ namespace PelotonIDE.Presentation
             {
                 customRichEditBox.FlowDirection = FlowDirection.RightToLeft;
             }
+
+        }
+        public void HandleCustomPropertyLoading(string file, CustomRichEditBox customRichEditBox)
+        {
+            string rtfContent = File.ReadAllText(file);
+            HandleCustomPropertyLoading(rtfContent, customRichEditBox, 1);
+        }
+        public void HandleCustomPropertyLoading(StorageFile file, CustomRichEditBox customRichEditBox)
+        {
+            string rtfContent = File.ReadAllText(file.Path);
+            HandleCustomPropertyLoading(rtfContent, customRichEditBox, 1);
         }
         private void MarkupToInFocusSettingLong(MatchCollection matches, string markup, string setting)
         {
@@ -808,6 +832,20 @@ namespace PelotonIDE.Presentation
                     break;
             }
             Type_1_UpdateVirtualRegistry<bool>("ideOps.UsePerTabSettingsWhenCreatingTab", UsePerTabSettingsWhenCreatingTab);
+        }
+
+        private void ContentControl_CodePath_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            // prompt for code directory
+            // if ok
+            //  update current tag's code directory
+
+            var temp = FileFolderPicking.GetFolder(Type_3_GetInFocusTab<string>("ideOps.CodeFolder"));
+            if (temp[0] == "OK")
+            {
+                Type_3_UpdateInFocusTabSettings<string>("ideOps.CodeFolder", true, temp[1]);
+                UpdateStatusBar();
+            }
         }
     }
 }

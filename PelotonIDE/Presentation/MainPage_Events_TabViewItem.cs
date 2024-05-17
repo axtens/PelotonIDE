@@ -35,7 +35,7 @@ namespace PelotonIDE.Presentation
             };
 
             // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("Text File", new List<string>() { ".txt" });
+            savePicker.FileTypeChoices.Add("Text File", [".txt"]);
 
             savePicker.SuggestedFileName = "Output";
 

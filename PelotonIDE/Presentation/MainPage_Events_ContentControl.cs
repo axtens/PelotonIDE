@@ -287,9 +287,9 @@ namespace PelotonIDE.Presentation
             string[] timeouts = ["mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite"];
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
 
-            Dictionary<string, object> dict = (Dictionary<string, object>)me.Tag;
+            //Dictionary<string, object> dict = (Dictionary<string, object>)me.Tag;
 
-            Dictionary<string, string> globals = (Dictionary<string, string>)dict["Globals"];
+            //Dictionary<string, string> globals = (Dictionary<string, string>)dict["Globals"];
 
             var timeout = timeouts.IndexOf(me.Name);
 
@@ -370,7 +370,7 @@ namespace PelotonIDE.Presentation
 
             string? inFocusTabRenderers = Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers");
 
-            foreach (TabViewItem tvi in outputPanelTabView.TabItems)
+            foreach (TabViewItem tvi in outputPanelTabView.TabItems.Cast<TabViewItem>())
             {
                 long renderNumber = long.Parse((string)tvi.Tag);
                 MenuFlyoutItem menuFlyoutItem = new()

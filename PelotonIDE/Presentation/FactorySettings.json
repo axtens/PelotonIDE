@@ -10,7 +10,7 @@
   "ideOps.OutputPanelWidth": 400.0,
   "ideOps.OutputPanelShowing": true,
   "ideOps.OutputPanelPosition": "Bottom",
-  "ideOps.ScriptsFolder": "c:\\peloton\\code",
+  "ideOps.CodeFolder": "c:\\peloton\\code",
   "ideOps.DataFolder": "c:\\peloton\\data",
   "pOps.Quietude": 2,
   "ideOps.Timeout": 1,

@@ -90,7 +90,7 @@ namespace PelotonIDE.Presentation
             ToolTipService.SetToolTip(butNew, selectedLanguage["new.Tip"]);
             ToolTipService.SetToolTip(butOpen, selectedLanguage["open.Tip"]);
             ToolTipService.SetToolTip(butSave, selectedLanguage["save.Tip"]);
-            ToolTipService.SetToolTip(butSaveAs, selectedLanguage["save.Tip"]);
+            ToolTipService.SetToolTip(butSaveAs, selectedLanguage["cmdSaveAs"]);
             // ToolTipService.SetToolTip(butClose, selectedLanguage["close.Tip"]);
             ToolTipService.SetToolTip(butCopy, selectedLanguage["copy.Tip"]);
             ToolTipService.SetToolTip(butCut, selectedLanguage["cut.Tip"]);
@@ -316,10 +316,20 @@ namespace PelotonIDE.Presentation
                 return result;
             }
             CustomTabItem? inFocusTab = InFocusTab();
-            if (inFocusTab != null && inFocusTab.TabSettingsDict != null && inFocusTab.TabSettingsDict[name] != null && (bool)inFocusTab.TabSettingsDict[name]["Defined"])
+            if (inFocusTab != null)
             {
-                result = (T)inFocusTab.TabSettingsDict[name]["Value"];
+                if (inFocusTab.TabSettingsDict != null)
+                {
+                    if (inFocusTab.TabSettingsDict.ContainsKey(name))
+                    {
+                        if ((bool)inFocusTab.TabSettingsDict[name]["Defined"])
+                        {
+                            result = (T)inFocusTab.TabSettingsDict[name]["Value"];
+                        }
+                    }
+                }
             }
+
             return result;
         }
         #endregion
@@ -576,19 +586,22 @@ namespace PelotonIDE.Presentation
                     break;
             }
 
-            string? savedFilePath = null;
-            if (AnInFocusTabExists())
-            {
-                var inFocusTab = InFocusTab();
-                if (inFocusTab.SavedFilePath != null)
-                {
-                    savedFilePath = Path.GetDirectoryName(inFocusTab.SavedFilePath.Path);
-                }
-            }
+            if (AnInFocusTabExists() && InFocusTab().SavedFileName != null)
+                InFocusTab().Content = InFocusTab().SavedFileName;
 
-            var mostRecentPickedFilePath = Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath");
-            
-            sbPath.Text = $"{global["51645"]}: {Type_3_GetInFocusTab<string>("ideOps.DataFolder") ?? Type_1_GetVirtualRegistry<string>("ideOps.DataFolder")}";
+            //string? savedFilePath = null;
+            //if (AnInFocusTabExists())
+            //{
+            //    var inFocusTab = InFocusTab();
+            //    if (inFocusTab.SavedFilePath != null)
+            //    {
+            //        savedFilePath = inFocusTab.SavedFileFolder;
+            //    }
+            //}
+
+            //string mostRecentPickedFilePath = Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath");
+
+            sbPath.Text = $"{frmMain["mnuCode"]}: {Type_3_GetInFocusTab<string>("ideOps.CodeFolder") ?? Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder")}";
         }
         private void UpdateMenus() // NOTE this is all Type_1 stuff. We don't care what the Type_2 and Type_3 settings are
         {
@@ -767,7 +780,7 @@ namespace PelotonIDE.Presentation
 
             void DoMnuFontSize()
             {
-                double fontsize = Type_1_GetVirtualRegistry<double>("ideOps.FontSize"); 
+                double fontsize = Type_1_GetVirtualRegistry<double>("ideOps.FontSize");
                 mnuFontSize.Items.ForEach(item =>
                 {
                     MenuItemHighlightController((MenuFlyoutItem)item, false);

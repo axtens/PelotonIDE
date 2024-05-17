@@ -22,13 +22,21 @@ namespace PelotonIDE.Presentation
     {
         public bool IsNewFile { get; set; }
 
-        public StorageFile? SavedFilePath { get; set; }
+        //public StorageFile? SavedFilePath { get; set; }
+        public string? SavedFilePath { get; set; }
+        public string? SavedFileName { get; set; }
+        public string? SavedFileFolder { get; set; }
+        public string? SavedFileExtension { get; set; }
+
 
         public TabSettingJson? TabSettingsDict { get; set; }
 
         public CustomTabItem()
         {
             SavedFilePath = null;
+            SavedFileFolder = null;
+            SavedFileName = null;
+            SavedFileExtension = null;
         }
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)

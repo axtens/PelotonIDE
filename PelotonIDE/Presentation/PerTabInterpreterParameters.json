@@ -268,5 +268,11 @@
     "Key": "d",
     "Value": "c:\\peloton\\data",
     "Internal": true
+  },
+  "ideOps.CodeFolder": {
+    "Defined": true,
+    "Key": "c",
+    "Value": "c:\\peloton\\code",
+    "Internal": true
   }
 }

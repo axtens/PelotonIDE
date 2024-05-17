@@ -8,7 +8,9 @@ using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -489,7 +491,7 @@ namespace PelotonIDE.Presentation
                 {
                     { "ideOps.Engine.2", Type_1_GetVirtualRegistry<string>("ideOps.Engine.2")},
                     { "ideOps.Engine.3", Type_1_GetVirtualRegistry<string>("ideOps.Engine.3")},
-                    { "ideOps.ScriptsFolder",  Scripts!},
+                    { "ideOps.CodeFolder",  Codes!},
                     { "ideOps.DataFolder", Datas! },
                     { "pOps.Language", LanguageSettings[Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName")] }
                 }
@@ -536,78 +538,86 @@ namespace PelotonIDE.Presentation
 
             //StorageFile fle = await StorageFile.GetFileFromPathAsync("c:\\temp\\x.cmd");
             //StorageFolder fld = await StorageFolder.GetFolderFromPathAsync("c:\\temp");
-            
+
             //TransmitMRU([fle, fld]);
             //TransmitFAL([fle, fld]);
 
             // StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///file.txt"));
 
 
-            FileOpenPicker open = new();
+            //FileOpenPicker open = new();
             //{
             //    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
             //};
-            open.FileTypeFilter.Add(".pr");
-            open.FileTypeFilter.Add(".p");
+            //open.FileTypeFilter.Add(".pr");
+            //open.FileTypeFilter.Add(".p");
 
-            Telemetry.Transmit("open=", JsonConvert.SerializeObject(open));
+            //Telemetry.Transmit("open=", JsonConvert.SerializeObject(open));
 
             // For Uno.WinUI-based apps
-            nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
-            WinRT.Interop.InitializeWithWindow.Initialize(open, hwnd);
+            //nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+            //WinRT.Interop.InitializeWithWindow.Initialize(open, hwnd);
 
-            StorageFile pickedFile = await open.PickSingleFileAsync();
+            //StorageFile pickedFile = await open.PickSingleFileAsync();
 
-            Telemetry.Transmit("pickedFile=", JsonConvert.SerializeObject(pickedFile));
+            //Telemetry.Transmit("pickedFile=", JsonConvert.SerializeObject(pickedFile));
 
-
-
-            if (pickedFile != null)
+            var temp = FileFolderPicking.GetFile("Code file?", AnInFocusTabExists() ? Type_3_GetInFocusTab<string>("ideOps.CodeFolder") : Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder"));
+            if (temp[0] == "OK")
             {
+                var pickedFile = temp[1];
                 CreateNewRichEditBox();
                 CustomTabItem navigationViewItem = (CustomTabItem)tabControl.MenuItems[tabControl.MenuItems.Count - 1];
                 navigationViewItem.IsNewFile = false;
                 navigationViewItem.SavedFilePath = pickedFile;
-                navigationViewItem.Content = pickedFile.Name;
+                navigationViewItem.SavedFileName = Path.GetFileName(pickedFile);
+                navigationViewItem.SavedFileFolder = Path.GetDirectoryName(pickedFile);
+                navigationViewItem.SavedFileExtension = Path.GetExtension(pickedFile);
+                //navigationViewItem.Content = Path.GetFileName(pickedFile); // pickedFile.Name;
                 navigationViewItem.Height = 30;
                 navigationViewItem.TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters);
-                navigationViewItem.TabSettingsDict["ideOps.DataFolder"]["Defined"] = true;
-                navigationViewItem.TabSettingsDict["ideOps.DataFolder"]["Value"] = Path.GetDirectoryName(pickedFile.Path).ToString();
+                navigationViewItem.TabSettingsDict["ideOps.CodeFolder"]["Defined"] = true;
+                navigationViewItem.TabSettingsDict["ideOps.CodeFolder"]["Value"] = Path.GetDirectoryName(pickedFile).ToString();
                 CustomRichEditBox newestRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-                using (Windows.Storage.Streams.IRandomAccessStream randAccStream =
-                    await pickedFile.OpenAsync(FileAccessMode.Read))
-                {
-                    // var encoding = EncChecker.EncCheck.DetectFileAsEncoding(pickedFile.Path);
-                    bool hasBOM = false;
-                    Encoding? encoding = TextEncoding.GetFileEncoding(pickedFile.Path, 1000, ref hasBOM);
-                    switch (pickedFile.FileType.ToLower())
-                    { // Load the file into the Document property of the RichEditBox.
-                        case ".pr":
-                            {
-                                newestRichEditBox.Document.LoadFromStream(TextSetOptions.FormatRtf, randAccStream);
-                                newestRichEditBox.IsRTF = true;
-                                newestRichEditBox.IsDirty = false;
-                                break;
-                            }
-                        case ".p":
-                            {
-                                string text = File.ReadAllText(pickedFile.Path, encoding!);
-                                newestRichEditBox.Document.SetText(TextSetOptions.UnicodeBidi, text);
-                                newestRichEditBox.IsRTF = false;
-                                newestRichEditBox.IsDirty = false;
-                                break;
-                            }
-                        default:
-                            {
-                                string text = File.ReadAllText(pickedFile.Path, encoding!);
-                                newestRichEditBox.Document.SetText(TextSetOptions.UnicodeBidi, text);
-                                newestRichEditBox.IsRTF = false;
-                                newestRichEditBox.IsDirty = false;
-                                break;
-                            }
-                    }
-                    Type_1_UpdateVirtualRegistry("MostRecentPickedFilePath", Path.GetDirectoryName(pickedFile.Path));
+
+                //Microsoft.Win32.SafeHandles.SafeFileHandle sfh = File.OpenHandle(pickedFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, FileOptions.RandomAccess);
+                var stream = new System.IO.MemoryStream(File.ReadAllBytes(pickedFile));
+                IRandomAccessStream randomAccessStream = stream.AsRandomAccessStream();
+                //using (var randAccStream =
+                //    FileRandomAccessStream.OpenAsync(pickedFile, FileAccessMode.Read))
+                //{
+                // var encoding = EncChecker.EncCheck.DetectFileAsEncoding(pickedFile.Path);
+                bool hasBOM = false;
+                Encoding? encoding = TextEncoding.GetFileEncoding(pickedFile, 1000, ref hasBOM);
+                var fileType = Path.GetExtension(pickedFile);
+                switch (fileType.ToLower())
+                { // Load the file into the Document property of the RichEditBox.
+                    case ".pr":
+                        {
+                            newestRichEditBox.Document.LoadFromStream(TextSetOptions.FormatRtf, randomAccessStream);
+                            newestRichEditBox.IsRTF = true;
+                            newestRichEditBox.IsDirty = false;
+                            break;
+                        }
+                    case ".p":
+                        {
+                            string text = File.ReadAllText(pickedFile, encoding!);
+                            newestRichEditBox.Document.SetText(TextSetOptions.UnicodeBidi, text);
+                            newestRichEditBox.IsRTF = false;
+                            newestRichEditBox.IsDirty = false;
+                            break;
+                        }
+                    default:
+                        {
+                            string text = File.ReadAllText(pickedFile, encoding!);
+                            newestRichEditBox.Document.SetText(TextSetOptions.UnicodeBidi, text);
+                            newestRichEditBox.IsRTF = false;
+                            newestRichEditBox.IsDirty = false;
+                            break;
+                        }
                 }
+                //Type_1_UpdateVirtualRegistry("MostRecentPickedFilePath", Path.GetDirectoryName(pickedFile));
+                //}
                 if (newestRichEditBox.IsRTF)
                 {
                     HandleCustomPropertyLoading(pickedFile, newestRichEditBox);
@@ -713,258 +723,190 @@ namespace PelotonIDE.Presentation
         }
         private async void Save()
         {
-            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
+            var ift = InFocusTab();
 
-            if (navigationViewItem != null)
+            if (ift != null)
             {
-                if (navigationViewItem.IsNewFile)
+                if (ift.IsNewFile)
                 {
-                    FileSavePicker savePicker = new()
+                    string? initialDirectory = Type_3_GetInFocusTab<string>("ideOps.CodeFolder");
+                    string? fileName = (ift.SavedFileName ?? ift.Content).ToString();
+                    var temp = FileFolderPicking.SaveFile("Save Code?", initialDirectory, fileName, checkFileExists: false, checkPathExists: false, checkWriteAccess: true, index: 1);
+
+                    if (temp[0] == "OK")
                     {
-                        SuggestedStartLocation = PickerLocationId.DocumentsLibrary
-                    };
+                        var file = temp[1];
+                        CustomRichEditBox currentRichEditBox = _richEditBoxes[ift.Tag];
 
-                    // Dropdown of file types the user can save the file as
-                    savePicker.FileTypeChoices.Add("Rich Text", new List<string>() { ".pr" });
-                    savePicker.FileTypeChoices.Add("UTF-8", new List<string>() { ".p" });
-
-                    string? tabTitle = navigationViewItem.Content.ToString();
-                    savePicker.SuggestedFileName = tabTitle ?? "New Document";
-
-                    // For Uno.WinUI-based apps
-                    nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
-                    WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
-
-                    StorageFile file = await savePicker.PickSaveFileAsync();
-                    if (file != null)
-                    {
-                        CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-                        // Prevent updates to the remote version of the file until we
-                        // finish making changes and call CompleteUpdatesAsync.
-                        CachedFileManager.DeferUpdates(file);
-                        // write to file
-                        using (Windows.Storage.Streams.IRandomAccessStream randAccStream =
-                        await file.OpenAsync(FileAccessMode.ReadWrite))
+                        var stream = new System.IO.MemoryStream();
+                        IRandomAccessStream randomAccessStream = stream.AsRandomAccessStream();
+                        var ftype = Path.GetExtension(file);
+                        randomAccessStream.Size = 0;
+                        if (ftype == ".pr")
                         {
-                            randAccStream.Size = 0;
-                            if (file.FileType == ".pr")
+                            currentRichEditBox.Document.SaveToStream(TextGetOptions.FormatRtf | TextGetOptions.AdjustCrlf, randomAccessStream);
+                            using (FileStream outStream = File.Create(file))
                             {
-                                currentRichEditBox.Document.SaveToStream(TextGetOptions.FormatRtf | TextGetOptions.AdjustCrlf, randAccStream);
-                                currentRichEditBox.IsRTF = true;
-                                currentRichEditBox.IsDirty = false;
+                                randomAccessStream.Seek(0);
+                                randomAccessStream.AsStreamForRead().CopyTo(outStream);
                             }
-                            else if (file.FileType == ".p")
-                            {
-                                currentRichEditBox.Document.GetText(TextGetOptions.None, out string plainText);
-                                using (DataWriter dataWriter = new(randAccStream))
-                                {
-                                    dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf16LE;
-                                    dataWriter.WriteString(plainText);
-                                    await dataWriter.StoreAsync();
-                                    await randAccStream.FlushAsync();
-                                }
-                                currentRichEditBox.IsRTF = false;
-                                currentRichEditBox.IsDirty = false;
-                            }
-                            else
-                            {
-                                currentRichEditBox.Document.GetText(TextGetOptions.None, out string plainText);
-                                using (DataWriter dataWriter = new(randAccStream))
-                                {
-                                    dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf16LE;
-                                    dataWriter.WriteString(plainText);
-                                    await dataWriter.StoreAsync();
-                                    await randAccStream.FlushAsync();
-                                }
-                                currentRichEditBox.IsRTF = false;
-                                currentRichEditBox.IsDirty = false;
-                            }
-                        }
-
-                        // Let Windows know that we're finished changing the file so the
-                        // other app can update the remote version of the file.
-                        FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-                        if (status != FileUpdateStatus.Complete)
-                        {
-                            Windows.UI.Popups.MessageDialog errorBox =
-                                new($"File {file.Name} couldn't be saved.");
-                            await errorBox.ShowAsync();
-                        }
-
-                        CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
-                        savedItem.IsNewFile = false;
-                        savedItem.Content = file.Name;
-                        savedItem.SavedFilePath = file;
-                        if (currentRichEditBox.IsRTF)
-                        {
-                            HandleCustomPropertySaving(file, navigationViewItem);
-                        }
-                    }
-                }
-                else
-                {
-                    if (navigationViewItem.SavedFilePath != null)
-                    {
-                        CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-                        StorageFile file = navigationViewItem.SavedFilePath;
-                        CachedFileManager.DeferUpdates(file);
-                        // write to file
-                        using (Windows.Storage.Streams.IRandomAccessStream randAccStream =
-                            await file.OpenAsync(FileAccessMode.ReadWrite))
-                        {
-                            randAccStream.Size = 0;
-
-                            if (file.FileType == ".pr")
-                            {
-                                currentRichEditBox.Document.SaveToStream(Microsoft.UI.Text.TextGetOptions.FormatRtf, randAccStream);
-                                currentRichEditBox.IsRTF = true;
-                                currentRichEditBox.IsDirty = false;
-                            }
-                            else if (file.FileType == ".p")
-                            {
-                                currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
-                                using (DataWriter dataWriter = new(randAccStream))
-                                {
-                                    dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf16LE;
-                                    dataWriter.WriteString(plainText);
-                                    await dataWriter.StoreAsync();
-                                    await randAccStream.FlushAsync();
-                                }
-                                currentRichEditBox.IsRTF = false;
-                                currentRichEditBox.IsDirty = false;
-                            }
-                            else
-                            {
-                                currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
-                                using (DataWriter dataWriter = new(randAccStream))
-                                {
-                                    dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf16LE;
-                                    dataWriter.WriteString(plainText);
-                                    await dataWriter.StoreAsync();
-                                    await randAccStream.FlushAsync();
-                                }
-                                currentRichEditBox.IsRTF = false;
-                                currentRichEditBox.IsDirty = false;
-                            }
-                        }
-
-                        // Let Windows know that we're finished changing the file so the
-                        // other app can update the remote version of the file.
-                        FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-                        if (status != FileUpdateStatus.Complete)
-                        {
-                            Windows.UI.Popups.MessageDialog errorBox =
-                                new("File " + file.Name + " couldn't be saved.");
-                            await errorBox.ShowAsync();
-                        }
-                        CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
-                        savedItem.IsNewFile = false;
-                        savedItem.Content = file.Name;
-
-                        if (currentRichEditBox.IsRTF)
-                        {
-                            HandleCustomPropertySaving(file, navigationViewItem);
-                        }
-                        currentRichEditBox.IsDirty = false;
-                    }
-                }
-            }
-        }
-        private async void SaveAs()
-        {
-            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
-
-            if (navigationViewItem != null)
-            {
-                FileSavePicker savePicker = new()
-                {
-                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
-                };
-
-                // Dropdown of file types the user can save the file as
-                if ((navigationViewItem.Content as string).EndsWith(".p"))
-                {
-                    savePicker.FileTypeChoices.Add("Unicode Text", new List<string>() { ".p" }); // "UTF-8"
-                    savePicker.FileTypeChoices.Add("Rich Text", new List<string>() { ".pr" });
-                }
-                else
-                {
-                    savePicker.FileTypeChoices.Add("Rich Text", new List<string>() { ".pr" });
-                    savePicker.FileTypeChoices.Add("Unicode Text", new List<string>() { ".p" });
-                }
-
-                string? tabTitle = navigationViewItem.Content.ToString();
-                savePicker.SuggestedFileName = tabTitle ?? "New Document";
-
-                // For Uno.WinUI-based apps
-                nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
-                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
-
-                StorageFile file = await savePicker.PickSaveFileAsync();
-                if (file != null)
-                {
-                    CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
-                    // Prevent updates to the remote version of the file until we
-                    // finish making changes and call CompleteUpdatesAsync.
-                    CachedFileManager.DeferUpdates(file);
-                    // write to file
-                    using (Windows.Storage.Streams.IRandomAccessStream randAccStream =
-                        await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
-                    {
-                        randAccStream.Size = 0;
-
-                        if (file.FileType == ".pr")
-                        {
-                            currentRichEditBox.Document.SaveToStream(Microsoft.UI.Text.TextGetOptions.FormatRtf, randAccStream);
                             currentRichEditBox.IsRTF = true;
+                            currentRichEditBox.IsDirty = false;
                         }
-                        else if (file.FileType == ".p")
+                        else if (ftype == ".p")
                         {
-                            currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
-                            using (DataWriter dataWriter = new(randAccStream))
-                            {
-                                dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf16LE;
-                                dataWriter.WriteString(plainText);
-                                await dataWriter.StoreAsync();
-                                await randAccStream.FlushAsync();
-                            }
+                            currentRichEditBox.Document.GetText(TextGetOptions.None, out string plainText);
+                            File.WriteAllText(file, plainText, Encoding.Unicode);
                             currentRichEditBox.IsRTF = false;
+                            currentRichEditBox.IsDirty = false;
                         }
                         else
                         {
-                            currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
-                            using (DataWriter dataWriter = new(randAccStream))
-                            {
-                                dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf16LE;
-                                dataWriter.WriteString(plainText);
-                                await dataWriter.StoreAsync();
-                                await randAccStream.FlushAsync();
-                            }
+                            currentRichEditBox.Document.GetText(TextGetOptions.None, out string plainText);
+                            File.WriteAllText(file, plainText, Encoding.Unicode);
                             currentRichEditBox.IsRTF = false;
+                            currentRichEditBox.IsDirty = false;
+                        }
 
+                        CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
+                        savedItem.IsNewFile = false;
+                        savedItem.SavedFilePath = file;
+                        savedItem.SavedFileFolder = Path.GetDirectoryName(file);
+                        savedItem.SavedFileName = Path.GetFileName(file);
+                        savedItem.SavedFileExtension = Path.GetExtension(file);
+                        if (currentRichEditBox.IsRTF)
+                        {
+                            HandleCustomPropertySaving(file, ift);
                         }
                     }
-
-                    // Let Windows know that we're finished changing the file so the
-                    // other app can update the remote version of the file.
-                    FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-                    if (status != FileUpdateStatus.Complete)
+                }
+                else
+                {
+                    if (!string.Equals(ift.SavedFileFolder, Type_3_GetInFocusTab<string>("ideOps.CodeFolder"), StringComparison.InvariantCultureIgnoreCase))
                     {
-                        Windows.UI.Popups.MessageDialog errorBox =
-                            new($"File {file.Name} couldn't be saved.");
-                        await errorBox.ShowAsync();
+                        SaveAs(Type_3_GetInFocusTab<string>("ideOps.CodeFolder"));
                     }
-                    CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
-                    savedItem.IsNewFile = false;
-                    savedItem.Content = file.Name;
-                    savedItem.SavedFilePath = file;
-
-                    if (currentRichEditBox.IsRTF)
+                    else
                     {
-                        HandleCustomPropertySaving(file, navigationViewItem);
+                        if (ift.SavedFilePath != null)
+                        {
+                            var stream = new System.IO.MemoryStream();
+                            IRandomAccessStream randomAccessStream = stream.AsRandomAccessStream();
+
+                            CustomRichEditBox currentRichEditBox = _richEditBoxes[ift.Tag];
+                            randomAccessStream.Size = 0;
+                            var ftype = ift.SavedFileExtension;
+                            if (ftype == ".pr")
+                            {
+                                currentRichEditBox.Document.SaveToStream(TextGetOptions.FormatRtf, randomAccessStream);
+                                using (FileStream outStream = File.Create(ift.SavedFilePath))
+                                {
+                                    randomAccessStream.Seek(0);
+                                    randomAccessStream.AsStreamForRead().CopyTo(outStream);
+                                }
+                                currentRichEditBox.IsRTF = true;
+                                currentRichEditBox.IsDirty = false;
+                            }
+                            else if (ftype == ".p")
+                            {
+                                currentRichEditBox.Document.GetText(TextGetOptions.None, out string plainText);
+                                File.WriteAllText(ift.SavedFilePath, plainText, Encoding.Unicode);
+                                currentRichEditBox.IsRTF = false;
+                                currentRichEditBox.IsDirty = false;
+                            }
+                            else
+                            {
+                                currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
+                                File.WriteAllText(ift.SavedFilePath, plainText, Encoding.Unicode);
+                                currentRichEditBox.IsRTF = false;
+                                currentRichEditBox.IsDirty = false;
+                            }
+
+                            CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
+                            savedItem.IsNewFile = false;
+
+                            if (currentRichEditBox.IsRTF)
+                            {
+                                HandleCustomPropertySaving(ift.SavedFilePath, ift);
+                            }
+                            currentRichEditBox.IsDirty = false;
+                        }
                     }
                 }
             }
+            UpdateStatusBar();
+        }
+        private async void SaveAs(string? target = null)
+        {
+            var ift = InFocusTab();
+
+            if (ift != null)
+            {
+                string? initialDirectory;
+                if (ift.SavedFileFolder != null && target == null)
+                {
+                    initialDirectory = ift.SavedFileFolder;
+                }
+                else
+                {
+                    initialDirectory = Type_3_GetInFocusTab<string>("ideOps.CodeFolder");  //Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder");
+                }
+
+                var temp = FileFolderPicking.SaveFile("SaveAs Code?", initialDirectory, ift.SavedFileName, checkFileExists: false, checkPathExists: true, checkWriteAccess: true, index: 1);
+                if (temp[0] == "OK")
+                {
+                    var file = temp[1];
+                    CustomRichEditBox currentRichEditBox = _richEditBoxes[ift.Tag];
+
+                    var stream = new System.IO.MemoryStream();
+                    IRandomAccessStream randAccStream = stream.AsRandomAccessStream();
+
+                    randAccStream.Size = 0;
+                    var ftype = Path.GetExtension(file).ToLower();
+                    if (ftype == ".pr")
+                    {
+                        currentRichEditBox.Document.SaveToStream(TextGetOptions.FormatRtf, randAccStream);
+                        using (FileStream outStream = File.Create(file))
+                        {
+                            randAccStream.Seek(0);
+                            randAccStream.AsStreamForRead().CopyTo(outStream);
+                        }
+                        currentRichEditBox.IsDirty = false;
+                        currentRichEditBox.IsRTF = true;
+                    }
+                    else if (ftype == ".p")
+                    {
+                        currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
+                        File.WriteAllText(file, plainText, Encoding.Unicode);
+                        currentRichEditBox.IsDirty = false;
+                        currentRichEditBox.IsRTF = false;
+                    }
+                    else
+                    {
+                        currentRichEditBox.Document.GetText(Microsoft.UI.Text.TextGetOptions.None, out string plainText);
+                        File.WriteAllText(file, plainText, Encoding.Unicode);
+                        currentRichEditBox.IsDirty = false;
+                        currentRichEditBox.IsRTF = false;
+
+                    }
+
+                    CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
+                    savedItem.IsNewFile = false;
+                    //savedItem.Content = Path.GetFileName(file);
+                    savedItem.SavedFileExtension = Path.GetExtension(file);
+                    savedItem.SavedFileFolder = Path.GetDirectoryName(file);
+                    savedItem.SavedFileName = Path.GetFileName(file);
+                    savedItem.SavedFilePath = file;
+
+                    Type_3_UpdateInFocusTabSettings<string>("ideOps.CodeFolder", true, savedItem.SavedFileFolder!);
+
+                    if (currentRichEditBox.IsRTF)
+                    {
+                        HandleCustomPropertySaving(file, ift);
+                    }
+                }
+            }
+            UpdateStatusBar();
         }
         private void SelectAll()
         {

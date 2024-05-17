@@ -357,7 +357,7 @@
                         RelativePanel.Below="butSelectAll" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.Above="outputPanel" 
                         SelectionChanged="TabControl_SelectionChanged" RightTapped="TabControl_RightTapped" SizeChanged="TabControl_SizeChanged" >
             <NavigationView.MenuItems>
-                <local:CustomTabItem x:Name="tab1" Content="Document 1" Tag="Tab1" IsNewFile="True" Height="30" KeyDown="CustomTabItem_KeyDown" RightTapped="CustomTabItem_RightTapped"/>
+                <local:CustomTabItem x:Name="tab1" Content="Document 1" Tag="Tab1" IsNewFile="True" Height="30" KeyDown="CustomTabItem_KeyDown" />
             </NavigationView.MenuItems>
         </NavigationView>
         <Border x:Name="outputPanel" RelativePanel.Above="statusBar" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Background="White" Margin="5, 0, 5, 0" SizeChanged="OutputPanel_SizeChanged">
@@ -557,7 +557,9 @@
                 <TextBlock Name="SCRL" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
-                <TextBlock x:Name="sbPath" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+                <ContentControl RightTapped="ContentControl_CodePath_RightTapped">
+                    <TextBlock x:Name="sbPath" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+                </ContentControl>
             </Border>
             <!--<Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock x:Name="tHW" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
