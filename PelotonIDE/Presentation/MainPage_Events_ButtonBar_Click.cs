@@ -15,35 +15,9 @@ namespace PelotonIDE.Presentation
             IEnumerable<string> tabLangName = from lang in LanguageSettings where long.Parse(lang.Value["GLOBAL"]["ID"]) == tabLangId select lang.Key;
 
             string? codeFolder = Type_3_GetInFocusTab<string>("ideOps.CodeFolder");
-            string? sourceName = inFocusTab.SavedFileName;
-            string? sourceFolder = inFocusTab.SavedFileFolder;
+            string? sourceName = inFocusTab.SavedFileName ?? (string)inFocusTab.Content;
+            string? sourceFolder = inFocusTab.SavedFileFolder ?? Type_3_GetInFocusTab<string>("ideOps.CodeFolder");
             
-            //string? savedFilePath = inFocusTab.SavedFileFolder != null ? inFocusTab.SavedFileFolder : null;
-            
-            //string? mostRecentPickedFilePath;
-            //if (Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath") != null)
-            //{
-            //    mostRecentPickedFilePath = Type_1_GetVirtualRegistry<string>("MostRecentPickedFilePath").ToString();
-            //}
-            //else
-            //{
-            //    mostRecentPickedFilePath = (string?)string.Empty;
-            //}
-
-            //var sourceSpec = inFocusTab.SavedFilePath; // inFocusTab.SavedFilePath ?? inFocusTab.Content;
-            //var sourcePath = $"{savedFilePath ?? mostRecentPickedFilePath ?? Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder")}"; // Codes
-            //string? dataPath;
-            //if (savedFilePath != null)
-            //{
-            //    dataPath = savedFilePath;
-            //}
-            //else
-            //{
-            //    dataPath = Type_3_GetInFocusTab<string>("ideOps.CodeFolder");
-            //}
-
-            //Telemetry.Transmit("dataPath=", dataPath);
-
             Frame.Navigate(typeof(TranslatePage), new NavigationData()
             {
                 Source = "MainPage",
@@ -61,7 +35,7 @@ namespace PelotonIDE.Presentation
                     { "SourceFolder", sourceFolder! },
                     { "pOps.Quietude", Type_3_GetInFocusTab<long>("pOps.Quietude") },
                     { "InFocusTabSettingsDict", inFocusTab.TabSettingsDict! },
-                    { "Plexes", Plexes! }
+                    { "PlexBlocks", PlexBlocks! }
                 }
             });
 

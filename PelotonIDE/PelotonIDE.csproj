@@ -41,6 +41,7 @@
         <PackageReference Include="ClosedXML" Version="0.102.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
+        <PackageReference Include="Optional" Version="4.0.0" />
         <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
         <PackageReference Include="Uno.Dsp.Tasks" Version="1.2.7" />
         <PackageReference Include="Uno.WinUI" Version="5.0.19" />
@@ -151,9 +152,6 @@
     <ItemGroup>
         <Reference Include="EncodingChecker">
             <HintPath>..\..\EncodingChecker\bin\Debug\net7.0\EncodingChecker.dll</HintPath>
-        </Reference>
-        <Reference Include="Picker">
-          <HintPath>..\..\Picker\bin\Debug\net7.0-windows7.0\Picker.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>

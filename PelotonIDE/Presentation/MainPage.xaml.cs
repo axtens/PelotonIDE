@@ -1,34 +1,41 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 using Microsoft.UI.Text;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 
 using Newtonsoft.Json;
 
 using System.Diagnostics;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.System;
+using Windows.UI.Notifications;
+using Windows.UI.Text;
 
 using Colors = Microsoft.UI.Colors;
 using FactorySettingsStructure = System.Collections.Generic.Dictionary<string, object>;
 using InterpreterParametersStructure = System.Collections.Generic.Dictionary<string,
     System.Collections.Generic.Dictionary<string, object>>;
-using InterpreterParameterStructure = System.Collections.Generic.Dictionary<string, object>;
+using ITextSelection = Microsoft.UI.Text.ITextSelection;
 using LanguageConfigurationStructure = System.Collections.Generic.Dictionary<string,
     System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, string>>>;
+using PointOptions = Microsoft.UI.Text.PointOptions;
 using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, object>>;
-using Thickness = Microsoft.UI.Xaml.Thickness;
-using System.Linq;
+using Style = Microsoft.UI.Xaml.Style;
 using TabSettingJson = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
-using Windows.Storage.Provider;
+using TextAlignment = Microsoft.UI.Xaml.TextAlignment;
+using TextGetOptions = Microsoft.UI.Text.TextGetOptions;
+using TextRangeUnit = Microsoft.UI.Text.TextRangeUnit;
+using TextSetOptions = Microsoft.UI.Text.TextSetOptions;
+using Thickness = Microsoft.UI.Xaml.Thickness;
 
 namespace PelotonIDE.Presentation
 {
@@ -36,7 +43,7 @@ namespace PelotonIDE.Presentation
     {
         [GeneratedRegex("\\{\\*?\\\\[^{}]+}|[{}]|\\\\\\n?[A-Za-z]+\\n?(?:-?\\d+)?[ ]?", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-AU")]
         private static partial Regex CustomRTFRegex();
-        readonly Dictionary<object, CustomRichEditBox> _richEditBoxes = [];
+        public readonly Dictionary<object, CustomRichEditBox> _richEditBoxes = [];
         // bool outputPanelShowing = true;
         enum OutputPanelPosition
         {
@@ -67,7 +74,7 @@ namespace PelotonIDE.Presentation
         readonly ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
 
         // public LanguageConfigurationStructure? LanguageSettings1 { get => LanguageSettings; set => LanguageSettings = value; }
-        readonly List<Plex>? Plexes = GetAllPlexes();
+        readonly List<PlexBlock>? PlexBlocks = GetAllPlexBlocks();
 
         Dictionary<string, List<string>> LangLangs = [];
 
@@ -93,11 +100,39 @@ namespace PelotonIDE.Presentation
             customREBox.Document.Selection.SetIndex(TextRangeUnit.Character, 1, false);
 
         }
-        public static async Task<InterpreterParametersStructure?> GetPerTabInterpreterParameters()
+        public static async Task<InterpreterParametersStructure?> GetPerTabInterpreterParametersIncludingMatchingVirtualRegistry()
         {
             StorageFile tabSettingStorage = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///PelotonIDE\\Presentation\\PerTabInterpreterParameters.json"));
             string tabSettings = File.ReadAllText(tabSettingStorage.Path);
-            return JsonConvert.DeserializeObject<InterpreterParametersStructure>(tabSettings);
+            var deserialisation = JsonConvert.DeserializeObject<InterpreterParametersStructure>(tabSettings);
+            foreach (var key in deserialisation.Keys)
+            {
+                FactorySettingsStructure rec = deserialisation[key];
+                if ((bool)rec["Internal"])
+                {
+                    var typ = rec["Value"].GetType().Name;
+                    switch (typ)
+                    {
+                        case "String":
+                            if (ApplicationData.Current.LocalSettings.Values[key] != null)
+                                deserialisation[key]["Value"] = (string)ApplicationData.Current.LocalSettings.Values[key];// Type_1_GetVirtualRegistry<string>(key);
+                            break;
+                        case "Int64":
+                            if (ApplicationData.Current.LocalSettings.Values[key] != null)
+                                deserialisation[key]["Value"] = (long)ApplicationData.Current.LocalSettings.Values[key];
+                            break;
+                        case "Double":
+                            if (ApplicationData.Current.LocalSettings.Values[key] != null)
+                                deserialisation[key]["Value"] = (double)ApplicationData.Current.LocalSettings.Values[key];
+                            break;
+                        case "Boolean":
+                            if (ApplicationData.Current.LocalSettings.Values[key] != null)
+                                deserialisation[key]["Value"] = (bool)ApplicationData.Current.LocalSettings.Values[key];
+                            break;
+                    }
+                }
+            }
+            return deserialisation;
         }
         private static async Task<LanguageConfigurationStructure?> GetLanguageConfiguration()
         {
@@ -156,7 +191,7 @@ namespace PelotonIDE.Presentation
         }
         private async void InterpreterLanguageSelectionBuilder(MenuBarItem menuBarItem, string menuLabel, RoutedEventHandler routedEventHandler)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             LanguageSettings ??= await GetLanguageConfiguration();
             string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
@@ -203,7 +238,7 @@ namespace PelotonIDE.Presentation
         }
         private static void MenuItemHighlightController(MenuFlyoutItem? menuFlyoutItem, bool onish)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             Telemetry.Transmit("menuFlyoutItem.Name=", menuFlyoutItem.Name, "onish=", onish);
             if (onish)
@@ -217,70 +252,6 @@ namespace PelotonIDE.Presentation
                 menuFlyoutItem.Background = new SolidColorBrush(Colors.White);
             }
         }
-        // private void ToggleVariableLengthModeInMenu(InterpreterParameterStructure variableLength) => MenuItemHighlightController(mnuVariableLength, (bool)variableLength["Defined"]);
-        //private void SetVariableLengthModeInMenu(MenuFlyoutItem? menuFlyoutItem, bool showEnabled)
-        //{
-        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
-        //    Telemetry.Transmit("menuFlyoutItem.Name=", menuFlyoutItem.Name, "showEnabled=", showEnabled);
-        //    if (showEnabled)
-        //    {
-        //        menuFlyoutItem.Background = new SolidColorBrush(Colors.Black);
-        //        menuFlyoutItem.Foreground = new SolidColorBrush(Colors.White);
-        //    }
-        //    else
-        //    {
-        //        menuFlyoutItem.Background = new SolidColorBrush(Colors.White);
-        //        menuFlyoutItem.Foreground = new SolidColorBrush(Colors.Black);
-        //    }
-        //}
-        //private void ToggleVariableLengthModeInMenu(bool flag) => MenuItemHighlightController(mnuVariableLength, flag);
-        //private void UpdateTimeoutInMenu()
-        //{
-        //    foreach (MenuFlyoutItemBase? item in mnuTimeout.Items)
-        //    {
-        //        MenuItemHighlightController((MenuFlyoutItem)item!, false);
-        //    }
-        //    long currTimeout = Type_1_GetVirtualRegistry<long>("ideOps.Timeout");
-
-        //    switch (currTimeout)
-        //    {
-        //        case 0:
-        //            MenuItemHighlightController(mnu20Seconds, true);
-        //            break;
-
-        //        case 1:
-        //            MenuItemHighlightController(mnu100Seconds, true);
-        //            break;
-
-        //        case 2:
-        //            MenuItemHighlightController(mnu200Seconds, true);
-        //            break;
-
-        //        case 3:
-        //            MenuItemHighlightController(mnu1000Seconds, true);
-        //            break;
-
-        //        case 4:
-        //            MenuItemHighlightController(mnuInfinite, true);
-        //            break;
-
-        //    }
-        //}
-        //private void UpdateMenuRunningModeInMenu(InterpreterParameterStructure quietude)
-        //{
-        //    if ((bool)quietude["Defined"])
-        //    {
-        //        mnuRunningMode.Items.ForEach(item =>
-        //        {
-        //            MenuItemHighlightController((MenuFlyoutItem)item, false);
-        //            if ((long)quietude["Value"] == long.Parse((string)item.Tag))
-        //            {
-        //                MenuItemHighlightController((MenuFlyoutItem)item, true);
-        //            }
-        //        });
-        //    }
-        //}
-
         #region Event Handlers
         private InterpreterParametersStructure ShallowCopyPerTabSetting(InterpreterParametersStructure? perTabInterpreterParameters)
         {
@@ -314,7 +285,7 @@ namespace PelotonIDE.Presentation
         }
         public string GetLanguageNameOfCurrentTab(InterpreterParametersStructure? tabSettingJson)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             long langValue;
             string langName;
@@ -331,10 +302,7 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit("langValue=", langValue, "langName=", langName);
             return langName;
         }
-        //private void UpdateLanguageNameInStatusBar(InterpreterParametersStructure? tabSettingJson)
-        //{
-        //    sbLanguageName.Text = GetLanguageNameOfCurrentTab(tabSettingJson);
-        //}
+
         private string? GetLanguageNameFromID(long interpreterLanguageID) => (from lang
                                                                               in LanguageSettings
                                                                               where long.Parse(lang.Value["GLOBAL"]["ID"]) == interpreterLanguageID
@@ -402,7 +370,7 @@ namespace PelotonIDE.Presentation
         }
         public void HandleCustomPropertySaving(StorageFile file, CustomTabItem navigationViewItem)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             string rtfContent = File.ReadAllText(file.Path);
             HandleCustomPropertySaving(rtfContent, navigationViewItem, file.Path);
@@ -598,7 +566,7 @@ namespace PelotonIDE.Presentation
                 }
                 catch (Exception ex)
                 {
-                    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+                    Telemetry.Disable();
                     Telemetry.Transmit(ex.Message, accel);
                 }
                 name = name.Replace("&", "");
@@ -656,7 +624,7 @@ namespace PelotonIDE.Presentation
         }
         private void FormatMenu_FontSize_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
             Dictionary<string, string> global = LanguageSettings[interfaceLanguageName]["GLOBAL"];
             Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
@@ -679,7 +647,7 @@ namespace PelotonIDE.Presentation
         }
         private void EnableAllOutputPanelTabsMatchingRendering()
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             if (!AnInFocusTabExists()) return;
             if (InFocusTab().TabSettingsDict == null) return;
             foreach (string key2 in Type_3_GetInFocusTab<string>("outputOps.ActiveRenderers").Split(",", StringSplitOptions.RemoveEmptyEntries))
@@ -698,7 +666,7 @@ namespace PelotonIDE.Presentation
         }
         private void DeselectAndDisableAllOutputPanelTabs()
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             outputPanelTabView.TabItems.ForEach(item =>
             {
                 TabViewItem tvi = (TabViewItem)item;
@@ -710,7 +678,7 @@ namespace PelotonIDE.Presentation
         }
         private void InterpretMenu_Transput_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             string interfaceLanguageName = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
             Dictionary<string, string> global = LanguageSettings[interfaceLanguageName]["GLOBAL"];
             Dictionary<string, string> frmMain = LanguageSettings[interfaceLanguageName]["frmMain"];
@@ -724,7 +692,7 @@ namespace PelotonIDE.Presentation
                                             from MenuFlyoutItem mfi in mfsi.Items.Cast<MenuFlyoutItem>()
                                             select mfi)
             {
-                DSS[(string)mfi.Tag] = mfi.Text; 
+                DSS[(string)mfi.Tag] = mfi.Text;
                 MenuItemHighlightController((MenuFlyoutItem)mfi, false);
                 if ((string)me.Tag == (string)mfi.Tag)
                 {
@@ -743,7 +711,7 @@ namespace PelotonIDE.Presentation
         }
         private void Help_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             Telemetry.Transmit(me.Name);
 
@@ -758,7 +726,7 @@ namespace PelotonIDE.Presentation
         }
         private void OutputPanelTabView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             TabView me = (TabView)sender;
             Telemetry.Transmit(me.Name, "e.PreviousSize=", e.PreviousSize, "e.NewSize=", e.NewSize);
             string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";
@@ -767,7 +735,7 @@ namespace PelotonIDE.Presentation
         }
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             Page me = (Page)sender;
 
             //pHW.Text = $"Page: {e.NewSize.Height}/{e.NewSize.Width}";
@@ -808,7 +776,7 @@ namespace PelotonIDE.Presentation
         }
         private void TabView_Rendering_TabItemsChanged(TabView sender, Windows.Foundation.Collections.IVectorChangedEventArgs args)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             TabView me = (TabView)sender;
             //Telemetry.Transmit("me.Name=",me.Name, "me,Tag=",me.Tag, "args.Index=",args.Index, "args.CollectionChange=", args.CollectionChange, "Names=",string.Join(',', me.TabItems.Select(e => ((TabViewItem)e).Name)));
             //SerializeTabsToVirtualRegistry();
@@ -846,6 +814,427 @@ namespace PelotonIDE.Presentation
                 Type_3_UpdateInFocusTabSettings<string>("ideOps.CodeFolder", true, temp[1]);
                 UpdateStatusBar();
             }
+        }
+
+        private async void Format_TextColour_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.Disable();
+            ColorPicker cp = new()
+            {
+                Color = new Windows.UI.Color() { A = 255, R = 255, G = 255, B = 255 },
+                ColorSpectrumShape = ColorSpectrumShape.Ring,
+                IsColorPreviewVisible = true,
+                IsColorChannelTextInputVisible = false,
+                IsHexInputVisible = false,
+            };
+
+            GridLength OneSevenFive = new(175);
+
+            Grid g = new() { Name = "Griddle", Width = 500, Height = 50 };
+
+            RowDefinitionCollection rd = g.RowDefinitions;
+            rd.Add(new RowDefinition());
+
+            ColumnDefinitionCollection cd = g.ColumnDefinitions;
+            cd.Add(new ColumnDefinition() { Width = OneSevenFive });
+            cd.Add(new ColumnDefinition() { Width = OneSevenFive });
+
+            StackPanel sp = new() { Name = "Panelled", Width = 350 };
+            sp.Children.Add(cp);
+            sp.Children.Add(g);
+
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style, // DefaultContentDialogStyle
+                Title = "Select Colour",
+                Content = sp,
+                PrimaryButtonText = "Select",
+                CloseButtonText = "Cancel"
+            };
+
+            var result = await dialog.ShowAsync();
+            var selectedColor = cp.Color;
+
+            CustomRichEditBox currentRichEditBox = _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag];
+            currentRichEditBox.Document.Selection.CharacterFormat.ForegroundColor = selectedColor;
+            currentRichEditBox.Document.Selection.SelectOrDefault(x => x);
+
+            Telemetry.Disable();
+        }
+
+        private void Button_PreviousPanel_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.Disable();
+            var me = (Button)sender;
+
+            Telemetry.Transmit("me=", me.Name);
+            if (AnInFocusTabExists())
+            {
+                var tab = InFocusTab();
+                var rex = new Regex(@"Tab(\d+)", RegexOptions.IgnoreCase);
+                var match = rex.Match((string)tab.Tag);
+                if (match.Success)
+                {
+                    var sdx = match.Groups[1].Value;
+                    var idx = int.Parse(sdx) - 1;
+                    Telemetry.Transmit("sdx=", sdx, "idx=", idx);
+
+                    idx--;
+                    if (idx < 0) idx = tabControl.MenuItems.Count - 1; // 0;
+                    var newTag = $"Tab{idx}";
+                    tabControl.SelectedItem = (CustomTabItem)tabControl.MenuItems[idx];
+                    Telemetry.Transmit("SelectedItem.Tag=", ((CustomTabItem)tabControl.SelectedItem).Tag);
+                }
+            }
+        }
+
+        private void Button_NextPanel_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.Enable();
+            var me = (Button)sender;
+            Telemetry.Transmit("me=", me.Name);
+            if (AnInFocusTabExists())
+            {
+                var tab = InFocusTab();
+                var rex = new Regex(@"Tab(\d+)", RegexOptions.IgnoreCase);
+                var match = rex.Match((string)tab.Tag);
+                if (match.Success)
+                {
+                    var sdx = match.Groups[1].Value;
+                    var idx = int.Parse(sdx) - 1;
+                    Telemetry.Transmit("sdx=", sdx, "idx=", idx);
+
+                    idx++;
+                    if (idx > tabControl.MenuItems.Count - 1)
+                        idx = 0; // tabControl.MenuItems.Count - 1;
+                    tabControl.SelectedItem = (CustomTabItem)tabControl.MenuItems[idx];
+                    Telemetry.Transmit("SelectedItem.Tag=", ((CustomTabItem)tabControl.SelectedItem).Tag);
+                }
+            }
+        }
+
+        private async void Search_Find_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.Disable();
+            Grid g = new();
+
+            GridLength gl = new(45);
+            GridLength gh = new(30);
+
+            RowDefinitionCollection rdc = g.RowDefinitions;
+            rdc.Add(new RowDefinition() { Height = gh });
+            rdc.Add(new RowDefinition() { Height = gh });
+            rdc.Add(new RowDefinition() { Height = new GridLength(120) });
+            rdc.Add(new RowDefinition() { Height = gh });
+            rdc.Add(new RowDefinition() { });
+
+            ColumnDefinitionCollection cdc = g.ColumnDefinitions;
+            cdc.Add(new ColumnDefinition() { Width = gl });
+            cdc.Add(new ColumnDefinition() { Width = gl });
+            cdc.Add(new ColumnDefinition() { Width = gl });
+            cdc.Add(new ColumnDefinition() { Width = gl });
+            cdc.Add(new ColumnDefinition() { });
+
+            TextBlock t = new()
+            {
+                TextAlignment = TextAlignment.Left,
+                Text = "Find what?"
+            };
+
+            RichEditBox richEditBox = new RichEditBox()
+            {
+                TextAlignment = TextAlignment.DetectFromContent,
+                FontSize = 12,
+                PlaceholderText = "Find ...",
+                Name = "findWhat",
+
+            };
+
+            Grid.SetRow(t, 0);
+            Grid.SetColumn(t, 0);
+            g.Children.Add(t);
+
+            Grid.SetRow(richEditBox, 0);
+            Grid.SetColumn(richEditBox, 1);
+            Grid.SetColumnSpan(richEditBox, 4);
+            g.Children.Add(richEditBox);
+
+            DefineScopeElements(out RadioButton scopeAll,
+                                out RadioButton scopeSelection,
+                                out StackPanel searchAllSelectionSection,
+                                out Microsoft.UI.Xaml.Controls.CheckBox wholeWordMatch,
+                                out Microsoft.UI.Xaml.Controls.CheckBox caseMatch,
+                                out Microsoft.UI.Xaml.Controls.CheckBox wrapAround,
+                                out StackPanel wholeCaseWrapSection);
+
+            Grid.SetRow(searchAllSelectionSection, 2);
+            Grid.SetColumn(searchAllSelectionSection, 0);
+            Grid.SetColumnSpan(searchAllSelectionSection, 3);
+            g.Children.Add(searchAllSelectionSection);
+
+            Grid.SetRow(wholeCaseWrapSection, 2);
+            Grid.SetColumn(wholeCaseWrapSection, 4);
+            Grid.SetColumnSpan(wholeCaseWrapSection, 5);
+            g.Children.Add(wholeCaseWrapSection);
+
+
+            StackPanel dialogStackPanel = new();
+            dialogStackPanel.Children.Add(g);
+
+            string? findText = Type_3_GetInFocusTab<string>("ideOps.findText");
+            bool findWhole = Type_3_GetInFocusTab<bool>("ideOps.findWhole");
+            bool findCase = Type_3_GetInFocusTab<bool>("ideOps.findCase");
+            bool findSelection = Type_3_GetInFocusTab<bool>("ideOps.findSelection");
+            bool findWrapped = Type_3_GetInFocusTab<bool>("ideOps.findWrapped");
+
+            if (!string.IsNullOrEmpty(findText))
+            {
+                richEditBox.Document.SetText(TextSetOptions.None, findText);
+            }
+
+            wrapAround.IsChecked = findWrapped;
+            wholeWordMatch.IsChecked = findWhole;
+            caseMatch.IsChecked = findCase;
+            if (findSelection)
+            {
+                scopeSelection.IsChecked = true;
+            }
+            else
+            {
+                scopeAll.IsChecked = true;
+            }
+
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = "Find Text",
+                Content = dialogStackPanel,
+                PrimaryButtonText = "Find",
+                CloseButtonText = "Cancel",
+            };
+            // dialog.PrimaryButtonClick += Search_Find_Dialog_Click;
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            richEditBox.Document.GetText(TextGetOptions.AdjustCrlf, out var whatToFind);
+            Telemetry.Transmit("whatToFind=", whatToFind);
+            Telemetry.Transmit("scopeAll.IsChecked=", scopeAll.IsChecked, "scopeSelection.IsChecked=", scopeSelection.IsChecked);
+            Telemetry.Transmit("wholeWordMatch.IsChecked=", wholeWordMatch.IsChecked, "caseMatch.IsChecked=", caseMatch.IsChecked);
+
+            Type_3_UpdateInFocusTabSettings("ideOps.findText", true, whatToFind);
+            Type_3_UpdateInFocusTabSettings("ideOps.findWhole", true, wholeWordMatch.IsChecked);
+            Type_3_UpdateInFocusTabSettings("ideOps.findCase", true, caseMatch.IsChecked);
+            Type_3_UpdateInFocusTabSettings("ideOps.findSelection", true, scopeSelection.IsChecked);
+            Type_3_UpdateInFocusTabSettings("ideOps.findWrapped", true, wrapAround.IsChecked);
+
+            string findString = (bool)wholeWordMatch.IsChecked! ? $@"\b{Regex.Escape(whatToFind)}\b" : $@"{Regex.Escape(whatToFind)}";
+            RegexOptions findOptions = (bool)caseMatch.IsChecked! ? RegexOptions.Singleline : RegexOptions.IgnoreCase | RegexOptions.Singleline;
+
+            CustomRichEditBox currentRichEditBox = _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag];
+            //currentRichEditBox.Document.GetText(TextGetOptions.None, out string currentRichEditText);
+
+            //if ((bool)scopeSelection.IsChecked)
+            //{
+            //    if (currentRichEditBox.Document.Selection.Length == 0)
+            //    {
+            //        await SomethingNotFoundDialog($"'{whatToFind}' not found.");
+            //        return;
+            //        // error
+            //    }
+            //    // find in selection
+            //    ITextSelection sel = currentRichEditBox.Document.Selection;
+            //    int sstart = sel.StartPosition;
+            //    int sstop = sel.EndPosition;
+            //    sel.ScrollIntoView(PointOptions.None);
+            //    sel.GetText(TextGetOptions.None, out string stext);
+            //    var smatch = Regex.Match(stext, findString, findOptions);
+            //    if (smatch.Success)
+            //    {
+            //        Telemetry.Transmit("start=", sstart, "stop=", sstop, "match.Index=", smatch.Index);
+            //        int there = smatch.Index + sstart;
+            //        currentRichEditBox.Document.Selection.StartPosition = there;
+            //        currentRichEditBox.Document.Selection.EndPosition = there + findText.Length;
+            //        sel.ScrollIntoView(PointOptions.None);
+            //        Type_3_UpdateInFocusTabSettings("ideOps.findLastFound", true, there);
+            //    }
+            //    else
+            //    {
+            //        await SomethingNotFoundDialog($"'{whatToFind}' not found in selection.");
+            //    }
+            //    return;
+            //}
+            // find in body 
+            currentRichEditBox.Document.GetText(TextGetOptions.None, out string text);
+            int start = 0;
+            int stop = text.Length;
+            Match match = Regex.Match(text, findString, findOptions);
+            if (match.Success)
+            {
+                Telemetry.Transmit("start=", start, "stop=", stop, "match.Index=", match.Index);
+                var there = match.Index + start;
+                currentRichEditBox.Document.Selection.StartPosition = there;
+                currentRichEditBox.Document.Selection.EndPosition = there + whatToFind.Length;
+                currentRichEditBox.Document.Selection.ScrollIntoView(PointOptions.None);
+                Type_3_UpdateInFocusTabSettings<long>("ideOps.findLastFound", true, there + whatToFind.Length);
+            }
+            else
+            {
+                await SomethingNotFoundDialog($"'{whatToFind}' not found.");
+            }
+
+            static void DefineScopeElements(out RadioButton scopeAll,
+                                            out RadioButton scopeSelection,
+                                            out StackPanel searchAllSelectionSection,
+                                            out Microsoft.UI.Xaml.Controls.CheckBox wholeWordMatch,
+                                            out Microsoft.UI.Xaml.Controls.CheckBox caseMatch,
+                                            out Microsoft.UI.Xaml.Controls.CheckBox wrapAround,
+                                            out StackPanel wholeCaseWrapSection)
+            {
+                TextBlock scopeLabel = new()
+                {
+                    Text = "Scope",
+                    TextAlignment = TextAlignment.Center,
+                };
+
+                scopeAll = new()
+                {
+                    Name = "rbAll",
+                    GroupName = "Search",
+                    Content = "All",
+                    IsChecked = true,
+                    IsEnabled = true,
+
+                };
+                scopeSelection = new()
+                {
+                    Name = "rbSelection",
+                    GroupName = "Search",
+                    Content = "Selection",
+                    IsChecked = false,
+                    IsEnabled = false,
+                };
+                searchAllSelectionSection = new()
+                {
+                    BorderBrush = new SolidColorBrush(Colors.Blue),
+                    CornerRadius = new CornerRadius(2),
+                    BorderThickness = new Thickness(2)
+                };
+                searchAllSelectionSection.Children.Add(scopeLabel);
+                searchAllSelectionSection.Children.Add(scopeAll);
+                searchAllSelectionSection.Children.Add(scopeSelection);
+
+                wholeWordMatch = new()
+                {
+                    Content = "Find whole words"
+                };
+                caseMatch = new()
+                {
+                    Content = "Match case"
+                };
+                wrapAround = new()
+                {
+                    Content = "Wrap around"
+                };
+
+                wholeCaseWrapSection = new();
+                wholeCaseWrapSection.Children.Add(wholeWordMatch);
+                wholeCaseWrapSection.Children.Add(caseMatch);
+                wholeCaseWrapSection.Children.Add(wrapAround);
+            }
+        }
+
+        private void Search_Replace_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Search_FindNext_Click(object sender, RoutedEventArgs e)
+        {
+            long findLastFound = Type_3_GetInFocusTab<long>("ideOps.findLastFound");
+            string? findText = Type_3_GetInFocusTab<string>("ideOps.findText");
+            bool findWhole = Type_3_GetInFocusTab<bool>("ideOps.findWhole");
+            bool findCase = Type_3_GetInFocusTab<bool>("ideOps.findCase");
+            bool findWrapped = Type_3_GetInFocusTab<bool>("ideOps.findWrapped");
+
+            //bool findSelection = Type_3_GetInFocusTab<bool>("ideOps.findSelection");
+
+            string findString = findWhole ? $@"\b{Regex.Escape(findText!)}\b" : $@"{Regex.Escape(findText!)}";
+            RegexOptions findOptions = findCase! ? RegexOptions.Singleline : RegexOptions.IgnoreCase | RegexOptions.Singleline;
+
+            CustomRichEditBox currentRichEditBox = _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag];
+
+            // if findLastFound is -1 then the find failed. There's no point trying again.
+            if (findLastFound == -1)
+            {
+                await SomethingNotFoundDialog($"No more instances of '{findText}' found.");
+                return;
+            }
+
+            // if findLastFound != -1 then find found something and the user wants to find something more
+            // if this next search doesn't find it,
+            //  if findWrapped is false
+            //   error
+            //  else
+            //   we set findLastFound to zero and find what we first found
+
+            while (true)
+            {
+                currentRichEditBox.Document.GetText(TextGetOptions.None, out string text);
+                int start = (int)findLastFound;
+                text = text.Substring(start);
+                var match = Regex.Match(text, findString, findOptions);
+                if (match.Success)
+                {
+                    var there = match.Index + start;
+                    currentRichEditBox.Document.Selection.StartPosition = there;
+                    currentRichEditBox.Document.Selection.EndPosition = there + findText.Length;
+                    currentRichEditBox.Document.Selection.ScrollIntoView(PointOptions.None);
+                    Type_3_UpdateInFocusTabSettings<long>("ideOps.findLastFound", true, there + findText.Length);
+                    break;
+                }
+                else
+                {
+                    if (findWrapped)
+                    {
+                        findLastFound = 0;
+                        continue;
+                    }
+                    Type_3_UpdateInFocusTabSettings<long>("ideOps.findLastFound", true, -1);
+                    await SomethingNotFoundDialog($"No more instances of '{findText}' found.");
+                    return;
+                }
+            }
+        }
+
+        private async void ShowTabs_Click(object sender, RoutedEventArgs e)
+        {
+            Telemetry.Disable();
+
+            List<string> lines = ["Tabs"];
+
+            var ift = InFocusTab();
+
+            int i = 0;
+            foreach (CustomTabItem tab in tabControl.MenuItems)
+            {
+                lines.Add($"{i++,3}: Tag={tab.Tag,-10} Name={tab.Name,-10} Content={tab.Content,-20} InFocus={(ift.Tag.ToString() == tab.Tag.ToString() ? "True" : "False")}");
+            }
+
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style, // DefaultContentDialogStyle
+                Title = "Show Tabs",
+                Content = lines.JoinBy("\n"),
+                PrimaryButtonText = "OK",
+                DefaultButton = ContentDialogButton.Primary,
+                CanBeScrollAnchor = true,
+
+
+            };
+            _ = await dialog.ShowAsync();
+
         }
     }
 }

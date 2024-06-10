@@ -172,7 +172,23 @@
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuBarItem>
-            <MenuBarItem Title="Search" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuSearch"/>
+            <MenuBarItem Title="Search" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuSearch">
+                <MenuFlyoutItem x:Name="mnuFind" Text="Find" Click="Search_Find_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="F"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="mnuFindNext" Text="Find Next" Click="Search_FindNext_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="G"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="mnuReplace" Text="Replace" Click="Search_Replace_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="H"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
             <MenuBarItem Title="Format" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuFormat">
                 <MenuFlyoutSubItem x:Name="mnuFontSize" Text="FontSize">
                     <MenuFlyoutItem Text="12pt" x:Name="mnuPoint12" Click="FormatMenu_FontSize_Click" Tag="12"/>
@@ -183,6 +199,7 @@
                     <MenuFlyoutItem Text="22pt" x:Name="mnuPoint22" Click="FormatMenu_FontSize_Click" Tag="22"/>
                     <MenuFlyoutItem Text="24pt" x:Name="mnuPoint24" Click="FormatMenu_FontSize_Click" Tag="24"/>
                 </MenuFlyoutSubItem>
+                <MenuFlyoutItem Text="Text Colour" x:Name="mnuTextColour" Click="Format_TextColour_Click" />
             </MenuBarItem>
             <MenuBarItem Title="View" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuView"/>
             <MenuBarItem Title="Interpreter" BorderBrush="LightGray" BorderThickness="1" x:Name="mnuRun">
@@ -280,9 +297,12 @@
                 <MenuFlyoutItem x:Name="mnuHelpIndex" Text="Help" Click="Help_Click"/>
                 <MenuFlyoutItem x:Name="mnuReset" Text="Reset to factory settings" Click="ResetToFactorySettings_Click"/>
                 <MenuFlyoutItem x:Name="mnuMemory" Text="Show Memory" Click="ShowMemory_Click"/>
+                <MenuFlyoutItem x:Name="mnuShowTabs" Text="Show Tabs" Click="ShowTabs_Click"/>
                 <MenuFlyoutItem x:Name="mnuHelpAbout" Text="About" Click="HelpAbout_Click"/>
             </MenuBarItem>
         </MenuBar>
+        <!-- Maybe +^Tab etc can be done here with buttons and in the menus with a keyboard accellerator -->
+        
         <Button x:Name="butNew" AutomationProperties.Name="New" ToolTipService.ToolTip="New" Click="FileNewButton_Click" RelativePanel.Below="menuBar">
             <Button.Content>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8F4;"/>
@@ -353,9 +373,28 @@
                 </ResourceDictionary>
             </Button.Resources>
         </Button>
+        <Button x:Name="butPrevPanel" AutomationProperties.Name="Previous Panel" ToolTipService.ToolTip="Previous Panel" RelativePanel.RightOf="butGo" RelativePanel.Below="menuBar"
+                Click="Button_PreviousPanel_Click">
+            <Button.Content>
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" />
+            </Button.Content>
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Modifiers="Control,Shift" Key="Tab"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="butNextPanel" AutomationProperties.Name="Previous Panel" ToolTipService.ToolTip="Previous Panel" RelativePanel.RightOf="butPrevPanel" RelativePanel.Below="menuBar"
+                Click="Button_NextPanel_Click">
+            <Button.Content>
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" />
+            </Button.Content>
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Modifiers="Control" Key="Tab" />
+            </Button.KeyboardAccelerators>
+        </Button>
         <NavigationView x:Name="tabControl" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" 
                         RelativePanel.Below="butSelectAll" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.Above="outputPanel" 
-                        SelectionChanged="TabControl_SelectionChanged" RightTapped="TabControl_RightTapped" SizeChanged="TabControl_SizeChanged" >
+                        SelectionChanged="TabControl_SelectionChanged" SizeChanged="TabControl_SizeChanged"  >
+            <!-- RightTapped="TabControl_RightTapped" -->
             <NavigationView.MenuItems>
                 <local:CustomTabItem x:Name="tab1" Content="Document 1" Tag="Tab1" IsNewFile="True" Height="30" KeyDown="CustomTabItem_KeyDown" />
             </NavigationView.MenuItems>
@@ -510,7 +549,7 @@
             <!--<TextBlock Text="0 words" Margin="0,0,20,0" Name="wordCount"/>-->
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_LanguageName_RightTapped">
-                    <TextBlock Name="sbLanguageName" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="5"/>
+                    <TextBlock Name="sbLanguageName" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
                 </ContentControl>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">
@@ -536,9 +575,9 @@
                     <TextBlock Name="sbRendering" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5" Text="Renderers"/>
                 </ContentControl>
             </Border>
-            <Border BorderThickness="1" BorderBrush="Black">
+            <!--<Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock Name="sbCursorPosition" Height="30" MinWidth="100" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
-            </Border>
+            </Border>-->
             <Border BorderThickness="1" BorderBrush="Black">
                 <ContentControl RightTapped="ContentControl_Interpreter_RightTapped">
                     <TextBlock Name="sbEngine" Height="30" MinWidth="30" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
@@ -561,10 +600,10 @@
                     <TextBlock x:Name="sbPath" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
                 </ContentControl>
             </Border>
-            <!--<Border BorderThickness="1" BorderBrush="Black">
-                <TextBlock x:Name="tHW" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
-            </Border>
             <Border BorderThickness="1" BorderBrush="Black">
+                <TextBlock x:Name="sbMessage" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
+            </Border>
+            <!--<Border BorderThickness="1" BorderBrush="Black">
                 <TextBlock x:Name="vHW" Height="30" MinWidth="50" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5"/>
             </Border>
             <Border BorderThickness="1" BorderBrush="Black">

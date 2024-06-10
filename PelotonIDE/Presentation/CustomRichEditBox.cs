@@ -2,6 +2,9 @@
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Input;
 
+using System.Diagnostics;
+
+
 
 
 // using Uno.Extensions.Authentication.WinUI;
@@ -32,7 +35,7 @@ namespace PelotonIDE.Presentation
         }
         private void CustomRichEditBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             CustomRichEditBox me = ((CustomRichEditBox)sender);
             ITextSelection selection = me.Document.Selection;
             selection.GetText(TextGetOptions.None, out string text);
@@ -49,55 +52,63 @@ namespace PelotonIDE.Presentation
         }
         private void CustomRichEditBox_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             Telemetry.Transmit(((RichEditBox)sender).Name, e.GetType().FullName);
             base.OnPointerReleased(e);
         }
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
+            CoreVirtualKeyStates appState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Application);
+            CoreVirtualKeyStates insState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Insert);
             CoreVirtualKeyStates ctrlState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control);
             CoreVirtualKeyStates shiftState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
-            bool isCtrlPressed = ctrlState.HasFlag(CoreVirtualKeyStates.Down);
-            bool isShiftPressed = shiftState.HasFlag(CoreVirtualKeyStates.Locked);
 
-            if (e.Key == VirtualKey.X && isCtrlPressed)
+            bool CtrlIsDown = ctrlState.HasFlag(CoreVirtualKeyStates.Down);
+            bool CtrlIsLocked = ctrlState.HasFlag(CoreVirtualKeyStates.Locked);
+            bool ShiftIsDown = shiftState.HasFlag(CoreVirtualKeyStates.Down);
+            bool ShiftIsLocked = shiftState.HasFlag(CoreVirtualKeyStates.Locked);
+            bool InsIsDown = insState.HasFlag(CoreVirtualKeyStates.Down);
+            bool InsIsLocked = insState.HasFlag(CoreVirtualKeyStates.Locked);
+            bool AppIsDown = appState.HasFlag(CoreVirtualKeyStates.Down);
+            bool AppIsLocked = appState.HasFlag(CoreVirtualKeyStates.Locked);
+
+            if (e.Key == VirtualKey.X && CtrlIsDown)
             {
                 Cut();
                 return;
             }
-            if (e.Key == VirtualKey.C && isCtrlPressed)
+            if (e.Key == VirtualKey.C && CtrlIsDown)
             {
                 CopyText();
                 return;
             }
-            if (e.Key == VirtualKey.V && isCtrlPressed)
+            if (e.Key == VirtualKey.V && CtrlIsDown)
             {
                 PasteText();
                 return;
             }
-            if (e.Key == VirtualKey.A && isCtrlPressed)
+            if (e.Key == VirtualKey.A && CtrlIsDown)
             {
                 SelectAll();
                 return;
             }
-            if (e.Key == VirtualKey.Tab && isCtrlPressed)
+            if (e.Key == VirtualKey.Tab && !CtrlIsDown && ShiftIsDown)
             {
-                int direction = ctrlState.ToString().Contains("Locked") ? -1 : 1;
-                Telemetry.Transmit("e.Key=", e.Key, "ctrlState=", ctrlState, "shiftState=", shiftState, "isCtrlPressed=", isCtrlPressed, "isShiftPressed=", isShiftPressed);
                 e.Handled = true;
                 return;
             }
-            if (e.Key == VirtualKey.Tab)
+
+            if (e.Key == VirtualKey.Tab && !CtrlIsDown)
             {
-                Telemetry.Transmit("e.Key=", e.Key, "ctrlState=", ctrlState, "shiftState=", shiftState, "isCtrlPressed=", isCtrlPressed, "isShiftPressed=", isShiftPressed);
-                if (!isShiftPressed)
-                    Document.Selection.TypeText("\t");
+                Document.Selection.TypeText("\t");
                 e.Handled = true;
                 return;
             }
             base.OnKeyDown(e);
         }
+
+
         private void Cut()
         {
             string selectedText = Document.Selection.Text;

@@ -111,7 +111,7 @@ namespace PelotonIDE.Presentation
         /// </summary>
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             LanguageSettings ??= await GetLanguageConfiguration();
             RenderingConstants ??= await GetRenderingConstants();
@@ -132,7 +132,22 @@ namespace PelotonIDE.Presentation
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("outputOps.TappedRenderer", FactorySettings, -1);
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<double>("ideOps.FontSize", FactorySettings, (double)12.0);
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<bool>("ideOps.UsePerTabSettingsWhenCreatingTab", FactorySettings, true);
-            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.DataFolder", FactorySettings, @"C:\Peloton\Data");
+            //IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.DataFolder", FactorySettings, @"C:\Peloton\Data");
+
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("ideOps.Engine", FactorySettings, 3L);
+            Engine = Type_1_GetVirtualRegistry<long>("ideOps.Engine");
+
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.CodeFolder", FactorySettings, @"C:\peloton\code");
+            Codes = Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder");
+
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.DataFolder", FactorySettings, @"C:\peloton\data");
+            Datas = Type_1_GetVirtualRegistry<string>("ideOps.DataFolder");
+
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.Engine.2", FactorySettings, @"c:\protium\bin\pdb.exe");
+            InterpreterP2 = Type_1_GetVirtualRegistry<string>("ideOps.Engine.2");
+
+            IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<string>("ideOps.Engine.3", FactorySettings, @"C:\peloton\bin\p3.exe");
+            InterpreterP3 = Type_1_GetVirtualRegistry<string>("ideOps.Engine.3");
 
             IfNotInVirtualRegistryUpdateItFromFactorySettingsOrDefaultTo<long>("pOps.Transput", FactorySettings, 2);
 
@@ -166,12 +181,12 @@ namespace PelotonIDE.Presentation
             // Engine selection:
             //  Engine will contain either 2 or 3
 
-            SetEngine();
-            SetScriptsAndData();
-            SetInterpreterNew();
-            SetInterpreterOld();
+            //SetEngine();
+            //SetScriptsAndData();
+            //SetInterpreterNew();
+            //SetInterpreterOld();
 
-            PerTabInterpreterParameters ??= await MainPage.GetPerTabInterpreterParameters();
+            PerTabInterpreterParameters ??= await MainPage.GetPerTabInterpreterParametersIncludingMatchingVirtualRegistry();
 
             if (!AfterTranslation)
             {
@@ -212,6 +227,17 @@ namespace PelotonIDE.Presentation
             //{
             //    UpdateMenuRunningModeInMenu(PerTabInterpreterParameters["pOps.Quietude"]);
             //}
+
+                        if (AfterTranslation)
+            {
+                await HtmlText.EnsureCoreWebView2Async();
+                HtmlText.NavigateToString("<body style='background-color: papayawhip;'></body>");
+
+                await LogoText.EnsureCoreWebView2Async();
+                LogoText.NavigateToString("<body style='background-color: #ffdad5;'></body>");
+            }
+
+
             AfterTranslation = false;
 
             // SetVariableLengthModeInMenu(mnuVariableLength, Type_1_GetVirtualRegistry<bool>("pOps.VariableLength"));
@@ -233,12 +259,6 @@ namespace PelotonIDE.Presentation
                 sbLanguageName.Text = currentLanguageName;
             }
 
-            await HtmlText.EnsureCoreWebView2Async();
-            HtmlText.NavigateToString("<body style='background-color: papayawhip;'></body>");
-
-            await LogoText.EnsureCoreWebView2Async();
-            LogoText.NavigateToString("<body style='background-color: #ffdad5;'></body>");
-
             // UpdateTopMostRendererInCurrentTab();
             UpdateOutputTabs();
             // UpdateTabCreationMethodInMenu();
@@ -255,68 +275,68 @@ namespace PelotonIDE.Presentation
                 //INS.Foreground = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Insert).HasFlag(CoreVirtualKeyStates.Locked) ? black : lightGrey;
             }
 
-            void SetEngine()
-            {
-                if (LocalSettings.Values.TryGetValue("ideOps.Engine", out object? value))
-                {
-                    Engine = (long)value;
-                }
-                else
-                {
-                    Engine = (long)FactorySettings["ideOps.Engine"];
-                }
-                Type_1_UpdateVirtualRegistry("ideOps.Engine", Engine);
-            }
-            void SetScriptsAndData()
-            {
-                if (LocalSettings.Values.TryGetValue("ideOps.CodeFolder", out object? value))
-                {
-                    Codes = value.ToString();
-                }
-                else
-                {
-                    Codes = FactorySettings["ideOps.CodeFolder"].ToString();
-                }
-                Codes ??= @"C:\peloton\code";
-                Type_1_UpdateVirtualRegistry("ideOps.CodeFolder", Codes);            
+            //void SetEngine()
+            //{
+            //    if (LocalSettings.Values.TryGetValue("ideOps.Engine", out object? value))
+            //    {
+            //        Engine = (long)value;
+            //    }
+            //    else
+            //    {
+            //        Engine = (long)FactorySettings["ideOps.Engine"];
+            //    }
+            //    Type_1_UpdateVirtualRegistry("ideOps.Engine", Engine);
+            //}
+            //void SetScriptsAndData()
+            //{
+            //    if (LocalSettings.Values.TryGetValue("ideOps.CodeFolder", out object? value))
+            //    {
+            //        Codes = value.ToString();
+            //    }
+            //    else
+            //    {
+            //        Codes = FactorySettings["ideOps.CodeFolder"].ToString();
+            //    }
+            //    Codes ??= @"C:\peloton\code";
+            //    Type_1_UpdateVirtualRegistry("ideOps.CodeFolder", Codes);            
                     
-                if (LocalSettings.Values.TryGetValue("ideOps.DataFolder", out object? dvalue))
-                {
-                    Datas = dvalue.ToString();
-                }
-                else
-                {
-                    Datas = FactorySettings["ideOps.DataFolder"].ToString();
-                }
-                Codes ??= @"C:\peloton\data";
-                Type_1_UpdateVirtualRegistry("ideOps.DataFolder", Datas);
-            }
-            void SetInterpreterOld()
-            {
-                if (LocalSettings.Values.TryGetValue("ideOps.Engine.2", out object? value))
-                {
-                    InterpreterP2 = value.ToString();
-                }
-                else
-                {
-                    InterpreterP2 = FactorySettings["ideOps.Engine.2"].ToString();
-                }
-                InterpreterP2 ??= @"c:\protium\bin\pdb.exe";
-                Type_1_UpdateVirtualRegistry("ideOps.Engine.2", InterpreterP2);
-            }
-            void SetInterpreterNew()
-            {
-                if (LocalSettings.Values.TryGetValue("ideOps.Engine.3", out object? value))
-                {
-                    InterpreterP3 = value.ToString();
-                }
-                else
-                {
-                    InterpreterP3 = FactorySettings["ideOps.Engine.3"].ToString();
-                }
-                InterpreterP3 ??= @"c:\peloton\bin\p3.exe";
-                Type_1_UpdateVirtualRegistry("ideOps.Engine.3", InterpreterP3);
-            }
+            //    if (LocalSettings.Values.TryGetValue("ideOps.DataFolder", out object? dvalue))
+            //    {
+            //        Datas = dvalue.ToString();
+            //    }
+            //    else
+            //    {
+            //        Datas = FactorySettings["ideOps.DataFolder"].ToString();
+            //    }
+            //    Datas ??= @"C:\peloton\data";
+            //    Type_1_UpdateVirtualRegistry("ideOps.DataFolder", Datas);
+            //}
+            //void SetInterpreterOld()
+            //{
+            //    if (LocalSettings.Values.TryGetValue("ideOps.Engine.2", out object? value))
+            //    {
+            //        InterpreterP2 = value.ToString();
+            //    }
+            //    else
+            //    {
+            //        InterpreterP2 = FactorySettings["ideOps.Engine.2"].ToString();
+            //    }
+            //    InterpreterP2 ??= @"c:\protium\bin\pdb.exe";
+            //    Type_1_UpdateVirtualRegistry("ideOps.Engine.2", InterpreterP2);
+            //}
+            //void SetInterpreterNew()
+            //{
+            //    if (LocalSettings.Values.TryGetValue("ideOps.Engine.3", out object? value))
+            //    {
+            //        InterpreterP3 = value.ToString();
+            //    }
+            //    else
+            //    {
+            //        InterpreterP3 = FactorySettings["ideOps.Engine.3"].ToString();
+            //    }
+            //    InterpreterP3 ??= @"c:\peloton\bin\p3.exe";
+            //    Type_1_UpdateVirtualRegistry("ideOps.Engine.3", InterpreterP3);
+            //}
         }
 
         //private void UpdateTabCreationMethodInMenu()
@@ -327,7 +347,7 @@ namespace PelotonIDE.Presentation
 
         //private void UpdateTransputInMenu()
         //{
-        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+        //    Telemetry.Disable();
 
         //    string transput = Type_1_GetVirtualRegistry<long>("pOps.Transput").ToString();
         //    foreach (var mfi in from MenuFlyoutSubItem mfsi in mnuTransput.Items.Cast<MenuFlyoutSubItem>()
@@ -359,6 +379,7 @@ namespace PelotonIDE.Presentation
         //}
         private Dictionary<string, List<string>> GetLangLangs(Dictionary<string, Dictionary<string, Dictionary<string, string>>>? languageSettings)
         {
+            Telemetry.Disable();
             Dictionary<string, List<string>> dict = [];
             List<string> kees = [.. languageSettings.Keys];
             kees.Sort(CompareLanguagesById);
@@ -377,6 +398,7 @@ namespace PelotonIDE.Presentation
                     strings.Add(myLanguageInMyLanguage == theirLanguageInTheirLanguage ? myLanguageInMyLanguage : $"{theirLanguageInMyLanguage} - {theirLanguageInTheirLanguage}");
                 }
                 dict[key] = strings;
+                //Telemetry.Transmit("key=", key, "dict[key]=", strings.JoinBy("\n"));
             }
             return dict;
 
@@ -475,7 +497,7 @@ namespace PelotonIDE.Presentation
         }
         private void SerializeLayoutToVirtualRegistry()
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             List<string> list =
             [
                 Type_1_GetVirtualRegistry<bool>("ideOps.OutputPanelShowing") ? "True" : "False",

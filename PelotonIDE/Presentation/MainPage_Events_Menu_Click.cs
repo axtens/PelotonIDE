@@ -2,34 +2,16 @@
 
 using Microsoft.UI;
 using Microsoft.UI.Text;
-using Microsoft.UI.Xaml.Controls;
 
 using Newtonsoft.Json;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Uno.UI.Extensions;
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using Windows.Storage.AccessCache;
-using Windows.Storage.Pickers;
-using Windows.Storage.Provider;
 using Windows.Storage.Streams;
-
-
-using RenderingConstantsStructure = System.Collections.Generic.Dictionary<string,
-        System.Collections.Generic.Dictionary<string, object>>;
-using TabSettingJson = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace PelotonIDE.Presentation
 {
@@ -108,6 +90,7 @@ namespace PelotonIDE.Presentation
                     break;
             }
 
+            Type_1_UpdateVirtualRegistry("ideOps.Engine", Engine);
             Type_2_UpdatePerTabSettings("ideOps.Engine", true, Engine);
 
             if (Engine != Type_3_GetInFocusTab<long>("ideOps.Engine"))
@@ -233,7 +216,7 @@ namespace PelotonIDE.Presentation
         }
         private async void HandleInterfaceLanguageChange(string langName)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             Dictionary<string, Dictionary<string, string>> selectedLanguage = LanguageSettings[langName];
             Telemetry.Transmit("Changing interface language to", langName, long.Parse(selectedLanguage["GLOBAL"]["ID"]));
@@ -252,12 +235,21 @@ namespace PelotonIDE.Presentation
         }
         private void HelpAbout_Click(object sender, RoutedEventArgs e)
         {
+            var pkg = Windows.ApplicationModel.Package.Current ;
+            var ver = pkg.Id.Version;
+
+            var f = Assembly.GetExecutingAssembly().GetFiles()[0].Name;
+            FileInfo fi = new(f);
+            var content = $"Version {ver.Major}.{ver.Minor}.{ver.Build}\n" +
+                          $"Compiled {fi.LastWriteTime:yyyy'-'MM'-'dd' 'HH':'mm':'sszz}"; /*+
+                          $"Installed: {pkg.InstalledDate:yyyy'-'MM'-'dd' 'HH':'mm':'sszz}";*/
+
             ContentDialog dialog = new()
             {
                 XamlRoot = this.XamlRoot,
                 Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                Title = "PelotonIDE v1.0",
-                Content = "", // Based on original code by\r\nHakob Chalikyan <hchalikyan3@gmail.com>",
+                Title = pkg.DisplayName,
+                Content = content, // Based on original code by\r\nHakob Chalikyan <hchalikyan3@gmail.com>",
                 CloseButtonText = "OK"
             };
             _ = dialog.ShowAsync();
@@ -366,7 +358,7 @@ namespace PelotonIDE.Presentation
         }
         private void InterpretMenu_Rendering_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             string il = Type_1_GetVirtualRegistry<string>("ideOps.InterfaceLanguageName");
             Dictionary<string, string> global = LanguageSettings[il]["GLOBAL"];
@@ -435,7 +427,7 @@ namespace PelotonIDE.Presentation
             Dictionary<string, string> frmMain = LanguageSettings[il]["frmMain"];
             CultureInfo cultureInfo = new(global["Locale"]);
 
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             foreach (MenuFlyoutItemBase? item in from key in new string[] { "mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite" }
                                                  let items = from item in mnuTimeout.Items where item.Name == key select item
@@ -531,37 +523,6 @@ namespace PelotonIDE.Presentation
         private async void Open()
         {
             Telemetry.SetEnabled(true);
-
-            //            Windows.System.User user = Windows.System.User.GetDefault();
-            //            var fop = FileOpenPicker.CreateForUser(user);
-
-
-            //StorageFile fle = await StorageFile.GetFileFromPathAsync("c:\\temp\\x.cmd");
-            //StorageFolder fld = await StorageFolder.GetFolderFromPathAsync("c:\\temp");
-
-            //TransmitMRU([fle, fld]);
-            //TransmitFAL([fle, fld]);
-
-            // StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///file.txt"));
-
-
-            //FileOpenPicker open = new();
-            //{
-            //    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
-            //};
-            //open.FileTypeFilter.Add(".pr");
-            //open.FileTypeFilter.Add(".p");
-
-            //Telemetry.Transmit("open=", JsonConvert.SerializeObject(open));
-
-            // For Uno.WinUI-based apps
-            //nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
-            //WinRT.Interop.InitializeWithWindow.Initialize(open, hwnd);
-
-            //StorageFile pickedFile = await open.PickSingleFileAsync();
-
-            //Telemetry.Transmit("pickedFile=", JsonConvert.SerializeObject(pickedFile));
-
             var temp = FileFolderPicking.GetFile("Code file?", AnInFocusTabExists() ? Type_3_GetInFocusTab<string>("ideOps.CodeFolder") : Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder"));
             if (temp[0] == "OK")
             {
@@ -573,20 +534,16 @@ namespace PelotonIDE.Presentation
                 navigationViewItem.SavedFileName = Path.GetFileName(pickedFile);
                 navigationViewItem.SavedFileFolder = Path.GetDirectoryName(pickedFile);
                 navigationViewItem.SavedFileExtension = Path.GetExtension(pickedFile);
-                //navigationViewItem.Content = Path.GetFileName(pickedFile); // pickedFile.Name;
+
                 navigationViewItem.Height = 30;
                 navigationViewItem.TabSettingsDict = ShallowCopyPerTabSetting(PerTabInterpreterParameters);
                 navigationViewItem.TabSettingsDict["ideOps.CodeFolder"]["Defined"] = true;
                 navigationViewItem.TabSettingsDict["ideOps.CodeFolder"]["Value"] = Path.GetDirectoryName(pickedFile).ToString();
                 CustomRichEditBox newestRichEditBox = _richEditBoxes[navigationViewItem.Tag];
 
-                //Microsoft.Win32.SafeHandles.SafeFileHandle sfh = File.OpenHandle(pickedFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, FileOptions.RandomAccess);
                 var stream = new System.IO.MemoryStream(File.ReadAllBytes(pickedFile));
                 IRandomAccessStream randomAccessStream = stream.AsRandomAccessStream();
-                //using (var randAccStream =
-                //    FileRandomAccessStream.OpenAsync(pickedFile, FileAccessMode.Read))
-                //{
-                // var encoding = EncChecker.EncCheck.DetectFileAsEncoding(pickedFile.Path);
+
                 bool hasBOM = false;
                 Encoding? encoding = TextEncoding.GetFileEncoding(pickedFile, 1000, ref hasBOM);
                 var fileType = Path.GetExtension(pickedFile);
@@ -616,8 +573,7 @@ namespace PelotonIDE.Presentation
                             break;
                         }
                 }
-                //Type_1_UpdateVirtualRegistry("MostRecentPickedFilePath", Path.GetDirectoryName(pickedFile));
-                //}
+
                 if (newestRichEditBox.IsRTF)
                 {
                     HandleCustomPropertyLoading(pickedFile, newestRichEditBox);
@@ -627,39 +583,6 @@ namespace PelotonIDE.Presentation
 
                 UpdateOutputTabs();
             }
-
-            //static void TransmitMRU(object[] values)
-            //{
-            //   StorageItemMostRecentlyUsedList mru = StorageApplicationPermissions.MostRecentlyUsedList;
-            //    mru.Add((StorageFile)values[0]);
-            //    mru.Add((StorageFolder)values[1]);
-
-            //    if (mru != null)
-            //    {
-            //        for (int i = 0; i < mru.Entries.Count; i++)
-            //        {
-            //            AccessListEntry e = mru.Entries[i];
-            //            Telemetry.Transmit("e.Metadata=", e.Metadata.ToString(), "e.Token=", e.Token);
-            //        }
-            //    }
-            //}
-
-            //static void TransmitFAL(object[] values)
-            //{
-
-            //    var fal = StorageApplicationPermissions.FutureAccessList;
-
-            //    fal.Add((StorageFile)values[0]);
-            //    fal.Add((StorageFolder)values[1]);
-            //    if (fal != null)
-            //    {
-            //        for (int i = 0; i < fal.Entries.Count; i++)
-            //        {
-            //            var e = fal.Entries[i];
-            //            Telemetry.Transmit("e.Metadata=", e.Metadata.ToString(), "e.Token=", e.Token);
-            //        }
-            //    }
-            //}
         }
         private async void Paste()
         {
@@ -716,7 +639,7 @@ namespace PelotonIDE.Presentation
             }
             catch (Exception er)
             {
-                Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+                Telemetry.Disable();
                 Telemetry.Transmit(er.Message, er.StackTrace);
             }
             Environment.Exit(0);
@@ -919,7 +842,7 @@ namespace PelotonIDE.Presentation
         }
         private async void ShowMemory_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
             Dictionary<string, Dictionary<string, object>>? currentTabSettings = navigationViewItem.TabSettingsDict;

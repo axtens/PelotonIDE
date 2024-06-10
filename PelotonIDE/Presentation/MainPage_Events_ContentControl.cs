@@ -77,7 +77,7 @@ namespace PelotonIDE.Presentation
         }
         private void UpdateLanguageInContextualMenu(MenuFlyoutItem me, string internationalizedName, string name)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             if (me.Tag is Dictionary<string, object> parent)
             {
                 IList<MenuFlyoutItemBase> subMenus = ((MenuFlyout)parent["MenuFlyout"]).Items; //  from menu in ((MenuFlyoutSubItem)me.Tag).Items select menu;
@@ -105,7 +105,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_FixedVariable_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             ContentControl me = (ContentControl)sender;
 
@@ -151,7 +151,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_FixedVariable_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
 
@@ -169,7 +169,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Quietude_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             ContentControl me = (ContentControl)sender;
 
@@ -216,7 +216,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Quietude_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             string[] quietudes = ["mnuQuiet", "mnuVerbose", "mnuVerbosePauseOnExit"];
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
@@ -237,7 +237,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Timeout_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             ContentControl me = (ContentControl)sender;
 
@@ -282,7 +282,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Timeout_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             string[] timeouts = ["mnu20Seconds", "mnu100Seconds", "mnu200Seconds", "mnu1000Seconds", "mnuInfinite"];
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
@@ -302,7 +302,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Interpreter_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             var white = new SolidColorBrush(Colors.White);
             var black = new SolidColorBrush(Colors.Black);
@@ -339,7 +339,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Interpreter_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
 
@@ -351,7 +351,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Rendering_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             if (!AnInFocusTabExists()) return;
 
@@ -392,7 +392,7 @@ namespace PelotonIDE.Presentation
         }
         private void ContentControl_Rendering_MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
 
             MenuFlyoutItem me = (MenuFlyoutItem)sender;
             //string meName = me.Name.Replace("tab", "");

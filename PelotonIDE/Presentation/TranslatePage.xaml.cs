@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
 
+using Newtonsoft.Json;
+
 using System.Text.RegularExpressions;
 
 using Group = System.Text.RegularExpressions.Group;
@@ -24,7 +26,7 @@ namespace PelotonIDE.Presentation
         string? DataPath { get; set; }
 
         long Quietude { get; set; }
-        internal static List<Plex>? Plexes { get; private set; }
+        internal static List<PlexBlock>? PlexBlocks { get; private set; }
 
         TabSettingJson? SourceInFocusTabSettings { get; set; }
 
@@ -51,7 +53,7 @@ namespace PelotonIDE.Presentation
             if (parameters.Source == "MainPage")
             {
                 SourceInFocusTabSettings = (TabSettingJson?)parameters.KVPs["InFocusTabSettingsDict"];
-                Plexes = (List<Plex>?)parameters.KVPs["Plexes"];
+                PlexBlocks = (List<PlexBlock>?)parameters.KVPs["PlexBlocks"];
                 Langs = (LanguageConfigurationStructure)parameters.KVPs["Languages"];
                 //string? tabLanguageName = parameters.KVPs["TabLanguageName"].ToString();
                 int tabLanguageId = (int)(long)parameters.KVPs["TabLanguageID"];
@@ -113,10 +115,15 @@ namespace PelotonIDE.Presentation
 
         private static void FillLanguagesIntoList(LanguageConfigurationStructure languages, string interfaceLanguageName, ListBox listBox)
         {
+            Telemetry.Disable();
+
             if (languages is null)
             {
                 throw new ArgumentNullException(nameof(languages));
             }
+
+            Telemetry.Transmit("listBox.Name=", listBox.Name);
+
             // what is current language?
             Dictionary<string, string> globals = languages[interfaceLanguageName]["GLOBAL"];
             for (int i = 0; i < languages.Keys.Count; i++)
@@ -128,7 +135,7 @@ namespace PelotonIDE.Presentation
                 if (names.Any())
                 {
                     string name = names.First();
-                    bool present = LanguageIsPresentInPlexes(name);
+                    bool present = LanguageIsPresentInPlexBlocks(name);
 
                     ListBoxItem listBoxItem = new()
                     {
@@ -136,44 +143,103 @@ namespace PelotonIDE.Presentation
                         Name = name,
                         IsEnabled = present
                     };
+                    Telemetry.Transmit("listBoxItem.Name=", listBoxItem.Name);
+                    Telemetry.Transmit("listBoxItem.IsEnabled=", listBoxItem.IsEnabled);
+
                     listBox.Items.Add(listBoxItem);
                 }
             }
         }
 
-        private static bool LanguageIsPresentInPlexes(string name) => (from plex in Plexes where plex.Meta.Language == name.Replace(" ", "") select plex).Any();
+        private static bool LanguageIsPresentInPlexBlocks(string name)
+        {
+            return (from plex in PlexBlocks where plex.Plex.Meta.Language == name.Replace(" ", "") select plex).Any();
+        }
 
         private string TranslateCode(string code, string sourceLanguageName, string targetLanguageName)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Enable();
 
-            Telemetry.Transmit("TranslateCode", "code=", code, "sourceLanguageName=", sourceLanguageName, "targetLanguageName=", targetLanguageName);
+            Telemetry.Transmit("code=", code);
+            Telemetry.Transmit("sourceLanguageName=", sourceLanguageName);
+            Telemetry.Transmit("targetLanguageName=", targetLanguageName);
 
-            bool variableTarget = chkVarLengthTo.IsChecked ?? false;
-            bool variableSource = chkVarLengthFrom.IsChecked ?? false;
-            bool fixedTarget = chkVarLengthTo.IsChecked == false;
-            bool fixedSource = chkVarLengthFrom.IsChecked == false;
-            bool spaced = chkSpaceOut.IsChecked ?? false;
+            bool variableTargetTicked = chkVarLengthTo.IsChecked ?? false;
+            bool variableSourceTicked = chkVarLengthFrom.IsChecked ?? false;
+            bool fixedTargetTicked = chkVarLengthTo.IsChecked == false;
+            bool fixedSourceTicked = chkVarLengthFrom.IsChecked == false;
+            bool spacedTargetTicked = chkSpaceOut.IsChecked ?? false;
 
             string? sourceName = (sourceLanguageName).Replace(" ", "").ToUpperInvariant();
             string? targetName = (targetLanguageName).Replace(" ", "").ToUpperInvariant();
 
-            Plex englishFixed = (from plex in Plexes where plex.Meta.Language == "English" && !plex.Meta.Variable select plex).First();
+            Plex? englishFixed = (from plexblock in PlexBlocks where plexblock.Plex.Meta.Language == "English" && !plexblock.Plex.Meta.Variable select plexblock).First().Plex;
 
-            IEnumerable<Plex> sourcePlexVariable = from plex in Plexes where plex.Meta.Language == sourceLanguageName.Replace(" ", "") && plex.Meta.Variable select plex;
-            IEnumerable<Plex> targetPlexVariable = from plex in Plexes where plex.Meta.Language == targetLanguageName.Replace(" ", "") && plex.Meta.Variable select plex;
+            IEnumerable<PlexBlock> sourcePlexVariable = from plex in PlexBlocks where plex.Plex.Meta.Language == sourceLanguageName.Replace(" ", "") && plex.Plex.Meta.Variable select plex;
+            IEnumerable<PlexBlock> targetPlexVariable = from plex in PlexBlocks where plex.Plex.Meta.Language == targetLanguageName.Replace(" ", "") && plex.Plex.Meta.Variable select plex;
 
-            IEnumerable<Plex> sourcePlexFixed = from plex in Plexes where plex.Meta.Language == sourceLanguageName.Replace(" ", "") && !plex.Meta.Variable select plex;
-            IEnumerable<Plex> targetPlexFixed = from plex in Plexes where plex.Meta.Language == targetLanguageName.Replace(" ", "") && !plex.Meta.Variable select plex;
+            IEnumerable<PlexBlock> sourcePlexFixed = from plex in PlexBlocks where plex.Plex.Meta.Language == sourceLanguageName.Replace(" ", "") && !plex.Plex.Meta.Variable select plex;
+            IEnumerable<PlexBlock> targetPlexFixed = from plex in PlexBlocks where plex.Plex.Meta.Language == targetLanguageName.Replace(" ", "") && !plex.Plex.Meta.Variable select plex;
 
 
-            Telemetry.Transmit("TranslateCode", "variableTarget=", variableTarget, "variableSource=", variableSource, "fixedTarget=", fixedTarget, "fixedSource=", fixedSource, "spaced=", spaced);
+            Telemetry.Transmit("variableTargetTicked=", variableTargetTicked);
+            Telemetry.Transmit("variableSourceTicked=", variableSourceTicked);
+            Telemetry.Transmit("fixedTargetTicked=", fixedTargetTicked);
+            Telemetry.Transmit("fixedSourceTicked=", fixedSourceTicked);
+            Telemetry.Transmit("spacedTargetTicked=", spacedTargetTicked);
 
-            Plex source = new();
-            Plex target = new();
+            //if (sourcePlexVariable.Any())
+            //{
+            //    var first = sourcePlexVariable.First();
+            //    Telemetry.Transmit("sourcePlexVariable's PlexFile=", first.PlexFile);
+            //}
+            //if (targetPlexVariable.Any())
+            //{
+            //    var first = targetPlexVariable.First();
+            //    Telemetry.Transmit("targetPlexVariable's PlexFile=", first.PlexFile);
+            //}
+            //if (sourcePlexFixed.Any())
+            //{
+            //    var first = sourcePlexFixed.First();
+            //    Telemetry.Transmit("sourcePlexFixed's PlexFile=", first.PlexFile);
+            //}
+            //if (targetPlexFixed.Any())
+            //{
+            //    var first = targetPlexFixed.First();
+            //    Telemetry.Transmit("targetPlexFixed's PlexFile=", first.PlexFile);
+            //}
 
-            source = variableSource && sourcePlexVariable.Any() ? sourcePlexVariable.First() : sourcePlexFixed.First();
-            target = variableTarget && targetPlexVariable.Any() ? targetPlexVariable.First() : targetPlexFixed.First();
+            // if variable source ticked we need source to point to a variable lexer IF IT EXISTS 
+            // if it does not exist, we point to a fixed length one
+
+            Plex? source = sourcePlexFixed.First().Plex;
+            Plex? target = targetPlexFixed.First().Plex;
+
+            if (variableSourceTicked)
+            {
+                if (sourcePlexVariable != null && sourcePlexVariable.Any())
+                {
+                    source = sourcePlexVariable.First().Plex;
+                    Telemetry.Transmit("source plexfile=", sourcePlexVariable.First().PlexFile);
+                }
+            }
+            else
+            {
+                Telemetry.Transmit("source plexfile=", sourcePlexFixed.First().PlexFile);
+            }
+
+            if (variableTargetTicked)
+            {
+                if (targetPlexVariable != null && targetPlexVariable.Any())
+                {
+                    target = targetPlexVariable.First().Plex;
+                    Telemetry.Transmit("target plexfile=", targetPlexVariable.First().PlexFile);
+                }
+            }
+            else
+            {
+                Telemetry.Transmit("target plexfile=", targetPlexFixed.First().PlexFile);
+            }
 
             List<KeyValuePair<string, string>> kvpList =
             [
@@ -181,9 +247,22 @@ namespace PelotonIDE.Presentation
                                  select new KeyValuePair<string, string>($"{key:00000000}", target.OpcodesByValue[key]),
             ];
 
-            string translatedCode = variableSource && sourcePlexVariable.Any()
-                ? ProcessVariableToFixedOrVariable(code, source, target, spaced, variableTarget)
-                : ProcessFixedToFixedOrVariableWithOrWithoutSpace(code, source, target, spaced, variableTarget);
+            string? translatedCode = string.Empty;
+
+            if (variableSourceTicked && sourcePlexVariable != null && sourcePlexVariable.Any())
+            {
+                translatedCode = ProcessVariableToFixedOrVariable(code, source, target, spacedTargetTicked, variableTargetTicked);
+            }
+            else
+            {
+                translatedCode = ProcessFixedToFixedOrVariableWithOrWithoutSpace(code, source, target, spacedTargetTicked, variableTargetTicked);
+            }
+
+
+
+            //string translatedCode = variableSourceTicked && sourcePlexVariable.Any()
+            //    ? ProcessVariableToFixedOrVariable(code, source, target, spacedTargetTicked, variableTargetTicked)
+            //    : ProcessFixedToFixedOrVariableWithOrWithoutSpace(code, source, target, spacedTargetTicked, variableTargetTicked);
 
             //string? pathToSource = DataPath; // Path.GetDirectoryName(SourceFolder);
             string? pathToSource = SourceFolder;
@@ -191,19 +270,19 @@ namespace PelotonIDE.Presentation
 
             string? xlsxPath = Path.Combine(pathToSource ?? ".", "p.xlsx");
 
-            Telemetry.Transmit("TranslateCode", "pathToSource=", pathToSource, "nameOfSource=", nameOfSource, "xlsxPath=", xlsxPath);
+            Telemetry.Transmit("pathToSource=", pathToSource);
+            Telemetry.Transmit("nameOfSource=", nameOfSource);
+            Telemetry.Transmit("xlsxPath=", xlsxPath);
 
             bool ok = false;
 
             (ok, XLWorkbook? workbook) = GetNamedExcelWorkbook(xlsxPath);
             if (!ok) return translatedCode;
 
-            (ok, IXLWorksheet? worksheet) = GetNamedWorksheetInExcelWorkbook(workbook, nameOfSource);
-            if (!ok)
-            {
-                (ok, worksheet) = GetNamedWorksheetInExcelWorkbook(workbook, "Document#");
-                if (!ok) return translatedCode;
-            }
+            (ok, IXLWorksheet? worksheet) = GetNamedWorksheetInExcelWorkbook(workbook, nameOfSource, "Document#");
+            if (!ok) return translatedCode;
+
+            Telemetry.Transmit("Worksheet=", worksheet.Name);
 
             (ok, int sourceCol, int targetCol) = GetSourceAndTargetColumnsFromWorksheet(worksheet, source.Meta.LanguageId, target.Meta.LanguageId);
             if (!ok) return translatedCode;
@@ -213,91 +292,119 @@ namespace PelotonIDE.Presentation
             (ok, SortedDictionary<string, (double _typeCode, string _text)> dict) = FillSortedDictionaryFromWorksheet(sortedDictionary, worksheet, sourceCol, targetCol);
             if (!ok) return translatedCode;
 
-            long DEF_opcode = englishFixed.OpcodesByKey["DEF"];
-            long KOP_opcode = englishFixed.OpcodesByKey["KOP"];
-            long RST_opcode = englishFixed.OpcodesByKey["RST"];
-            long SAY_opcode = englishFixed.OpcodesByKey["SAY"];
-            long GET_opcode = englishFixed.OpcodesByKey["GET"];
-            long UDR_opcode = englishFixed.OpcodesByKey["UDR"];
-            long UDO_opcode = englishFixed.OpcodesByKey["UDO"];
-            long KEY_opcode = englishFixed.OpcodesByKey["KEY"];
+            //long DEF_opcode = englishFixed.OpcodesByKey["DEF"];
+            //long KOP_opcode = englishFixed.OpcodesByKey["KOP"];
+            //long RST_opcode = englishFixed.OpcodesByKey["RST"];
+            //long SAY_opcode = englishFixed.OpcodesByKey["SAY"];
+            //long GET_opcode = englishFixed.OpcodesByKey["GET"];
+            //long UDR_opcode = englishFixed.OpcodesByKey["UDR"];
+            //long UDO_opcode = englishFixed.OpcodesByKey["UDO"];
+            //long ACT_opcode = englishFixed.OpcodesByKey["ACT"];
+            //long KEY_opcode = englishFixed.OpcodesByKey["KEY"];
+            //long LET_opcode = englishFixed.OpcodesByKey["LET"];
+            //long VAR_opcode = englishFixed.OpcodesByKey["VAR"];
 
             foreach (string key in dict.Keys)
             {
-                Telemetry.Transmit("TranslateCode", "key=", key, "dict[key]._typeCode=", dict[key]._typeCode, "dict[key]._text=", dict[key]._text);
+                Telemetry.Transmit("key=", key);
+                Telemetry.Transmit("dict[key]._typeCode=", dict[key]._typeCode);
+                Telemetry.Transmit("dict[key]._text=", dict[key]._text);
 
-                switch (dict[key]._typeCode)
+                foreach (var patt in new string[] { ">?<", ">?|", "|?|", "|?<" })
                 {
-                    case 1: // undefined
-                        break;
-                    case 2: // KOP
-                        string kopPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[DEF_opcode]}{source.OpcodesByValue[KOP_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, kopPattern);
-
-                        break;
-                    case 3: // Code Block 
-                        string defudrPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[DEF_opcode]}{target.OpcodesByValue[UDR_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, defudrPattern);
-                        string defudoPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[DEF_opcode]}{target.OpcodesByValue[UDO_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, defudoPattern);
-                        break;
-                    case 4: // SQL
-                        string rstPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[RST_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, rstPattern);
-
-                        break;
-                    case 5: // undefind
-                        break;
-                    case 6: // file extension
-                        break;
-                    case 7: // Pattern
-                        break;
-                    case 8: // Syskey
-                        string keyPattern = $"<{(source.Meta.Variable ? "#" : "@")} .*?{target.OpcodesByValue[KEY_opcode]}>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, keyPattern);
-                        break;
-                    case 9: // Protium symbol
-                        break;
-                    case 10: // Wildcard
-                        break;
-                    case 11: // String Literal
-                        string sayPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[SAY_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, sayPattern);
-                        string getPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[GET_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
-                        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, getPattern);
-                        break;
-                    default:
-                        break;
+                    string changeFrom = patt.Replace("?", key);
+                    string changeTo = patt.Replace("?", dict[key]._text);
+                    translatedCode = translatedCode.Replace(changeFrom, changeTo);
+                    Telemetry.Transmit("from=", changeFrom, "to=", changeTo);
                 }
+                if (dict[key]._typeCode == 11)
+                {
+                    translatedCode = translatedCode.Replace(key, dict[key]._text);
+                    Telemetry.Transmit("from=", key, "to=", dict[key]._text);
+                }
+                //switch (dict[key]._typeCode)
+                //{
+                //    case 1: // undefined
+                //        break;
+                //    case 2: // KOP
+                //        string kopPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[DEF_opcode]}{target.OpcodesByValue[KOP_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, kopPattern);
+                //        break;
+                //    case 3: // Code Block 
+                //        string defudrPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[DEF_opcode]}{target.OpcodesByValue[UDR_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, defudrPattern);
+                //        string defudoPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[DEF_opcode]}{target.OpcodesByValue[UDO_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, defudoPattern);
+                //        break;
+                //    case 4: // SQL
+                //        foreach (var kwd in new string[] { "SQL", "RST", "DBF" })
+                //        {
+                //            var opcode = englishFixed.OpcodesByKey[kwd];
+                //            string patt = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //            translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, patt);
+                //        }
+                //        //string rstPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[RST_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        //translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, rstPattern);
+
+                //        break;
+                //    case 5: // undefind
+                //        break;
+                //    case 6: // file extension
+                //        break;
+                //    case 7: // Pattern
+                //        break;
+                //    case 8: // Syskey
+                //        string keyPattern = $"<{(source.Meta.Variable ? "#" : "@")} .*?{target.OpcodesByValue[KEY_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, keyPattern);
+                //        break;
+                //    case 9: // Protium symbol
+                //        string varPattern = $"<{(source.Meta.Variable ? "#" : "@")} .*?{target.OpcodesByValue[VAR_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, varPattern);
+                //        break;
+                //    case 10: // Wildcard
+                //        break;
+                //    case 11: // String Literal
+                //        //string sayPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[SAY_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        //translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, sayPattern);
+                //        //string getPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[GET_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        //translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, getPattern);
+                //        //string letPattern = $"<{(source.Meta.Variable ? "#" : "@")} {target.OpcodesByValue[LET_opcode]}.*?>(.*?{Regex.Escape(key)}[^<]*)";
+                //        //translatedCode = MorphTranslatedCodeUsingPattern(translatedCode, dict, key, letPattern);
+                //        //translatedCode = translatedCode.Replace();
+                //        translatedCode = translatedCode.Replace(key, dict[key]._text);
+                //        break;
+                //    default:
+                //        break;
+                //}
             }
             while (translatedCode.EndsWith('\r')) translatedCode = translatedCode.Remove(translatedCode.Length - 1);
             return translatedCode;
 
-            static string MorphTranslatedCodeUsingPattern(string translatedCode, SortedDictionary<string, (double _typeCode, string _text)> dict, string key, string regexPattern)
-            {
-                Regex sayRegex = new(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.RightToLeft);
-                MatchCollection regexMatches = sayRegex.Matches(translatedCode);
-                if (regexMatches != null)
-                {
-                    for (int matchNo = 0; matchNo < regexMatches.Count; matchNo++)
-                    {
-                        Match regexMatch = regexMatches[matchNo];
-                        if (regexMatch.Groups.Count > 1)
-                        {
-                            Group secondGroup = regexMatch.Groups[1];
-                            string value = secondGroup.Value;
-                            if (value != null)
-                            {
-                                value = value.Replace(key, dict[key]._text, StringComparison.InvariantCultureIgnoreCase);
-                                translatedCode = translatedCode.Remove(secondGroup.Index, secondGroup.Length);
-                                translatedCode = translatedCode.Insert(secondGroup.Index, value);
-                            }
-                        }
-                    }
-                }
+            //static string MorphTranslatedCodeUsingPattern(string translatedCode, SortedDictionary<string, (double _typeCode, string _text)> dict, string key, string regexPattern)
+            //{
+            //    Regex sayRegex = new(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.RightToLeft);
+            //    MatchCollection regexMatches = sayRegex.Matches(translatedCode);
+            //    if (regexMatches != null)
+            //    {
+            //        for (int matchNo = 0; matchNo < regexMatches.Count; matchNo++)
+            //        {
+            //            Match regexMatch = regexMatches[matchNo];
+            //            if (regexMatch.Groups.Count > 1)
+            //            {
+            //                Group secondGroup = regexMatch.Groups[1];
+            //                string value = secondGroup.Value;
+            //                if (value != null)
+            //                {
+            //                    value = value.Replace(key, dict[key]._text, StringComparison.InvariantCultureIgnoreCase);
+            //                    translatedCode = translatedCode.Remove(secondGroup.Index, secondGroup.Length);
+            //                    translatedCode = translatedCode.Insert(secondGroup.Index, value);
+            //                }
+            //            }
+            //        }
+            //    }
 
-                return translatedCode;
-            }
+            //    return translatedCode;
+            //}
         }
 
         //private string UpdateInLabelSpace(string result, string sourceText, string targetText)
@@ -321,14 +428,14 @@ namespace PelotonIDE.Presentation
         //    return result;
         //}
 
-        private static string ProcessVariableToFixedOrVariable(string code, Plex source, Plex target, bool spaced, bool variableTarget)
+        private static string ProcessVariableToFixedOrVariable(string code, Plex? source, Plex? target, bool spaced, bool variableTarget)
         {
             IOrderedEnumerable<string> variableLengthWords = from variableLengthWord in source.OpcodesByKey.Keys orderby -variableLengthWord.Length select variableLengthWord;
 
             Dictionary<string, string> fixedLengthEquivalents = (from word in variableLengthWords
-                                          let sourceop = source.OpcodesByKey[word]
-                                          let targetword = target.OpcodesByValue[sourceop]
-                                          select (word, targetword)).ToDictionary(x => x.word, x => x.targetword);
+                                                                 let sourceop = source.OpcodesByKey[word]
+                                                                 let targetword = target.OpcodesByValue[sourceop]
+                                                                 select (word, targetword)).ToDictionary(x => x.word, x => x.targetword);
 
             List<Capture> codeBlocks = GetCodeBlocks(code); // in reverse order
 
@@ -386,7 +493,7 @@ namespace PelotonIDE.Presentation
             return codeBlocks;
         }
 
-        private static string ProcessFixedToFixedOrVariableWithOrWithoutSpace(string buff, Plex sourcePlex, Plex targetPlex, bool spaceOut, bool variableTarget)
+        private static string ProcessFixedToFixedOrVariableWithOrWithoutSpace(string buff, Plex? sourcePlex, Plex? targetPlex, bool spaceOut, bool variableTarget)
         {
             var pattern = PelotonFixedSpacedPattern();
             MatchCollection matches = pattern.Matches(buff);

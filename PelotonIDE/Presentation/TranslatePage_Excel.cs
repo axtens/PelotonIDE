@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
 
+using DocumentFormat.OpenXml.Office2016.Drawing.Charts;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,11 +42,11 @@ namespace PelotonIDE.Presentation
             {
                 IXLColumn column = columns.ElementAt(i);
                 IXLCell head = column.Cell(1);
-                if (head.GetString().Contains(sourceTag))
+                if (head.GetString().StartsWith(sourceTag))
                 {
                     sourceCol = i;
                 }
-                if (head.GetString().Contains(targetTag))
+                if (head.GetString().StartsWith(targetTag))
                 {
                     targetCol = i;
                 }
@@ -55,11 +57,23 @@ namespace PelotonIDE.Presentation
             if (sourceCol == -1 || targetCol == -1) return (false, sourceCol, targetCol);
             return (true, sourceCol, targetCol);
         }
-        private (bool wsOk, IXLWorksheet? xLWorksheet) GetNamedWorksheetInExcelWorkbook(XLWorkbook? workbook, string? nameOfSource)
+        private (bool wsOk, IXLWorksheet? xLWorksheet) GetNamedWorksheetInExcelWorkbook(XLWorkbook? workbook, string? nameOfSource, string? nameOfDefault)
         {
-            if (!workbook.Worksheets.Contains(nameOfSource)) return (false, null);
-            IXLWorksheet worksheet = workbook.Worksheet(nameOfSource);
-            return (true, worksheet);
+            if (workbook.Worksheets.Contains(nameOfSource))
+            {
+                return (true,  workbook.Worksheet(nameOfSource));
+            }
+            else
+            {
+                if (workbook.Worksheets.Contains(nameOfDefault))
+                {
+                    return (true, workbook.Worksheet(nameOfDefault));
+                }
+                else
+                {
+                    return (false,null);
+                }
+            }
         }
         private (bool ok, XLWorkbook? workbook) GetNamedExcelWorkbook(string? xlsxPath)
         {

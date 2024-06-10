@@ -14,7 +14,7 @@ namespace PelotonIDE.Presentation
 {
     public sealed partial class TranslatePage : Microsoft.UI.Xaml.Controls.Page
     {
-        private static bool LanguageHasVariableLengthInstanceInPlexes(string name) => (from plex in Plexes where plex.Meta.Language == name.Replace(" ", "") && plex.Meta.Variable select plex).Any();
+        private static bool LanguageHasVariableLengthInstanceInPlexes(string name) => (from plex in PlexBlocks where plex.Plex.Meta.Language == name.Replace(" ", "") && plex.Plex.Meta.Variable select plex).Any();
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             if (targetLanguageList.SelectedIndex == -1)
@@ -32,7 +32,7 @@ namespace PelotonIDE.Presentation
             {
                 targetText.Document.GetText(TextGetOptions.None, out string txt);
                 while (txt.EndsWith('\r')) txt = txt.Remove(txt.Length - 1);
-
+        
                 Frame.Navigate(typeof(MainPage), new NavigationData()
                 {
                     Source = "TranslatePage",
@@ -141,5 +141,38 @@ namespace PelotonIDE.Presentation
             }
             return td.Substring(1, 1) == "0" ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
         }
+
+        //private async void ApplyButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (targetLanguageList.SelectedIndex == -1)
+        //    {
+        //        ContentDialog dialog = new()
+        //        {
+        //            XamlRoot = this.XamlRoot,
+        //            Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+        //            Title = "Target Language Not Selected",
+        //            PrimaryButtonText = "OK",
+        //        };
+        //        _ = await dialog.ShowAsync();
+        //    }
+        //    else
+        //    {
+        //        targetText.Document.GetText(TextGetOptions.None, out string txt);
+        //        while (txt.EndsWith('\r')) txt = txt.Remove(txt.Length - 1);
+
+        //        Frame.Navigate(typeof(MainPage), new NavigationData()
+        //        {
+        //            Source = "TranslatePage",
+        //            KVPs = new() {
+        //                { "TargetLanguageID" , (long)targetLanguageList.SelectedIndex },
+        //                { "TargetVariableLength", chkVarLengthTo.IsChecked ?? false},
+        //                { "TargetPadOutCode", chkSpaceOut.IsChecked ?? false},
+        //                { "TargetText" ,  txt},
+        //                { "pOps.Quietude",   Quietude},
+        //                { "SourceInFocusTabSettings", SourceInFocusTabSettings! }
+        //            }
+        //        });
+        //    }
+        //}
     }
 }

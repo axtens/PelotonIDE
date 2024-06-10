@@ -274,5 +274,47 @@
     "Key": "c",
     "Value": "c:\\peloton\\code",
     "Internal": true
+  },
+  "ideOps.findText": {
+    "Defined": true,
+    "Key": "ft",
+    "Value": "",
+    "Internal": true
+  },
+  "ideOps.findWhole": {
+    "Defined": true,
+    "Key": "fw",
+    "Value": false,
+    "Internal": true
+  },
+  "ideOps.findCase": {
+    "Defined": true,
+    "Key": "fc",
+    "Value": false,
+    "Internal": true
+  },
+  "ideOps.findSelection": {
+    "Defined": true,
+    "Key": "fs",
+    "Value": false,
+    "Internal": true
+  },
+  "ideOps.replaceText": {
+    "Defined": true,
+    "Key": "rt",
+    "Value": "",
+    "Internal": true
+  },
+  "ideOps.findLastFound": {
+    "Defined": true,
+    "Key": "lf",
+    "Value": -1,
+    "Internal": true
+  },
+  "ideOps.findWrapped": {
+    "Defined": true,
+    "Key": "fw",
+    "Value": false,
+    "Internal": true
   }
 }

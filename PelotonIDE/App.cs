@@ -61,7 +61,7 @@ namespace PelotonIDE
         }
         private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             Window me = (Window)sender;
             double height = args.Size.Height;
             double width = args.Size.Width;

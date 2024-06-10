@@ -18,5 +18,11 @@
         public Dictionary<long, string>? OpcodesByValue { get; set; }
         public Dictionary<string, long>? SyskeysByKey { get; set; }
         public Dictionary<long, string>? SyskeysByValue { get; set; }
+        }
+    internal class PlexBlock
+    {
+        public Plex? Plex { get; set; }
+        public string? PlexFile { get; set; }
+
     }
 }

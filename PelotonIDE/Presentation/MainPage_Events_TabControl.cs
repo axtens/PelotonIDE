@@ -10,7 +10,7 @@ namespace PelotonIDE.Presentation
     {
         private void TabControl_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             //var me = (NavigationView)sender;
             if (args.SelectedItem != null)
             {
@@ -41,20 +41,20 @@ namespace PelotonIDE.Presentation
         }
         //private void TabControl_KeyDown(object sender, KeyRoutedEventArgs e)
         //{
-        //    Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+        //    Telemetry.Disable();
         //    CustomTabItem me = (CustomTabItem)sender;
         //    Telemetry.Transmit(me.Name, e.GetType().FullName);
         //}
         private void CustomTabItem_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             CustomTabItem me = (CustomTabItem)sender;
             Telemetry.Transmit(me.Name, e.GetType().FullName);
 
         }
         private async void TabControl_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires first for all tabs other than tab1
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             CustomTabItem selectedItem = (CustomTabItem)((NavigationView)sender).SelectedItem;
 
             CustomRichEditBox currentRichEditBox = _richEditBoxes[selectedItem.Tag];
@@ -79,13 +79,13 @@ namespace PelotonIDE.Presentation
         }
         private void CustomTabItem_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires on tab1 then fires TabControl_RightTapped
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             Telemetry.Transmit(((CustomTabItem)sender).Name, e.GetType().FullName);
 
         }
         private void TabControl_SizeChanged(object sender, SizeChangedEventArgs args)
         {
-            Telemetry.EnableIfMethodNameInFactorySettingsTelemetry();
+            Telemetry.Disable();
             NavigationView me = (NavigationView)sender;
             Telemetry.Transmit(me.Name, "e.PreviousSize=", args.PreviousSize, "e.NewSize=", args.NewSize, "args.OriginalSource=", args.OriginalSource);
             string pos = Type_1_GetVirtualRegistry<string>("ideOps.OutputPanelPosition") ?? "Bottom";

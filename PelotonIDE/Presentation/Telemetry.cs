@@ -35,7 +35,6 @@ namespace PelotonIDE.Presentation
 
         public static bool GetEnabled()
         {
-            System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();
             string you = Before(After(new StackFrame(1).GetMethod().DeclaringType.Name.ToString(), "<"), ">");
             if (InModuleEnabled.ContainsKey(you))
             {
@@ -45,10 +44,17 @@ namespace PelotonIDE.Presentation
         }
         public static void SetEnabled(bool value)
         {
-            System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();
             string you = Before(After(new StackFrame(1).GetMethod().DeclaringType.Name.ToString(), "<"), ">");
             SetTheYou(you);
             InModuleEnabled[you] = value;
+        }
+        public static void Enable()
+        {
+            SetEnabled(true);
+        }
+        public static void Disable()
+        {
+            SetEnabled(false);
         }
         public static void Transmit(params object?[] args)
         {
@@ -98,7 +104,7 @@ namespace PelotonIDE.Presentation
 
         internal static void EnableIfMethodNameInFactorySettingsTelemetry(int depth = 1)
         {
-            StackTrace stackTrace = new StackTrace();
+            StackTrace stackTrace = new();
             for ( int fc = 0; fc < stackTrace.FrameCount; fc++ )
             {
                 StackFrame? frame = stackTrace.GetFrame(fc);
@@ -117,13 +123,13 @@ namespace PelotonIDE.Presentation
         private static string Before(string name, string delim)
         {
             int b = name.IndexOf(delim);
-            return b == -1 ? name : name.Substring(0, b);
+            return b == -1 ? name : name[..b];
         }
 
         private static string After(string name, string delim)
         {
             int a = name.LastIndexOf(delim);
-            return a == -1 ? name : name.Substring(a + delim.Length);
+            return a == -1 ? name : name[(a + delim.Length)..];
         }
     }
 }
