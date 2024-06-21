@@ -35,7 +35,7 @@ namespace PelotonIDE.Presentation
 
         public static bool GetEnabled()
         {
-            string you = Before(After(new StackFrame(1).GetMethod().DeclaringType.Name.ToString(), "<"), ">");
+            string you = Before(After(new StackFrame(2).GetMethod()!.GetMethodContextName(), "<"), ">");
             if (InModuleEnabled.ContainsKey(you))
             {
                 return InModuleEnabled[you];
@@ -44,7 +44,7 @@ namespace PelotonIDE.Presentation
         }
         public static void SetEnabled(bool value)
         {
-            string you = Before(After(new StackFrame(1).GetMethod().DeclaringType.Name.ToString(), "<"), ">");
+            string you = Before(After(new StackFrame(2).GetMethod()!.GetMethodContextName(), "<"), ">");
             SetTheYou(you);
             InModuleEnabled[you] = value;
         }
@@ -77,7 +77,7 @@ namespace PelotonIDE.Presentation
                 File.AppendAllText(path, $"{DateTime.Now:o} > {sb}\r\n", Encoding.UTF8);
             }
             sb.Clear();
-            sb.Append($"From {you}: ");
+            sb.Append($"{you}: ");
             for (int i = 0; i < args.Length; i++)
             {
                 string item = $"{args[i]}";

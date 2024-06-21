@@ -176,4 +176,12 @@
         <LastGenOutput>JavaScriptLibraries.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Assets\InstallationItems\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Update="Assets\InstallationItems\PelotonAssets.zip">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>

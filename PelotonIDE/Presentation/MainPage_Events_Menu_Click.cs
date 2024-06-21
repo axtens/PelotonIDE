@@ -1,15 +1,21 @@
-﻿using EncodingChecker;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+
+using EncodingChecker;
 
 using Microsoft.UI;
 using Microsoft.UI.Text;
 
 using Newtonsoft.Json;
 
+using System.Diagnostics;
 using System.Globalization;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -233,14 +239,14 @@ namespace PelotonIDE.Presentation
                 UpdateStatusBar();
             }
         }
-        private void HelpAbout_Click(object sender, RoutedEventArgs e)
+        private async void HelpAbout_Click(object sender, RoutedEventArgs e)
         {
-            var pkg = Windows.ApplicationModel.Package.Current ;
-            var ver = pkg.Id.Version;
+            Package pkg = Windows.ApplicationModel.Package.Current;
+            PackageVersion ver = pkg.Id.Version;
 
-            var f = Assembly.GetExecutingAssembly().GetFiles()[0].Name;
+            string f = Assembly.GetExecutingAssembly().GetFiles()[0].Name;
             FileInfo fi = new(f);
-            var content = $"Version {ver.Major}.{ver.Minor}.{ver.Build}\n" +
+            string content = $"Version {ver.Major}.{ver.Minor}.{ver.Build}\n" +
                           $"Compiled {fi.LastWriteTime:yyyy'-'MM'-'dd' 'HH':'mm':'sszz}"; /*+
                           $"Installed: {pkg.InstalledDate:yyyy'-'MM'-'dd' 'HH':'mm':'sszz}";*/
 
@@ -523,7 +529,7 @@ namespace PelotonIDE.Presentation
         private async void Open()
         {
             Telemetry.SetEnabled(true);
-            var temp = FileFolderPicking.GetFile("Code file?", AnInFocusTabExists() ? Type_3_GetInFocusTab<string>("ideOps.CodeFolder") : Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder"));
+            var temp = FileFolderPicking.GetFile("Code lexer?", AnInFocusTabExists() ? Type_3_GetInFocusTab<string>("ideOps.CodeFolder") : Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder"));
             if (temp[0] == "OK")
             {
                 var pickedFile = temp[1];
@@ -548,7 +554,7 @@ namespace PelotonIDE.Presentation
                 Encoding? encoding = TextEncoding.GetFileEncoding(pickedFile, 1000, ref hasBOM);
                 var fileType = Path.GetExtension(pickedFile);
                 switch (fileType.ToLower())
-                { // Load the file into the Document property of the RichEditBox.
+                { // Load the lexer into the Document property of the RichEditBox.
                     case ".pr":
                         {
                             newestRichEditBox.Document.LoadFromStream(TextSetOptions.FormatRtf, randomAccessStream);
@@ -642,8 +648,27 @@ namespace PelotonIDE.Presentation
                 Telemetry.Disable();
                 Telemetry.Transmit(er.Message, er.StackTrace);
             }
+            // Unpack PelotonIDE\Assets\InstallationItems\PelotonAssets.zip to c:\peloton updating changed, adding new
+            // UpdatePelotonFromInstallationItems();
             Environment.Exit(0);
         }
+
+        private void UpdatePelotonFromInstallationItems()
+        {
+            string root = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            string zipPath = root + @"\Assets\InstallationItems\PelotonAssets.zip";
+            if (!File.Exists(zipPath)) { return; }
+            ZipArchive archive = ZipFile.OpenRead(zipPath);
+            System.Collections.ObjectModel.ReadOnlyCollection<ZipArchiveEntry> entries = archive.Entries;
+            foreach (ZipArchiveEntry entry in entries)
+            {
+                var fn = entry.FullName;
+                var n = entry.Name;
+                var c = entry.Comment;
+            }
+            //ZipFile.ExtractToDirectory(zipPath, @"C:\Peloton", true);
+        }
+
         private async void Save()
         {
             var ift = InFocusTab();
@@ -815,7 +840,7 @@ namespace PelotonIDE.Presentation
 
                     CustomTabItem savedItem = (CustomTabItem)tabControl.SelectedItem;
                     savedItem.IsNewFile = false;
-                    //savedItem.Content = Path.GetFileName(file);
+                    //savedItem.Content = Path.GetFileName(lexer);
                     savedItem.SavedFileExtension = Path.GetExtension(file);
                     savedItem.SavedFileFolder = Path.GetDirectoryName(file);
                     savedItem.SavedFileName = Path.GetFileName(file);

@@ -228,7 +228,7 @@ namespace PelotonIDE.Presentation
             //    UpdateMenuRunningModeInMenu(PerTabInterpreterParameters["pOps.Quietude"]);
             //}
 
-                        if (AfterTranslation)
+            if (AfterTranslation)
             {
                 await HtmlText.EnsureCoreWebView2Async();
                 HtmlText.NavigateToString("<body style='background-color: papayawhip;'></body>");
@@ -299,7 +299,7 @@ namespace PelotonIDE.Presentation
             //    }
             //    Codes ??= @"C:\peloton\code";
             //    Type_1_UpdateVirtualRegistry("ideOps.CodeFolder", Codes);            
-                    
+
             //    if (LocalSettings.Values.TryGetValue("ideOps.DataFolder", out object? dvalue))
             //    {
             //        Datas = dvalue.ToString();
@@ -337,6 +337,189 @@ namespace PelotonIDE.Presentation
             //    InterpreterP3 ??= @"c:\peloton\bin\p3.exe";
             //    Type_1_UpdateVirtualRegistry("ideOps.Engine.3", InterpreterP3);
             //}
+        }
+
+        private static bool CreateAndFillProtiumFolderIfMissing()
+        {
+            bool brokenInstallation = false;
+            foreach (var folder in new string[] {
+                @"C:\protium",
+                @"C:\protium\bin",
+                @"C:\protium\Code",
+                @"C:\protium\Data",
+                @"C:\protium\docs",
+                @"C:\protium\temp",
+                @"C:\protium\bin\.vs",
+                @"C:\protium\bin\data",
+                @"C:\protium\bin\Exe exchange",
+                @"C:\protium\bin\Help",
+                @"C:\protium\bin\icons",
+                @"C:\protium\bin\Lexers",
+                @"C:\protium\bin\lng",
+                @"C:\protium\bin\plugins",
+                @"C:\protium\bin\resources",
+                @"C:\protium\bin\Exe exchange\aa Operating before replacement",
+                @"C:\protium\bin\Exe exchange\NewInterpreters20July2015bin",
+                @"C:\protium\bin\Help\decompiled",
+                @"C:\protium\bin\Help\decompiled\html",
+                @"C:\protium\bin\Help\decompiled\images",
+                @"C:\protium\bin\plugins\images",
+                @"C:\protium\Code\dt",
+                @"C:\protium\Code\lib",
+                @"C:\protium\Code\p",
+                @"C:\protium\Code\pr",
+                @"C:\protium\Code\prx",
+                @"C:\protium\Code\pr\advanced",
+                @"C:\protium\Code\pr\data",
+                @"C:\protium\Code\pr\international",
+                @"C:\protium\Code\pr\plugins",
+                @"C:\protium\Code\pr\Simple",
+                @"C:\protium\Code\pr\standard",
+                @"C:\protium\Code\pr\structures",
+                @"C:\protium\Code\pr\yb",
+                @"C:\protium\Code\prx\China",
+                @"C:\protium\Code\prx\library",
+                @"C:\protium\Code\prx\plugins",
+                @"C:\protium\Code\prx\library\css",
+                @"C:\protium\Code\prx\library\data",
+                @"C:\protium\Code\prx\library\images",
+                @"C:\protium\Code\prx\library\projects",
+                @"C:\protium\Code\prx\library\scripts",
+                @"C:\protium\Code\prx\library\data\temp",
+                @"C:\protium\Code\prx\plugins\cheetah",
+                @"C:\protium\Code\prx\plugins\common",
+                @"C:\protium\Code\prx\plugins\isis",
+                @"C:\protium\Code\prx\plugins\sqlite",
+                @"C:\protium\Code\prx\plugins\tsunami",
+                @"C:\protium\Code\prx\plugins\zoom",
+                @"C:\protium\Code\prx\plugins\cheetah\projects",
+                @"C:\protium\Code\prx\plugins\cheetah\scripts",
+                @"C:\protium\Code\prx\plugins\isis\data",
+                @"C:\protium\Code\prx\plugins\isis\projects",
+                @"C:\protium\Code\prx\plugins\isis\scripts",
+                @"C:\protium\Code\prx\plugins\sqlite\projects",
+                @"C:\protium\Code\prx\plugins\sqlite\scripts",
+                @"C:\protium\Code\prx\plugins\tsunami\projects",
+                @"C:\protium\Code\prx\plugins\tsunami\scripts",
+                @"C:\protium\Code\prx\plugins\zoom\projects",
+                @"C:\protium\Code\prx\plugins\zoom\scripts",
+                @"C:\protium\Data\dbf",
+                @"C:\protium\Data\excel",
+                @"C:\protium\Data\isis",
+                @"C:\protium\Data\msaccess",
+                @"C:\protium\Data\mysql",
+                @"C:\protium\Data\sqlite",
+                @"C:\protium\Data\thes",
+                @"C:\protium\Data\tinydb",
+                @"C:\protium\Data\tsunami",
+                @"C:\protium\Data\ZOOM",
+                @"C:\protium\Data\mysql\cars",
+                @"C:\protium\Data\mysql\northwind"})
+            {
+                if (!Directory.Exists(folder))
+                {
+                    brokenInstallation = true;
+                    break;
+                }
+            }
+            if (brokenInstallation)
+            {
+                // ExtractProtiumAssets();
+            }
+            return true;
+        }
+        private static bool CreateAndFillPelotonFolderIfMissing()
+        {
+            bool brokenInstallation = false;
+            foreach (var folder in new string[] {
+                @"C:\Peloton",
+                @"C:\Peloton\bin",
+                @"C:\Peloton\code",
+                @"C:\Peloton\data",
+                @"C:\Peloton\bin\lexers",
+                @"C:\Peloton\code\dt",
+                @"C:\Peloton\code\learning Docs",
+                @"C:\Peloton\code\lib",
+                @"C:\Peloton\code\p",
+                @"C:\Peloton\code\pr",
+                @"C:\Peloton\code\prx",
+                @"C:\Peloton\code\learning Docs\Day 1",
+                @"C:\Peloton\code\learning Docs\Day 2",
+                @"C:\Peloton\code\learning Docs\Day 3",
+                @"C:\Peloton\code\learning Docs\Day 4",
+                @"C:\Peloton\code\learning Docs\Day 5",
+                @"C:\Peloton\code\learning Docs\Fishing1",
+                @"C:\Peloton\code\learning Docs\Fishing4",
+                @"C:\Peloton\code\learning Docs\PPA",
+                @"C:\Peloton\code\learning Docs\Fishing1\buttons",
+                @"C:\Peloton\code\learning Docs\Fishing1\images",
+                @"C:\Peloton\code\learning Docs\Fishing4\Css",
+                @"C:\Peloton\code\learning Docs\Fishing4\Data",
+                @"C:\Peloton\code\learning Docs\Fishing4\Javascripts",
+                @"C:\Peloton\code\learning Docs\Fishing4\Projects",
+                @"C:\Peloton\code\learning Docs\Fishing4\Scripts",
+                @"C:\Peloton\code\learning Docs\Fishing4\Siteimages",
+                @"C:\Peloton\code\learning Docs\Fishing4\zSetupInstructions",
+                @"C:\Peloton\code\learning Docs\Fishing4\Siteimages\buttons",
+                @"C:\Peloton\code\learning Docs\Fishing4\Siteimages\images",
+                @"C:\Peloton\code\pr\advanced",
+                @"C:\Peloton\code\pr\data",
+                @"C:\Peloton\code\pr\international",
+                @"C:\Peloton\code\pr\plugins",
+                @"C:\Peloton\code\pr\Simple",
+                @"C:\Peloton\code\pr\standard",
+                @"C:\Peloton\code\pr\structures",
+                @"C:\Peloton\code\pr\yb",
+                @"C:\Peloton\code\prx\China",
+                @"C:\Peloton\code\prx\library",
+                @"C:\Peloton\code\prx\plugins",
+                @"C:\Peloton\code\prx\library\css",
+                @"C:\Peloton\code\prx\library\data",
+                @"C:\Peloton\code\prx\library\images",
+                @"C:\Peloton\code\prx\library\projects",
+                @"C:\Peloton\code\prx\library\scripts",
+                @"C:\Peloton\code\prx\library\data\temp",
+                @"C:\Peloton\code\prx\plugins\cheetah",
+                @"C:\Peloton\code\prx\plugins\common",
+                @"C:\Peloton\code\prx\plugins\isis",
+                @"C:\Peloton\code\prx\plugins\sqlite",
+                @"C:\Peloton\code\prx\plugins\tsunami",
+                @"C:\Peloton\code\prx\plugins\zoom",
+                @"C:\Peloton\code\prx\plugins\cheetah\projects",
+                @"C:\Peloton\code\prx\plugins\cheetah\scripts",
+                @"C:\Peloton\code\prx\plugins\isis\data",
+                @"C:\Peloton\code\prx\plugins\isis\projects",
+                @"C:\Peloton\code\prx\plugins\isis\scripts",
+                @"C:\Peloton\code\prx\plugins\sqlite\projects",
+                @"C:\Peloton\code\prx\plugins\sqlite\scripts",
+                @"C:\Peloton\code\prx\plugins\tsunami\projects",
+                @"C:\Peloton\code\prx\plugins\tsunami\scripts",
+                @"C:\Peloton\code\prx\plugins\zoom\projects",
+                @"C:\Peloton\code\prx\plugins\zoom\scripts",
+                @"C:\Peloton\data\dbf",
+                @"C:\Peloton\data\excel",
+                @"C:\Peloton\data\isis",
+                @"C:\Peloton\data\msaccess",
+                @"C:\Peloton\data\mysql",
+                @"C:\Peloton\data\sqlite",
+                @"C:\Peloton\data\thes",
+                @"C:\Peloton\data\tinydb",
+                @"C:\Peloton\data\tsunami",
+                @"C:\Peloton\data\ZOOM",
+                @"C:\Peloton\data\mysql\cars",
+                @"C:\Peloton\data\mysql\northwind" })
+            {
+                if (!Directory.Exists(folder))
+                {
+                    brokenInstallation = true;
+                    break;
+                }
+            }
+            if (brokenInstallation)
+            {
+                ExtractPelotonAssets();
+            }
+            return true;
         }
 
         //private void UpdateTabCreationMethodInMenu()

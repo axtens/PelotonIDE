@@ -7,12 +7,15 @@ using Microsoft.UI.Xaml.Input;
 using Newtonsoft.Json;
 
 using System.Diagnostics;
+using System.IO.Compression;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
+using Windows.ApplicationModel.UserDataTasks;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Notifications;
@@ -74,6 +77,8 @@ namespace PelotonIDE.Presentation
         readonly ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
 
         // public LanguageConfigurationStructure? LanguageSettings1 { get => LanguageSettings; set => LanguageSettings = value; }
+        readonly bool HasPelotonFolder = CreateAndFillPelotonFolderIfMissing();
+
         readonly List<PlexBlock>? PlexBlocks = GetAllPlexBlocks();
 
         Dictionary<string, List<string>> LangLangs = [];
@@ -1232,6 +1237,66 @@ namespace PelotonIDE.Presentation
                 CanBeScrollAnchor = true,
 
 
+            };
+            _ = await dialog.ShowAsync();
+
+        }
+
+        private void HtmlText_NavigationStarting(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
+        {
+
+            WebView2 me = (WebView2)sender;
+            Telemetry.Enable();
+            Telemetry.Transmit(args.Uri, "NavigationId=", args.NavigationId);
+            Telemetry.Transmit(JsonConvert.SerializeObject(args.RequestHeaders));
+            string? fileName = System.IO.Path.GetFileName(args.Uri);
+            string folder = Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder");
+            var requestedFile = System.IO.Path.Combine(folder, fileName!);
+            Telemetry.Transmit("requestedFile=", requestedFile); // FIXME. 
+            if (!System.IO.File.Exists(requestedFile))
+                args.Cancel = true;
+        }
+
+        private void Html_NavigationCompleted(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
+        {
+            WebView2 me = (WebView2)sender;
+            Telemetry.Enable();
+            Telemetry.Transmit("IsSuccess=", args.IsSuccess, "WebErrorStatus=", args.WebErrorStatus);
+            
+        }
+
+        private async void ComponentUpdater_Update(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem mfi = (MenuFlyoutItem)sender;
+            string tag = (string)mfi.Tag;
+            switch (tag)
+            {
+                case "all":
+                    ExtractPelotonAssets();
+                    break;
+                case "bin":
+                    ExtractPelotonAssets(tag);
+                    break;
+                case "bin/lexers":
+                    ExtractPelotonAssets(tag);
+                    break;
+                case "code":
+                    ExtractPelotonAssets(tag);
+                    break;
+                case "data":
+                    ExtractPelotonAssets(tag);
+                    break;
+                case "extras":
+                    ExtractPelotonAssets(tag);
+                    break;
+            }
+
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = $"'{mfi.Text}' completed.",
+                PrimaryButtonText = "OK",
             };
             _ = await dialog.ShowAsync();
 

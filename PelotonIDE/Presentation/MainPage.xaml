@@ -296,6 +296,14 @@
             <MenuBarItem x:Name="mnuHelp" Title="Help" BorderBrush="LightGray" BorderThickness="1">
                 <MenuFlyoutItem x:Name="mnuHelpIndex" Text="Help" Click="Help_Click"/>
                 <MenuFlyoutItem x:Name="mnuReset" Text="Reset to factory settings" Click="ResetToFactorySettings_Click"/>
+                <MenuFlyoutSubItem x:Name="mnuComponentUpdater" Text="Component Updater">
+                    <MenuFlyoutItem x:Name="mnuUpdateAll" Text="Update All" Click="ComponentUpdater_Update" Tag="all" />
+                    <MenuFlyoutItem x:Name="mnuUpdateInterpreter" Text="Update Interpreter" Click="ComponentUpdater_Update" Tag="bin" />
+                    <MenuFlyoutItem x:Name="mnuUpdateLexers" Text="Update Lexers" Click="ComponentUpdater_Update" Tag="bin/lexers" />
+                    <MenuFlyoutItem x:Name="mnuUpdateCodeSamples" Text="Update Code Samples" Click="ComponentUpdater_Update" Tag="code" />
+                    <MenuFlyoutItem x:Name="mnuUpdateDatabaseSamples" Text="Update Database Samples" Click="ComponentUpdater_Update" Tag="data" />
+                    <MenuFlyoutItem x:Name="mnuUpdateExtras" Text="Update Extras" Click="ComponentUpdater_Update" Tag="extras" />
+                </MenuFlyoutSubItem>
                 <MenuFlyoutItem x:Name="mnuMemory" Text="Show Memory" Click="ShowMemory_Click"/>
                 <MenuFlyoutItem x:Name="mnuShowTabs" Text="Show Tabs" Click="ShowTabs_Click"/>
                 <MenuFlyoutItem x:Name="mnuHelpAbout" Text="About" Click="HelpAbout_Click"/>
@@ -521,7 +529,8 @@
                             </FlyoutBase.AttachedFlyout>
                             <Border Margin="5" Padding="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="5" BorderThickness="1" BorderBrush="Black">
                                 <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                    <WebView2 x:Name="HtmlText" FlowDirection="LeftToRight" />
+                                    <WebView2 x:Name="HtmlText" FlowDirection="LeftToRight"  />
+                                    <!-- NavigationStarting="HtmlText_NavigationStarting" NavigationCompleted="Html_NavigationCompleted"-->
                                 </ScrollViewer>
                             </Border>
 

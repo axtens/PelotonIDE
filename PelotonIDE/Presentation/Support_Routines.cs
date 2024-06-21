@@ -3,6 +3,11 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
 using Windows.Storage;
 
 using Style = Microsoft.UI.Xaml.Style;
@@ -259,8 +264,10 @@ namespace PelotonIDE.Presentation
             //IReadOnlyDictionary<string, ApplicationDataContainer> folder = ApplicationData.Current.LocalSettings.Containers;
             Telemetry.Disable();
 
+            //string path = Windows.ApplicationModel.Package.Current.InstalledLocation.Path + @"\Assets\Lexers";
+            string path = @"c:\peloton\bin\lexers";
             List<PlexBlock> list = [];
-            foreach (string file in Directory.GetFiles(@"c:\peloton\bin\lexers", "*.lex"))
+            foreach (string file in Directory.GetFiles(path, "*.lex"))
             {
                 Telemetry.Transmit("Lexer=", file);
                 byte[] data = File.ReadAllBytes(file);
@@ -271,7 +278,7 @@ namespace PelotonIDE.Presentation
                 PlexBlock pb = new() { Plex = p, PlexFile = file };
                 list.Add(pb!);
             }
-
+            Telemetry.Disable();
             return list;
         }
         private bool AnInFocusTabExists()
@@ -815,6 +822,35 @@ namespace PelotonIDE.Presentation
             return double.Parse(item);
         }
 
+        static void ExtractPelotonAssets(string tag = "")
+        {
+            string root = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            string zipPath = root + @"\Assets\InstallationItems\PelotonAssets.zip";
+            if (!File.Exists(zipPath)) { return; }
+            Directory.CreateDirectory(@"C:\Peloton");
+            foreach (ZipArchiveEntry entry in ZipFile.OpenRead(zipPath).Entries)
+            {
+                string target;
+                if (tag == "")
+                {
+                    target = $"C:/peloton/{entry.FullName}";
+                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                    if (entry.Length > 0)
+                        entry.ExtractToFile(target, true);
+                }
+                else
+                {
+                    if (entry.FullName.StartsWith(tag + "/"))
+                    {
+                        target = $"C:/peloton/{entry.FullName}";
+                        Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                        if (entry.Length > 0) 
+                            entry.ExtractToFile(target, true);
+                    }
+                }
+            }
+        }
+
         //public void SwitchToTab(int direction)
         //{
         //    if (_richEditBoxes.Count > 0)
@@ -839,6 +875,5 @@ namespace PelotonIDE.Presentation
         //        }
         //    }
         //}
-
     }
 }
