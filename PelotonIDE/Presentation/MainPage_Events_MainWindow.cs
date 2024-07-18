@@ -4,6 +4,7 @@ using Microsoft.UI.Text;
 using Newtonsoft.Json;
 
 using System.Diagnostics;
+using System.IO.Compression;
 
 using Windows.Storage;
 
@@ -118,6 +119,11 @@ namespace PelotonIDE.Presentation
 
             if (LangLangs.Count == 0)
                 LangLangs = GetLangLangs(LanguageSettings);
+
+            if (!IsPowerShellInstalled())
+            {
+                await PowerShellNeedDialog();
+            }
 
             bool result = await TestPresenceOfAllPlexes();
 
@@ -339,6 +345,69 @@ namespace PelotonIDE.Presentation
             //}
         }
 
+        public async Task PowerShellNeedDialog()
+        {
+            Grid g = new() { 
+                Name = "PowerShellNeeded", 
+                Width = 600, 
+                Height = 100 
+            };
+
+            RowDefinitionCollection rd = g.RowDefinitions;
+            rd.Add(new RowDefinition());
+
+            ColumnDefinitionCollection cd = g.ColumnDefinitions;
+            cd.Add(new ColumnDefinition() {  });
+
+            WebView2 wv = new WebView2();
+            await wv.EnsureCoreWebView2Async();
+            wv.NavigateToString(
+            @"<HTML>
+                <BODY>
+                    <p>We have noticed that PowerShell is not installed</p>
+                    <ol>
+                        <li>Please visit the webpage below, download PowerShell and install it.<br />
+                        <a target='_blank' href='https://pelotonprogramming.org/download_peloton'>https://pelotonprogramming.org/download_peloton</a></li>
+                        <li>Close the IDE and re-launch it.</li>
+                    </ol>
+                </BODY>
+            </HTML>");
+            //wv.AddHandler(TappedEvent, () => {
+            //    Process.Start("https://pelotonprogramming.org/download_peloton/");
+            ////}, true);
+            wv.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+            g.Children.Add(wv);
+
+            StackPanel sp = new() { 
+                Name = "Panelled", 
+                Width = 600
+            };
+
+            sp.Children.Add(g);
+
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style, // DefaultContentDialogStyle
+                Title = "PowerShell Needed",
+                Content = sp,
+                PrimaryButtonText = "Close"
+            };
+
+            var result = await dialog.ShowAsync();
+        }
+
+        private void CoreWebView2_NewWindowRequested(Microsoft.Web.WebView2.Core.CoreWebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs args)
+        {
+            var ps = new ProcessStartInfo("https://pelotonprogramming.org/download_peloton")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            Process.Start(ps);
+            args.Handled = true;
+        }
+
         private static bool CreateAndFillProtiumFolderIfMissing()
         {
             bool brokenInstallation = false;
@@ -424,10 +493,41 @@ namespace PelotonIDE.Presentation
             }
             if (brokenInstallation)
             {
-                // ExtractProtiumAssets();
+                ExtractProtiumAssets();
             }
             return true;
         }
+
+        private static void ExtractProtiumAssets(string tag = "")
+        {
+            string root = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            string zipPath = root + @"\Assets\InstallationItems\ProtiumAssets.zip";
+            if (!File.Exists(zipPath)) { return; }
+            Directory.CreateDirectory(@"C:\protium");
+            foreach (ZipArchiveEntry entry in ZipFile.OpenRead(zipPath).Entries)
+            {
+                string target;
+                if (tag == "")
+                {
+                    target = $"C:/protium/{entry.FullName}";
+                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                    if (entry.Length > 0)
+                        entry.ExtractToFile(target, true);
+                }
+                else
+                {
+                    if (entry.FullName.StartsWith(tag + "/"))
+                    {
+                        target = $"C:/protium/{entry.FullName}";
+                        Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                        if (entry.Length > 0)
+                            entry.ExtractToFile(target, true);
+                    }
+                }
+            }
+
+        }
+
         private static bool CreateAndFillPelotonFolderIfMissing()
         {
             bool brokenInstallation = false;

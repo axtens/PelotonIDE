@@ -45,13 +45,13 @@ namespace PelotonIDE.Presentation
         //    CustomTabItem me = (CustomTabItem)sender;
         //    Telemetry.Transmit(me.Name, e.GetType().FullName);
         //}
-        private void CustomTabItem_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            Telemetry.Disable();
-            CustomTabItem me = (CustomTabItem)sender;
-            Telemetry.Transmit(me.Name, e.GetType().FullName);
+        //private void CustomTabItem_KeyDown(object sender, KeyRoutedEventArgs e)
+        //{
+        //    Telemetry.Disable();
+        //    CustomTabItem me = (CustomTabItem)sender;
+        //    Telemetry.Transmit(me.Name, e.GetType().FullName);
 
-        }
+        //}
         private async void TabControl_RightTapped(object sender, RightTappedRoutedEventArgs e) // fires first for all tabs other than tab1
         {
             Telemetry.Disable();

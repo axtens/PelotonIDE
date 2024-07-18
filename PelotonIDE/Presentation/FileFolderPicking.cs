@@ -109,7 +109,7 @@ $result = $dlg.ShowDialog()
                 Telemetry.Transmit(ex.Message);
             }
             return result;
-        } 
+        }
         public static string[] GetFolder(string? initialDirectory)
         {
             string guid = Guid.NewGuid().ToString();
@@ -141,6 +141,45 @@ $result = $dlg.ShowDialog()
             process.Start();
 
             var result = process.StandardOutput.ReadToEnd().Trim().Split(" :: ");
+            try
+            {
+                File.Delete(ps1);
+            }
+            catch (Exception ex)
+            {
+                Telemetry.Transmit(ex.Message);
+            }
+            return result;
+        }
+
+        public static string PwSh(string? code)
+        {
+            string guid = Guid.NewGuid().ToString();
+            var ps1 = Path.Combine(ApplicationData.Current.LocalFolder.Path, guid + ".ps1");
+            File.WriteAllText(ps1, code);
+            Process process = new()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = @"pwsh.exe",
+                    Arguments = $@"{Path.Combine(ApplicationData.Current.LocalFolder.Path, guid + ".ps1")}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            string result = string.Empty;
+            try
+            {
+                process.Start();
+                result = process.StandardOutput.ReadToEnd().Trim();
+            }
+            catch (Exception)
+            {
+
+            }
+
             try
             {
                 File.Delete(ps1);

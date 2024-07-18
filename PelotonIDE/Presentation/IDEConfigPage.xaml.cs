@@ -1,4 +1,6 @@
-﻿using LanguageConfigurationStructureSelection =
+﻿using Microsoft.Win32;
+
+using LanguageConfigurationStructureSelection =
     System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, string>>;
 
@@ -29,7 +31,7 @@ namespace PelotonIDE.Presentation
             }
         }
         private async void ProtiumInterpreterLocationBtn_Click(object sender, RoutedEventArgs e)
-        {
+        { 
             var temp = FileFolderPicking.GetFile("Protium Interpreter?", Path.GetDirectoryName(protiumInterpreterTextBox.Text), "EXE files (*.exe)|*.exe");
             if (temp[0] == "OK")
                 protiumInterpreterTextBox.Text = temp[1];
@@ -72,6 +74,5 @@ namespace PelotonIDE.Presentation
         {
             Frame.Navigate(typeof(MainPage), null);
         }
-
     }
 }

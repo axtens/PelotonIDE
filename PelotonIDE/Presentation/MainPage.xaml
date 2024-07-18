@@ -302,9 +302,10 @@
                     <MenuFlyoutItem x:Name="mnuUpdateLexers" Text="Update Lexers" Click="ComponentUpdater_Update" Tag="bin/lexers" />
                     <MenuFlyoutItem x:Name="mnuUpdateCodeSamples" Text="Update Code Samples" Click="ComponentUpdater_Update" Tag="code" />
                     <MenuFlyoutItem x:Name="mnuUpdateDatabaseSamples" Text="Update Database Samples" Click="ComponentUpdater_Update" Tag="data" />
-                    <MenuFlyoutItem x:Name="mnuUpdateExtras" Text="Update Extras" Click="ComponentUpdater_Update" Tag="extras" />
+                    <MenuFlyoutItem x:Name="mnuDownloadPowerShell" Text="Download and Install PowerShell" Click="ComponentUpdater_DownloadPowerShell" Tag="" />
                 </MenuFlyoutSubItem>
                 <MenuFlyoutItem x:Name="mnuMemory" Text="Show Memory" Click="ShowMemory_Click"/>
+                <MenuFlyoutItem x:Name="mnuPowerShellStatus" Text="Show PowerShell Status" Click="ShowPowerShell_Click"/>
                 <MenuFlyoutItem x:Name="mnuShowTabs" Text="Show Tabs" Click="ShowTabs_Click"/>
                 <MenuFlyoutItem x:Name="mnuHelpAbout" Text="About" Click="HelpAbout_Click"/>
             </MenuBarItem>
@@ -404,7 +405,7 @@
                         SelectionChanged="TabControl_SelectionChanged" SizeChanged="TabControl_SizeChanged"  >
             <!-- RightTapped="TabControl_RightTapped" -->
             <NavigationView.MenuItems>
-                <local:CustomTabItem x:Name="tab1" Content="Document 1" Tag="Tab1" IsNewFile="True" Height="30" KeyDown="CustomTabItem_KeyDown" />
+                <local:CustomTabItem x:Name="tab1" Content="Document 1" Tag="Tab1" IsNewFile="True" Height="30" />
             </NavigationView.MenuItems>
         </NavigationView>
         <Border x:Name="outputPanel" RelativePanel.Above="statusBar" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Background="White" Margin="5, 0, 5, 0" SizeChanged="OutputPanel_SizeChanged">

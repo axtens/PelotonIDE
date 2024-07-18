@@ -1,13 +1,17 @@
 ﻿using Microsoft.UI;
+using Microsoft.Win32;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using Windows.Devices.Geolocation;
 using Windows.Storage;
 
 using Style = Microsoft.UI.Xaml.Style;
@@ -520,6 +524,19 @@ namespace PelotonIDE.Presentation
 
             return true;
         }
+        private async Task<bool> AskToDownloadPowerShell()
+        {
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+                Title = "Download PowerShell? (Application will shut down)",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No"
+            };
+            ContentDialogResult result = await dialog.ShowAsync();
+            return (ContentDialogResult.Primary == result);
+        }
         private void UpdateOutputTabs()
         {
             Telemetry.Disable();
@@ -844,11 +861,22 @@ namespace PelotonIDE.Presentation
                     {
                         target = $"C:/peloton/{entry.FullName}";
                         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-                        if (entry.Length > 0) 
+                        if (entry.Length > 0)
                             entry.ExtractToFile(target, true);
                     }
                 }
             }
+        }
+
+        public static bool IsPowerShellInstalled()
+        {   
+            object? regTest = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShellCore", "UseMU", null);
+            string psTest = FileFolderPicking.PwSh(@"Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\PowerShellCore\InstalledVersions\*' -Name 'SemanticVersion'");
+            if (regTest != null && psTest.Length > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         //public void SwitchToTab(int direction)

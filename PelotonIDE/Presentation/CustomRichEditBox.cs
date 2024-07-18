@@ -58,7 +58,7 @@ namespace PelotonIDE.Presentation
         }
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
-            Telemetry.Disable();
+            Telemetry.Enable();
             CoreVirtualKeyStates appState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Application);
             CoreVirtualKeyStates insState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Insert);
             CoreVirtualKeyStates ctrlState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control);
@@ -72,6 +72,12 @@ namespace PelotonIDE.Presentation
             bool InsIsLocked = insState.HasFlag(CoreVirtualKeyStates.Locked);
             bool AppIsDown = appState.HasFlag(CoreVirtualKeyStates.Down);
             bool AppIsLocked = appState.HasFlag(CoreVirtualKeyStates.Locked);
+
+            Telemetry.Transmit("appState=", appState);
+            Telemetry.Transmit("insState=", insState);
+            Telemetry.Transmit("ctrlState=", ctrlState);
+            Telemetry.Transmit("shiftState=", shiftState);
+            Telemetry.Transmit("e.Key=", e.Key);
 
             if (e.Key == VirtualKey.X && CtrlIsDown)
             {
@@ -93,14 +99,28 @@ namespace PelotonIDE.Presentation
                 SelectAll();
                 return;
             }
-            if (e.Key == VirtualKey.Tab && !CtrlIsDown && ShiftIsDown)
+            if (e.Key == VirtualKey.Tab && ShiftIsDown && CtrlIsDown)
             {
+                Telemetry.Transmit("^ShiftTab");
+                e.Handled = false;
+                return;
+            }
+            if (e.Key == VirtualKey.Tab && CtrlIsDown)
+            {
+                Telemetry.Transmit("^Tab");
+                e.Handled = false;
+                return;
+            }
+            if (e.Key == VirtualKey.Tab && ShiftIsDown)
+            {
+                Telemetry.Transmit("ShiftTab");
                 e.Handled = true;
                 return;
             }
 
-            if (e.Key == VirtualKey.Tab && !CtrlIsDown)
+            if (e.Key == VirtualKey.Tab)
             {
+                Telemetry.Transmit("Tab");
                 Document.Selection.TypeText("\t");
                 e.Handled = true;
                 return;

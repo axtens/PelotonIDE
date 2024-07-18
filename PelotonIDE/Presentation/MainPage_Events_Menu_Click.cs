@@ -529,6 +529,10 @@ namespace PelotonIDE.Presentation
         private async void Open()
         {
             Telemetry.SetEnabled(true);
+            if (!IsPowerShellInstalled())
+            {
+                await PowerShellNeedDialog();
+            }
             var temp = FileFolderPicking.GetFile("Code lexer?", AnInFocusTabExists() ? Type_3_GetInFocusTab<string>("ideOps.CodeFolder") : Type_1_GetVirtualRegistry<string>("ideOps.CodeFolder"));
             if (temp[0] == "OK")
             {
@@ -671,6 +675,11 @@ namespace PelotonIDE.Presentation
 
         private async void Save()
         {
+            if (!IsPowerShellInstalled())
+            {
+                await PowerShellNeedDialog();
+            }
+
             var ift = InFocusTab();
 
             if (ift != null)
@@ -786,6 +795,11 @@ namespace PelotonIDE.Presentation
         }
         private async void SaveAs(string? target = null)
         {
+            if (!IsPowerShellInstalled())
+            {
+                await PowerShellNeedDialog();
+            }
+
             var ift = InFocusTab();
 
             if (ift != null)

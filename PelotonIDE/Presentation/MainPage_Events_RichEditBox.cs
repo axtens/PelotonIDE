@@ -19,7 +19,7 @@ namespace PelotonIDE.Presentation
     {
         private void RichEditBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            Telemetry.Disable();
+            Telemetry.Enable();
 
             var me = (RichEditBox)sender;
             SolidColorBrush Black = new(Colors.Black);
@@ -39,15 +39,15 @@ namespace PelotonIDE.Presentation
             bool appIsDown = appState.HasFlag(CoreVirtualKeyStates.Down);
             bool appIsLocked = appState.HasFlag(CoreVirtualKeyStates.Locked);
 
+            CoreVirtualKeyStates insertState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Insert);
+
             Telemetry.Transmit("ctrlIsDown=", ctrlIsDown, "ctrlIsLocked=", ctrlIsLocked);
             Telemetry.Transmit("shiftIsDown=", shiftIsDown, "shiftIsLocked=", shiftIsLocked);
             Telemetry.Transmit("insIsDown=", insIsDown, "insIsLocked=", insIsLocked);
             Telemetry.Transmit("appIsDown=", appIsDown, "appIsLocked=", appIsLocked);
+            Telemetry.Transmit("insertState=", insertState);
+            Telemetry.Transmit("e.Key=", $"{e.Key}");
 
-
-            var insertState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Insert);
-
-            Debug.WriteLine($"{e.Key}");
             if (e.Key == VirtualKey.CapitalLock)
             {
                 //CAPS.Text = "CAPS";

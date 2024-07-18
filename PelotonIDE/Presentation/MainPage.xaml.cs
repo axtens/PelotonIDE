@@ -1,31 +1,19 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Wordprocessing;
-
-using Microsoft.UI.Text;
-using Microsoft.UI.Xaml.Input;
+﻿using Microsoft.UI.Xaml.Input;
 
 using Newtonsoft.Json;
 
 using System.Diagnostics;
-using System.IO.Compression;
-using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Linq;
 
-using Windows.ApplicationModel.UserDataTasks;
 using Windows.Storage;
 using Windows.System;
-using Windows.UI.Notifications;
-using Windows.UI.Text;
 
 using Colors = Microsoft.UI.Colors;
 using FactorySettingsStructure = System.Collections.Generic.Dictionary<string, object>;
 using InterpreterParametersStructure = System.Collections.Generic.Dictionary<string,
     System.Collections.Generic.Dictionary<string, object>>;
-using ITextSelection = Microsoft.UI.Text.ITextSelection;
 using LanguageConfigurationStructure = System.Collections.Generic.Dictionary<string,
     System.Collections.Generic.Dictionary<string,
         System.Collections.Generic.Dictionary<string, string>>>;
@@ -77,9 +65,11 @@ namespace PelotonIDE.Presentation
         readonly ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
 
         // public LanguageConfigurationStructure? LanguageSettings1 { get => LanguageSettings; set => LanguageSettings = value; }
-        readonly bool HasPelotonFolder = CreateAndFillPelotonFolderIfMissing();
 
-        readonly List<PlexBlock>? PlexBlocks = GetAllPlexBlocks();
+        readonly bool HasPelotonFolder;// = CreateAndFillPelotonFolderIfMissing();
+        readonly bool HasProtiumFolder;// = CreateAndFillProtiumFolderIfMissing();
+        //bool HasPowerShell;
+        readonly List<PlexBlock>? PlexBlocks; // = GetAllPlexBlocks();
 
         Dictionary<string, List<string>> LangLangs = [];
 
@@ -88,6 +78,11 @@ namespace PelotonIDE.Presentation
         public MainPage()
         {
             this.InitializeComponent();
+            //HasPowerShell = IsPowerShellInstalled();
+            
+            HasPelotonFolder = CreateAndFillPelotonFolderIfMissing();
+            HasProtiumFolder = CreateAndFillProtiumFolderIfMissing();
+            PlexBlocks = GetAllPlexBlocks();
 
             CustomRichEditBox customREBox = new()
             {
@@ -890,6 +885,7 @@ namespace PelotonIDE.Presentation
                     var newTag = $"Tab{idx}";
                     tabControl.SelectedItem = (CustomTabItem)tabControl.MenuItems[idx];
                     Telemetry.Transmit("SelectedItem.Tag=", ((CustomTabItem)tabControl.SelectedItem).Tag);
+                    _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag].Focus(FocusState.Keyboard);
                 }
             }
         }
@@ -915,6 +911,7 @@ namespace PelotonIDE.Presentation
                         idx = 0; // tabControl.MenuItems.Count - 1;
                     tabControl.SelectedItem = (CustomTabItem)tabControl.MenuItems[idx];
                     Telemetry.Transmit("SelectedItem.Tag=", ((CustomTabItem)tabControl.SelectedItem).Tag);
+                    _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag].Focus(FocusState.Keyboard);
                 }
             }
         }
@@ -1037,38 +1034,7 @@ namespace PelotonIDE.Presentation
             RegexOptions findOptions = (bool)caseMatch.IsChecked! ? RegexOptions.Singleline : RegexOptions.IgnoreCase | RegexOptions.Singleline;
 
             CustomRichEditBox currentRichEditBox = _richEditBoxes[((CustomTabItem)tabControl.SelectedItem).Tag];
-            //currentRichEditBox.Document.GetText(TextGetOptions.None, out string currentRichEditText);
 
-            //if ((bool)scopeSelection.IsChecked)
-            //{
-            //    if (currentRichEditBox.Document.Selection.Length == 0)
-            //    {
-            //        await SomethingNotFoundDialog($"'{whatToFind}' not found.");
-            //        return;
-            //        // error
-            //    }
-            //    // find in selection
-            //    ITextSelection sel = currentRichEditBox.Document.Selection;
-            //    int sstart = sel.StartPosition;
-            //    int sstop = sel.EndPosition;
-            //    sel.ScrollIntoView(PointOptions.None);
-            //    sel.GetText(TextGetOptions.None, out string stext);
-            //    var smatch = Regex.Match(stext, findString, findOptions);
-            //    if (smatch.Success)
-            //    {
-            //        Telemetry.Transmit("start=", sstart, "stop=", sstop, "match.Index=", smatch.Index);
-            //        int there = smatch.Index + sstart;
-            //        currentRichEditBox.Document.Selection.StartPosition = there;
-            //        currentRichEditBox.Document.Selection.EndPosition = there + findText.Length;
-            //        sel.ScrollIntoView(PointOptions.None);
-            //        Type_3_UpdateInFocusTabSettings("ideOps.findLastFound", true, there);
-            //    }
-            //    else
-            //    {
-            //        await SomethingNotFoundDialog($"'{whatToFind}' not found in selection.");
-            //    }
-            //    return;
-            //}
             // find in body 
             currentRichEditBox.Document.GetText(TextGetOptions.None, out string text);
             int start = 0;
@@ -1235,8 +1201,6 @@ namespace PelotonIDE.Presentation
                 PrimaryButtonText = "OK",
                 DefaultButton = ContentDialogButton.Primary,
                 CanBeScrollAnchor = true,
-
-
             };
             _ = await dialog.ShowAsync();
 
@@ -1262,7 +1226,6 @@ namespace PelotonIDE.Presentation
             WebView2 me = (WebView2)sender;
             Telemetry.Enable();
             Telemetry.Transmit("IsSuccess=", args.IsSuccess, "WebErrorStatus=", args.WebErrorStatus);
-            
         }
 
         private async void ComponentUpdater_Update(object sender, RoutedEventArgs e)
@@ -1300,6 +1263,39 @@ namespace PelotonIDE.Presentation
             };
             _ = await dialog.ShowAsync();
 
+        }
+
+        private async void ComponentUpdater_DownloadPowerShell(object sender, RoutedEventArgs e)
+        {
+            string? up = Environment.GetEnvironmentVariable("USERPROFILE");
+            string df = Path.Combine(up!, "Downloads");
+            HttpClient hc = new HttpClient();
+            byte[] ba = await hc.GetByteArrayAsync("https://pelotonprogramming.org/downloads/PowerShell-7.4.2-win-x64.msi");
+            var ps = Path.Combine(df, "PowerShell-7.4.2-win-x64.msi");
+            File.WriteAllBytes(ps, ba);
+            var psi = new ProcessStartInfo(ps)
+            {
+                Verb = "open",
+                UseShellExecute = true,
+            };
+            Process.Start(psi);
+        }
+
+        private async void ShowPowerShell_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> lines = [];
+            lines.Add("PowerShell version: " + FileFolderPicking.PwSh(@"Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\PowerShellCore\InstalledVersions\*' -Name 'SemanticVersion'"));
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style, // DefaultContentDialogStyle
+                Title = "Show PowerShell",
+                Content = lines.JoinBy("\n"),
+                PrimaryButtonText = "OK",
+                DefaultButton = ContentDialogButton.Primary,
+                CanBeScrollAnchor = true,
+            };
+            _ = await dialog.ShowAsync();
         }
     }
 }
