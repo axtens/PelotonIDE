@@ -48,6 +48,13 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit("insertState=", insertState);
             Telemetry.Transmit("e.Key=", $"{e.Key}");
 
+            /*if (e.Key == VirtualKey.F2 || e.Key == VirtualKey.F3)
+            {
+                Telemetry.Transmit("F2 or F3=", e.Key);
+                InsertCodeTemplate(e.Key.ToString());
+                return;
+            }*/
+
             if (e.Key == VirtualKey.CapitalLock)
             {
                 //CAPS.Text = "CAPS";

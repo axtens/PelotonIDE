@@ -79,6 +79,13 @@ namespace PelotonIDE.Presentation
             Telemetry.Transmit("shiftState=", shiftState);
             Telemetry.Transmit("e.Key=", e.Key);
 
+            if (e.Key == VirtualKey.F2 || e.Key == VirtualKey.F3)
+            {
+                Telemetry.Transmit("F2 or F3=", e.Key);
+                e.Handled = false;
+                return;
+            }
+
             if (e.Key == VirtualKey.X && CtrlIsDown)
             {
                 Cut();

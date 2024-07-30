@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI;
+using Microsoft.UI.Text;
 using Microsoft.Win32;
 
 using Newtonsoft.Json;
@@ -879,6 +880,43 @@ namespace PelotonIDE.Presentation
             return false;
         }
 
+        public void InsertCodeTemplate(string key)
+        {
+            bool VariableLength = Type_1_GetVirtualRegistry<bool>("pOps.VariableLength");
+            CustomTabItem navigationViewItem = (CustomTabItem)tabControl.SelectedItem;
+            CustomRichEditBox currentRichEditBox = _richEditBoxes[navigationViewItem.Tag];
+            ITextSelection selection = currentRichEditBox.Document.Selection;
+            if (selection != null)
+            {
+                selection.StartPosition = selection.EndPosition;
+                switch (key)
+                {
+                    case "F2":
+                        if (VariableLength)
+                        {
+                            selection.Text = "<# ></#>";
+                        }
+                        else
+                        {
+                            selection.Text = "<@ ></@>";
+                        }
+                        break;
+
+                    case "F3":
+                        if (VariableLength)
+                        {
+                            selection.Text = "<@ ></@>";
+                        }
+                        else
+                        {
+                            selection.Text = "<# ></#>";
+                        }
+                        break;
+                }
+                selection.EndPosition = selection.StartPosition;
+                currentRichEditBox.Document.Selection.Move(TextRangeUnit.Character, 3);
+            }
+        }
         //public void SwitchToTab(int direction)
         //{
         //    if (_richEditBoxes.Count > 0)
